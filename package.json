@@ -1,5 +1,17 @@
 {
+  "scripts": {
+    "prepare": "husky",
+    "types": "tsc --pretty --noEmit",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext ts --ext tsx --ext js --fix",
+    "start": "node -r dotenv/config server.js",
+    "dev": "nodemon -r dotenv/config server.js",
+    "test-all": "npm run format && npm run lint && npm run types && npm run build"
+  },
   "dependencies": {
     "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.6"
   }
 }

@@ -1,0 +1,34 @@
+# Check Prettier standards
+echo '✨ Checking Prettier formatting...'
+npm run format ||
+(
+    echo '❌ Prettier check failed. Your code does not adhere to formatting standards. Please run npm run format, make the necessary changes, and try committing again.'
+    false
+)
+
+# Check ESLint standards
+echo '✨ Checking ESLint rules...'
+npm run lint ||
+(
+    echo '❌ ESLint check failed. Your code does not adhere to linting rules. Please review the errors, make the required changes, and try committing again.'
+    false
+)
+
+# Check TypeScript configuration
+echo '✨ Checking TypeScript configuration...'
+npm run types ||
+(
+    echo '❌ TypeScript check failed. Please address the type errors reported and try committing again.'
+    false
+)
+
+# Check build
+echo '✨ Building the project...'
+npm run build ||
+(
+    echo '❌ Build failed. Please review the build errors and resolve them before attempting to commit again.'
+    false
+)
+
+# If everything passes, allow commit
+echo '✅ All checks passed. Proceeding with commit.'
