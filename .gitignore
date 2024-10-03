@@ -3,6 +3,7 @@ node_modules/
 .idea
 .vscode
 .DS_Store
+.env.local
 
 tmp/*
 !tmp/.gitkeep
