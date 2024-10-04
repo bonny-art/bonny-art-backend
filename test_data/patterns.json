@@ -1,0 +1,97 @@
+[
+  {
+    "codename": "0133-KB (750x544)",
+    "solids": 30,
+    "blends": 150,
+    "uk": {
+      "title": "Вид на Гальштат",
+      "author": "Йозеф Тома Молодший",
+      "origin": "живопис"
+    },
+    "en": {
+      "title": "View of Hallstatt",
+      "author": "Thoma the Younger, Josef",
+      "origin": "painting"
+    },
+    "ratings": [
+      {
+        "userId": "60d21b4967d0d8992e610c86",
+        "rating": 5
+      },
+      {
+        "userId": "60d21b4b67d0d8992e610c87",
+        "rating": 4
+      },
+      {
+        "userId": "60d21b4e67d0d8992e610c88",
+        "rating": 3
+      }
+    ],
+    "pictures": {
+      "main": {
+        "url": "https://res.cloudinary.com/dynqouaau/image/upload/v1727959001/Bonny_Art_0133-KB_750x544_LU_%D0%92%D0%B8%D0%B4_%D0%BD%D0%B0_%D0%93%D0%B0%D0%BB%D1%8C%D1%88%D1%82%D0%B0%D1%82_zgw038.jpg"
+      },
+      "pattern": {
+        "url": {
+          "uk": "https://res.cloudinary.com/dynqouaau/image/upload/v1727959895/Bonny_Art_0133-KB_750x544_LU_%D0%92%D0%B8%D0%B4_%D0%BD%D0%B0_%D0%93%D0%B0%D0%BB%D1%8C%D1%88%D1%82%D0%B0%D1%82_sie8w9.jpg",
+          "en": "https://res.cloudinary.com/dynqouaau/image/upload/v1727959895/Bonny_Art_0133-KB_750x544_LE_View_of_Hallstatt_ano79z.jpg"
+        }
+      },
+      "stitchPhotos": ["60d21b4e67d0d8992e610c88"]
+    }
+  },
+  {
+    "codename": "0144-KB (800x600)",
+    "solids": 40,
+    "blends": 200,
+    "uk": {
+      "title": "Захід сонця над морем",
+      "author": "Іван Айвазовський",
+      "origin": "живопис"
+    },
+    "en": {
+      "title": "Sunset over the Sea",
+      "author": "Ivan Aivazovsky",
+      "origin": "painting"
+    },
+    "ratings": [
+      {
+        "userId": "60d21b4967d0d8992e610c89",
+        "rating": 4
+      },
+      {
+        "userId": "60d21b4b67d0d8992e610c90",
+        "rating": 5
+      }
+    ]
+  },
+  {
+    "codename": "0155-KB (1024x768)",
+    "solids": 50,
+    "blends": 250,
+    "uk": {
+      "title": "Нічний місто",
+      "author": "Казимир Малевич",
+      "origin": "живопис"
+    },
+    "en": {
+      "title": "Night City",
+      "author": "Kazimir Malevich",
+      "origin": "painting"
+    },
+    "ratings": [
+      {
+        "userId": "60d21b4967d0d8992e610c91",
+        "rating": 3
+      },
+      {
+        "userId": "60d21b4b67d0d8992e610c92",
+        "rating": 4
+      },
+      {
+        "userId": "60d21b4e67d0d8992e610c93",
+        "rating": 5
+      }
+    ]
+  }
+]

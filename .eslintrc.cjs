@@ -19,5 +19,6 @@ module.exports = {
     'prefer-const': 'error',
     semi: ['error', 'always'],
     quotes: ['error', 'single'],
+    'linebreak-style': ['error', 'windows'],
   },
 };

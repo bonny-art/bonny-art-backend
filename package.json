@@ -18,6 +18,7 @@
     "test-all": "npm run format && npm run lint && npm run types && npm run build"
   },
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
