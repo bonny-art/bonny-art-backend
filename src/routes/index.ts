@@ -1,13 +1,13 @@
 import express from 'express';
 
-import authRoutes from './auth-routes.js';
-import dataRoutes from './data-routes.js';
+import authRoutes from './api/auth-routes.js';
+import patternRoutes from './api/pattern-routes.js';
 
 // import { auth } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 router.use('/auth', authRoutes);
-router.use('/dataRoutes', dataRoutes);
+router.use('/patternRoutes', patternRoutes);
 
 export default router;

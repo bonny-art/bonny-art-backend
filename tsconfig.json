@@ -1,7 +1,8 @@
 {
+  "typeRoots": ["@types/node", "./src/types"],
   "compilerOptions": {
     "target": "es2020",
-    "module": "esnext",
+    "module": "ES6",
     "lib": ["es2020"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -12,10 +13,16 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "incremental": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/controllers/pattern-controllers.js",
+    "src/**/*.ts",
+    "src/routes/api/auth-routes.js",
+    "src/routes/index.js"
+  ],
   "exclude": ["node_modules"]
 }
