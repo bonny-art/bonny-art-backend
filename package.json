@@ -10,8 +10,8 @@
   "scripts": {
     "build": "rimraf build && npx tsc",
     "prestart": "npm run build",
-    "start": "node -r dotenv/config dist/app.js",
-    "dev": "concurrently \"tsc -w\" \"tsc-alias -w\" \"nodemon dist/app.js\" ",
+    "start": "node -r dotenv/config dist/server.js",
+    "dev": "concurrently \"tsc -w\" \"tsc-alias -w\" \"nodemon -r dotenv/config dist/server.js\"",
     "prepare": "husky",
     "types": "tsc --pretty --noEmit",
     "format": "prettier --write .",

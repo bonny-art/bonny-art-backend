@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import 'dotenv/config';
 import morgan from 'morgan';
 import cors from 'cors';
 
