@@ -16,3 +16,5 @@ swagger_old.json
 
 # TypeScript
 *.tsbuildinfo
+
+dist/
