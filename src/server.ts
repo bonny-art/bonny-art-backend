@@ -1,3 +1,4 @@
+import 'module-alias/register.js';
 import connectDB from './db/connection-db.js';
 import app from './app.js';
 
