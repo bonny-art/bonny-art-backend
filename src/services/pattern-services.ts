@@ -5,3 +5,10 @@ export const getAllPatterns = async () => {
 
   return patterns;
 };
+
+export const getPatternById = async (patternId: string) => {
+  // Ищем паттерн по ID
+  const pattern = await Pattern.findById(patternId);
+
+  return pattern;
+};
