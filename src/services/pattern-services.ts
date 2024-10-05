@@ -44,6 +44,7 @@ export const getPatternById = async (patternId: string, language: Language) => {
         id: pattern._id.toString(),
         title: pattern.title?.[language],
         author: pattern.author?.[language],
+        origin: pattern.origin?.[language],
         codename: pattern.codename,
         colors: pattern.solids + pattern.blends,
         solids: pattern.solids,
