@@ -24,10 +24,10 @@ export const getPattern = async (
 ): Promise<void> => {
   try {
     const { patternId } = req.params;
-   
-console.log( patternId)
+
+    console.log(patternId);
     const pattern = await patternServices.getPatternById(patternId);
-    console.log( "hhhhhhhhhhhhhhh", pattern)
+    console.log('hhhhhhhhhhhhhhh', pattern);
     if (!pattern) {
       res.status(404).send({ message: 'Pattern not found' });
       return;
