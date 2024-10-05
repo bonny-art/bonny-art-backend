@@ -3,15 +3,17 @@
     "codename": "0133-KB (750x544)",
     "solids": 30,
     "blends": 150,
-    "uk": {
-      "title": "Вид на Гальштат",
-      "author": "Йозеф Тома Молодший",
-      "origin": "живопис"
+    "title": {
+      "uk": "Вид на Гальштат",
+      "en": "View of Hallstatt"
     },
-    "en": {
-      "title": "View of Hallstatt",
-      "author": "Thoma the Younger, Josef",
-      "origin": "painting"
+    "author": {
+      "uk": "Йозеф Тома Молодший",
+      "en": "Thoma the Younger, Josef"
+    },
+    "origin": {
+      "uk": "живопису",
+      "en": "painting"
     },
     "ratings": [
       {
@@ -44,15 +46,17 @@
     "codename": "0144-KB (800x600)",
     "solids": 40,
     "blends": 200,
-    "uk": {
-      "title": "Захід сонця над морем",
-      "author": "Іван Айвазовський",
-      "origin": "живопис"
+    "title": {
+      "uk": "Захід сонця над морем",
+      "en": "Sunset over the Sea"
     },
-    "en": {
-      "title": "Sunset over the Sea",
-      "author": "Ivan Aivazovsky",
-      "origin": "painting"
+    "author": {
+      "uk": "Іван Айвазовський",
+      "en": "Ivan Aivazovsky"
+    },
+    "origin": {
+      "uk": "ілюстрації",
+      "en": "painting"
     },
     "ratings": [
       {
@@ -69,15 +73,17 @@
     "codename": "0155-KB (1024x768)",
     "solids": 50,
     "blends": 250,
-    "uk": {
-      "title": "Нічний місто",
-      "author": "Казимир Малевич",
-      "origin": "живопис"
+    "title": {
+      "uk": "Нічний місто",
+      "en": "Night City"
     },
-    "en": {
-      "title": "Night City",
-      "author": "Kazimir Malevich",
-      "origin": "painting"
+    "author": {
+      "uk": "Казимир Малевич",
+      "en": "Kazimir Malevich"
+    },
+    "origin": {
+      "uk": "фотографії",
+      "en": "painting"
     },
     "ratings": [
       {
