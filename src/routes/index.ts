@@ -8,6 +8,6 @@ import patternRoutes from './api/pattern-routes.js';
 const router = express.Router();
 
 router.use('/auth', authRoutes);
-router.use('/patternRoutes', patternRoutes);
+router.use('/:language/patterns', patternRoutes);
 
 export default router;
