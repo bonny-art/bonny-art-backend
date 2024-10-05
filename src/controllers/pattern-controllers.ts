@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
 import { GetAllPatternsRequest } from '@/types/patterns-type.js';
 
@@ -18,23 +18,21 @@ export const getAllPatterns = async (
 };
 
 export const getPattern = async (
-  req: GetAllPatternsRequest,
+  req: Request<{ patternId: string }>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    // Получаем id паттерна из параметров URL
     const { patternId } = req.params;
-
-    // Вызываем сервис, чтобы найти паттерн по ID
+   
+console.log( patternId)
     const pattern = await patternServices.getPatternById(patternId);
-
-    // Проверяем, найден ли паттерн
+    console.log( "hhhhhhhhhhhhhhh", pattern)
     if (!pattern) {
       res.status(404).send({ message: 'Pattern not found' });
+      return;
     }
 
-    // Возвращаем найденный паттерн
     res.send(pattern);
   } catch (error) {
     next(error);
