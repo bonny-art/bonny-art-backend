@@ -17,6 +17,7 @@ export const getAllPatterns = async (
     const height = widthHeightMatch ? parseInt(widthHeightMatch[2]) : null;
 
     return {
+      id: pattern._id.toString(),
       title: pattern.title[language],
       codename: pattern.codename,
       width,

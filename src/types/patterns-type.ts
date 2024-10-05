@@ -9,6 +9,7 @@ export interface GetAllPatternsRequest extends Request {
 }
 
 export type PatternDb = {
+  _id: string;
   codename: string;
   solids: number;
   blends: number;
@@ -23,6 +24,7 @@ export type PatternDb = {
 };
 
 export type FormattedPattern = {
+  id: string;
   title: string;
   codename: string;
   width: number | null;
