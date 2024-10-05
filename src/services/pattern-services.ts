@@ -39,7 +39,7 @@ export const getPatternById = async (patternId: string, language: Language) => {
     const { width, height } = extractWidthHeight(pattern.codename);
 
     return {
-      patterns: {
+      pattern: {
         // ...pattern.toObject(),
         id: pattern._id.toString(),
         title: pattern.title?.[language],
