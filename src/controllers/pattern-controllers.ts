@@ -29,7 +29,7 @@ export const getPattern = async (
 
     // Проверяем, найден ли паттерн
     if (!pattern) {
-      res.status(404).send({ message: "Pattern not found" });
+      res.status(404).send({ message: 'Pattern not found' });
     }
 
     // Возвращаем найденный паттерн
@@ -38,4 +38,3 @@ export const getPattern = async (
     next(error);
   }
 };
-
