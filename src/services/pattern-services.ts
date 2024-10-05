@@ -51,8 +51,8 @@ export const getPatternById = async (patternId: string, language: Language) => {
         blends: pattern.blends,
         width,
         height,
-        mainPictureUrl:  pattern.pictures?.main?.url || '',
-        mainPatternUrl:  pattern.pictures?.pattern?.url?.[language] || '',
+        mainPictureUrl: pattern.pictures?.main?.url || '',
+        mainPatternUrl: pattern.pictures?.pattern?.url?.[language] || '',
       },
     };
   }
