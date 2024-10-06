@@ -23,27 +23,19 @@ export const getAllPatterns = async (
 };
 
 export const getPattern = async (
-  req: Request<{ patternId: string }>,
+  req: Request<{ language: string; patternId: string }>, 
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { patternId } = req.params;
-    const languageQuery = req.query.language;
-    let language: Language = 'uk';
+    const { language, patternId } = req.params; 
+    let lang: Language = 'uk';
 
-    if (Array.isArray(languageQuery)) {
-      const lang = languageQuery[0];
-      if (isValidLanguage(lang)) {
-        language = lang;
-      }
-    } else if (
-      typeof languageQuery === 'string' &&
-      isValidLanguage(languageQuery)
-    ) {
-      language = languageQuery;
+    if (isValidLanguage(language)) {
+      lang = language;
     }
-    const pattern = await patternServices.getPatternById(patternId, language);
+
+    const pattern = await patternServices.getPatternById(patternId, lang);
     if (!pattern) {
       res.status(404).send({ message: 'Pattern not found' });
       return;

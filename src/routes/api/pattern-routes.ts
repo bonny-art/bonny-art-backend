@@ -5,10 +5,8 @@ import isValidId from '../../decorators/isValidId.js';
 const patternRouter = express.Router();
 
 patternRouter.get('/', patternControllers.getAllPatterns);
-patternRouter.get(
-  '/pattern/:patternId',
-  isValidId,
-  patternControllers.getPattern
-);
+
+patternRouter.get('/:language/pattern/:patternId', isValidId, patternControllers.getPattern);
+
 
 export default patternRouter;
