@@ -6,7 +6,10 @@ const patternRouter = express.Router();
 
 patternRouter.get('/', patternControllers.getAllPatterns);
 
-patternRouter.get('/:language/pattern/:patternId', isValidId, patternControllers.getPattern);
-
+patternRouter.get(
+  '/:language/pattern/:patternId',
+  isValidId,
+  patternControllers.getPattern
+);
 
 export default patternRouter;

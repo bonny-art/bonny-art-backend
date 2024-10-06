@@ -23,12 +23,12 @@ export const getAllPatterns = async (
 };
 
 export const getPattern = async (
-  req: Request<{ language: string; patternId: string }>, 
+  req: Request<{ language: string; patternId: string }>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { language, patternId } = req.params; 
+    const { language, patternId } = req.params;
     let lang: Language = 'uk';
 
     if (isValidLanguage(language)) {
