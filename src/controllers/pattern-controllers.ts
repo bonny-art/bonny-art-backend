@@ -35,8 +35,8 @@ export const getPattern = async (
     const { language } = req.params;
     const pattern = req.pattern;
     if (!pattern) {
-     res.status(404).send({ message: 'Pattern not found in request' });
-     return 
+      res.status(404).send({ message: 'Pattern not found in request' });
+      return;
     }
 
     let lang: Language = 'uk';
