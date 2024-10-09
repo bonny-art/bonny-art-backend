@@ -5,6 +5,7 @@ import {
   PatternDb,
 } from '@/types/patterns-type.js';
 import { Pattern } from '../db/models/Pattern.js';
+import { extractWidthHeight } from '../helpers/widthHeightExtractor.js';
 
 export const getAllPatterns = async (
   language: Language
@@ -12,9 +13,7 @@ export const getAllPatterns = async (
   const patterns: PatternDb[] = await Pattern.find({});
 
   const formattedPatterns: FormattedPattern[] = patterns.map((pattern) => {
-    const widthHeightMatch = pattern.codename.match(/\((\d+)x(\d+)\)/);
-    const width = widthHeightMatch ? parseInt(widthHeightMatch[1]) : null;
-    const height = widthHeightMatch ? parseInt(widthHeightMatch[2]) : null;
+    const { width, height } = extractWidthHeight(pattern.codename);
 
     return {
       id: pattern._id.toString(),
@@ -32,4 +31,37 @@ export const getAllPatterns = async (
   });
 
   return { patterns: formattedPatterns };
+};
+
+export const getPattern = async (pattern: PatternDb, language: Language) => {
+  if (pattern) {
+    const { width, height } = extractWidthHeight(pattern.codename);
+
+    return {
+      pattern: {
+        id: pattern._id.toString(),
+        title: pattern.title?.[language],
+        codename: pattern.codename,
+        origin: pattern.origin?.[language],
+        author: pattern.author?.[language],
+        width,
+        height,
+        colors: pattern.solids + pattern.blends,
+        solids: pattern.solids,
+        blends: pattern.blends,
+        mainPictureUrl: pattern.pictures?.main?.url || '',
+        mainPatternUrl: pattern.pictures?.pattern?.url?.[language] || '',
+      },
+    };
+  }
+
+  return null;
+};
+
+export const getPatternById = async (patternId: string) => {
+  const pattern = await Pattern.findById(patternId);
+  if (!pattern) {
+    return null;
+  }
+  return pattern;
 };
