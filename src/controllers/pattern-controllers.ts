@@ -39,7 +39,7 @@ export const getPattern = async (
 
     if (!pattern) {
       res.status(404).send({ message: 'Pattern not found in request' });
-      return 
+      return;
     }
 
     let lang: Language = 'uk';
@@ -47,7 +47,7 @@ export const getPattern = async (
       lang = language;
     }
 
-    const responsePattern = await patternServices.getPattern(pattern, lang);    
+    const responsePattern = await patternServices.getPattern(pattern, lang);
 
     res.send(responsePattern);
   } catch (error) {
