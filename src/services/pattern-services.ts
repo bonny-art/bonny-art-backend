@@ -33,14 +33,12 @@ export const getAllPatterns = async (
   return { patterns: formattedPatterns };
 };
 
-export const getPatternById = async (patternId: string, language: Language) => {
-  const pattern = await Pattern.findById(patternId);
+export const getPattern = async (pattern: PatternDb, language: Language) => {
   if (pattern) {
     const { width, height } = extractWidthHeight(pattern.codename);
 
     return {
       pattern: {
-        // ...pattern.toObject(),
         id: pattern._id.toString(),
         title: pattern.title?.[language],
         author: pattern.author?.[language],
@@ -58,4 +56,12 @@ export const getPatternById = async (patternId: string, language: Language) => {
   }
 
   return null;
+};
+
+export const getPatternById = async (patternId: string) => {
+  const pattern = await Pattern.findById(patternId);
+  if (!pattern) {
+    return null;
+  }
+  return pattern;
 };

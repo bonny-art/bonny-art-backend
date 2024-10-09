@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
-import { GetAllPatternsRequest } from '@/types/patterns-type.js';
+import { GetAllPatternsRequest, PatternDb } from '@/types/patterns-type.js';
 
 type Language = 'uk' | 'en';
 const isValidLanguage = (lang: unknown): lang is Language => {
   return lang === 'uk' || lang === 'en';
 };
+
+export interface RequestWithPattern extends Request {
+  pattern?: PatternDb;
+}
 
 export const getAllPatterns = async (
   req: GetAllPatternsRequest,
@@ -23,24 +27,26 @@ export const getAllPatterns = async (
 };
 
 export const getPattern = async (
-  req: Request<{ language: string; patternId: string }>,
+  req: RequestWithPattern & { params: { language: string; patternId: string } },
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { language, patternId } = req.params;
-    let lang: Language = 'uk';
+    const { language } = req.params;
+    const pattern = req.pattern;
+    if (!pattern) {
+     res.status(404).send({ message: 'Pattern not found in request' });
+     return 
+    }
 
+    let lang: Language = 'uk';
     if (isValidLanguage(language)) {
       lang = language;
     }
 
-    const pattern = await patternServices.getPatternById(patternId, lang);
-    if (!pattern) {
-      res.status(404).send({ message: 'Pattern not found' });
-      return;
-    }
-    res.send(pattern);
+    const responsePattern = await patternServices.getPattern(pattern, lang);
+
+    res.send(responsePattern);
   } catch (error) {
     next(error);
   }

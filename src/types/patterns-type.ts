@@ -20,6 +20,9 @@ export type PatternDb = {
     main: {
       url: string;
     };
+    pattern?: {
+      url: { [key in Language]: string };
+    };
   };
 };
 
