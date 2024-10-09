@@ -41,14 +41,16 @@ export const getPattern = async (pattern: PatternDb, language: Language) => {
       pattern: {
         id: pattern._id.toString(),
         title: pattern.title?.[language],
-        author: pattern.author?.[language],
-        origin: pattern.origin?.[language],
         codename: pattern.codename,
+        origin: pattern.origin?.[language],
+        author: pattern.author?.[language],
+        width,
+        height,
+        
         colors: pattern.solids + pattern.blends,
         solids: pattern.solids,
         blends: pattern.blends,
-        width,
-        height,
+
         mainPictureUrl: pattern.pictures?.main?.url || '',
         mainPatternUrl: pattern.pictures?.pattern?.url?.[language] || '',
       },

@@ -11,6 +11,11 @@ export interface RequestWithPattern extends Request {
   pattern?: PatternDb;
 }
 
+export interface PatternParams {
+  language: Language;
+  patternId: string;
+}
+
 export const getAllPatterns = async (
   req: GetAllPatternsRequest,
   res: Response,
@@ -28,8 +33,8 @@ export const getAllPatterns = async (
   }
 };
 
-export const getPattern = async (
-  req: RequestWithPattern & { params: { language: string; patternId: string } },
+export const getPatternData = async (
+  req: RequestWithPattern & { params: PatternParams },
   res: Response,
   next: NextFunction
 ): Promise<void> => {
