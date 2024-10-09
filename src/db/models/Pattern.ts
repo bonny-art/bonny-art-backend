@@ -36,7 +36,6 @@ const patternSchema = new Schema({
         en: { type: String, required: true },
       },
     },
-    stitchPhotos: [{ type: Schema.Types.ObjectId, ref: 'StitchPhoto' }],
   },
 });
 

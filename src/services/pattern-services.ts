@@ -3,8 +3,11 @@ import {
   GetAllPatternsResult,
   Language,
   PatternDb,
-} from '@/types/patterns-type.js';
+} from '../types/patterns-type.js';
 import { Pattern } from '../db/models/Pattern.js';
+import { Work } from '../db/models/Work.js';
+import { WorkPhoto } from '../db/models/WorkPhoto.js';
+import { Master } from '../db/models/Master.js';
 
 export const getAllPatterns = async (
   language: Language
@@ -32,4 +35,35 @@ export const getAllPatterns = async (
   });
 
   return { patterns: formattedPatterns };
+};
+
+export const getPhotosWithMasterAndWork = async (patternId: string) => {
+  try {
+    const photos = await WorkPhoto.find({ pattern: patternId }).populate({
+      path: 'work',
+      populate: {
+        path: 'master',
+        model: 'Master',
+      },
+    });
+
+    return photos;
+  } catch (error) {
+    console.error('Error fetching photos:', error);
+  }
+};
+
+export const getPatternDetails = async (patternId: string) => {
+  const pattern = await Pattern.findById(patternId);
+  return pattern;
+};
+
+export const getWorkByID = async (patternId: string) => {
+  const work = await Work.findById(patternId);
+  return work;
+};
+
+export const getMasterByID = async (masterId: string) => {
+  const master = await Master.findById(masterId);
+  return master;
 };

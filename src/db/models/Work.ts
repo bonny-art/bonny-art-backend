@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-export const workInProgressSchema = new Schema({
+const workSchema = new Schema({
   pattern: { type: Schema.Types.ObjectId, ref: 'Pattern', required: true },
   master: { type: Schema.Types.ObjectId, ref: 'Master', required: true },
   startDate: { type: Date, default: null },
@@ -12,4 +12,4 @@ export const workInProgressSchema = new Schema({
   threads: { type: String, default: null },
 });
 
-export const workInProgress = model('WorkInProgress', workInProgressSchema);
+export const Work = model('Work', workSchema, 'works');

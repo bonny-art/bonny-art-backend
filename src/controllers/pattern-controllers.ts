@@ -1,6 +1,10 @@
 import { Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
-import { GetAllPatternsRequest, Language } from '@/types/patterns-type.js';
+import {
+  GetAllPatternsRequest,
+  GetPhotosByPattern,
+  Language,
+} from '../types/patterns-type.js';
 
 export const getAllPatterns = async (
   req: GetAllPatternsRequest,
@@ -16,5 +20,22 @@ export const getAllPatterns = async (
     res.send(allPatterns);
   } catch (error) {
     next(error);
+  }
+};
+
+export const getPhotosByPattern = async (
+  req: GetPhotosByPattern,
+  res: Response
+): Promise<void> => {
+  try {
+    const { patternId } = req.params;
+
+    const photos = await patternServices.getPhotosWithMasterAndWork(patternId);
+
+    res.json({ photos });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Error fetching photos for pattern', error });
   }
 };

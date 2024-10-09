@@ -8,6 +8,12 @@ export interface GetAllPatternsRequest extends Request {
   };
 }
 
+export interface GetPhotosByPattern extends Request {
+  params: {
+    patternId: string;
+  };
+}
+
 export type PatternDb = {
   _id: string;
   codename: string;
