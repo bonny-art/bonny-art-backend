@@ -46,7 +46,7 @@ export const getPattern = async (pattern: PatternDb, language: Language) => {
         author: pattern.author?.[language],
         width,
         height,
-        
+
         colors: pattern.solids + pattern.blends,
         solids: pattern.solids,
         blends: pattern.blends,
