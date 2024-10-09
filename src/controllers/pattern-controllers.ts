@@ -17,8 +17,10 @@ export const getAllPatterns = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const language = req.query.language || 'uk';
-    const allPatterns = await patternServices.getAllPatterns(language);
+    const { language } = req.params;
+    const selectedLanguage: Language =
+      language === 'uk' || language === 'en' ? language : 'uk';
+    const allPatterns = await patternServices.getAllPatterns(selectedLanguage);
 
     res.send(allPatterns);
   } catch (error) {
@@ -34,9 +36,10 @@ export const getPattern = async (
   try {
     const { language } = req.params;
     const pattern = req.pattern;
+
     if (!pattern) {
       res.status(404).send({ message: 'Pattern not found in request' });
-      return;
+      return 
     }
 
     let lang: Language = 'uk';
@@ -44,7 +47,7 @@ export const getPattern = async (
       lang = language;
     }
 
-    const responsePattern = await patternServices.getPattern(pattern, lang);
+    const responsePattern = await patternServices.getPattern(pattern, lang);    
 
     res.send(responsePattern);
   } catch (error) {

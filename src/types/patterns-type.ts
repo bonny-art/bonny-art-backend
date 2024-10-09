@@ -3,8 +3,8 @@ import { Request } from 'express';
 export type Language = 'uk' | 'en';
 
 export interface GetAllPatternsRequest extends Request {
-  query: {
-    language?: Language;
+  params: {
+    language: Language;
   };
 }
 
