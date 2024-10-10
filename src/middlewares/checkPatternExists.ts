@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
 import { PatternDb } from '@/types/patterns-type.js';
+import { isValidObjectId } from 'mongoose';
+import HttpError from '../helpers/http-error.js';
 
 export interface RequestWithPattern extends Request {
   pattern?: PatternDb;
@@ -13,6 +15,10 @@ export const checkPatternExists = async (
 ): Promise<void> => {
   try {
     const { patternId } = req.params;
+
+    if (!isValidObjectId(patternId)) {
+      return next(HttpError(404, `${patternId} is not valid id`));
+    }
 
     const patternDoc = await patternServices.getPatternById(patternId);
 
