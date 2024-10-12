@@ -1,8 +1,10 @@
 import { Schema, model } from 'mongoose';
 
 const masterSchema = new Schema({
-  name: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  name: {
+    uk: { type: String, required: true },
+    en: { type: String, required: true },
+  },
 });
 
 export const Master = model('Master', masterSchema);

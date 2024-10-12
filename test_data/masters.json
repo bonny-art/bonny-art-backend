@@ -1,7 +1,14 @@
 [
   {
-    "name": "Олена",
-    "email": "olena@example.com",
-    "purchasedPatterns": ["60d21b4967d0d8992e610c86"]
+    "name": "Anna Ivanova",
+    "user": "5f50c31e6e31bb2b1c5f1a60"
+  },
+  {
+    "name": "Serhiy Petrov",
+    "user": "5f50c31e6e31bb2b1c5f1a61"
+  },
+  {
+    "name": "Olena Kovalenko",
+    "user": "5f50c31e6e31bb2b1c5f1a62"
   }
 ]

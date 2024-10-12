@@ -1,33 +1,56 @@
 import { Request } from 'express';
+import { ObjectId } from 'mongoose';
 
 export type Language = 'uk' | 'en';
 
-export interface GetAllPatternsRequest extends Request {
-  params: {
-    language: Language;
-  };
+export type Genre =
+  | 'animalism'
+  | 'fantasy'
+  | 'floral'
+  | 'landscape'
+  | 'portrait'
+  | 'scene'
+  | 'stilllife'
+  | 'other'
+  | 'architecture'
+  | 'cityscape'
+  | 'seascape'
+  | 'mythological'
+  | 'historical'
+  | 'religious'
+  | 'nude'
+  | 'genepainting'
+  | 'wildlife';
+
+export interface setLanguageRequest extends Request {
+  lang?: Language;
 }
 
-export type PatternDb = {
-  _id: string;
+export interface checkPatternExistsRequest extends setLanguageRequest {
+  pattern?: PatternDoc;
+}
+
+export type PatternDoc = {
+  _id: ObjectId;
   codename: string;
   solids: number;
   blends: number;
   title: { [key in Language]: string };
   author: { [key in Language]: string };
-  origin: { [key in Language]: string };
+  origin: string;
+  genre: Genre[];
   pictures: {
     main: {
       url: string;
     };
-    pattern?: {
+    pattern: {
       url: { [key in Language]: string };
     };
   };
 };
 
 export type FormattedPattern = {
-  id: string;
+  id: ObjectId;
   title: string;
   codename: string;
   width: number | null;

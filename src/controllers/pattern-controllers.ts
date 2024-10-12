@@ -1,60 +1,93 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
-import { GetAllPatternsRequest, PatternDb } from '@/types/patterns-type.js';
+import * as dataHandlers from '../helpers/data-handlers.js';
+import {
+  checkPatternExistsRequest,
+  setLanguageRequest,
+} from '../types/patterns-type.js';
 
-type Language = 'uk' | 'en';
-const isValidLanguage = (lang: unknown): lang is Language => {
-  return lang === 'uk' || lang === 'en';
-};
-
-export interface RequestWithPattern extends Request {
-  pattern?: PatternDb;
-}
-
-export interface PatternParams {
-  language: Language;
-  patternId: string;
-}
-
+//todo: rfactor this to give patterns by pages
+//todo: refactor this to use filters
 export const getAllPatterns = async (
-  req: GetAllPatternsRequest,
+  req: setLanguageRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { language } = req.params;
-    const selectedLanguage: Language =
-      language === 'uk' || language === 'en' ? language : 'uk';
-    const allPatterns = await patternServices.getAllPatterns(selectedLanguage);
+    const { lang } = req;
+    if (!lang) {
+      res.status(404).send({ message: 'Language was not set' });
+      return;
+    }
 
-    res.send(allPatterns);
+    const patterns = await patternServices.getAllPatterns();
+
+    const patternsData = dataHandlers.getAllPatternsDataByLanguage(
+      patterns,
+      lang
+    );
+
+    res.send({
+      patterns: patternsData,
+    });
   } catch (error) {
     next(error);
   }
 };
 
 export const getPatternData = async (
-  req: RequestWithPattern & { params: PatternParams },
+  req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { language } = req.params;
-    const pattern = req.pattern;
-
+    const { lang, pattern } = req;
+    if (!lang) {
+      res.status(404).send({ message: 'Language was not set' });
+      return;
+    }
     if (!pattern) {
       res.status(404).send({ message: 'Pattern not found in request' });
       return;
     }
 
-    let lang: Language = 'uk';
-    if (isValidLanguage(language)) {
-      lang = language;
+    const responsePattern = await dataHandlers.getPatternDataByLanguage(
+      pattern,
+      lang
+    );
+
+    res.send({
+      pattern: responsePattern,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//todo: refactor this to give photos by pages
+//todo: refactor this to use language
+export const getPhotosByPattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { lang, pattern } = req;
+    if (!lang) {
+      res.status(404).send({ message: 'Language was not set' });
+      return;
+    }
+    if (!pattern) {
+      res.status(404).send({ message: 'Pattern not found in request' });
+      return;
     }
 
-    const responsePattern = await patternServices.getPattern(pattern, lang);
+    const patternId = pattern._id.toString();
 
-    res.send(responsePattern);
+    const photos =
+      await patternServices.getPhotosByPatternWithMasterAndWork(patternId);
+
+    res.json({ photos });
   } catch (error) {
     next(error);
   }
