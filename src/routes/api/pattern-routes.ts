@@ -16,7 +16,7 @@ patternRouter.get(
 );
 
 patternRouter.get(
-  '/:patternId',
+  '/:patternId/photos',
   setLanguage,
   checkPatternExists,
   patternControllers.getPhotosByPattern

@@ -35,7 +35,7 @@ export const getPhotosByPatternWithMasterAndWork = async (
       })
       .lean<PhotoExtendedByWorkExtendedByMaster[]>();
 
-    //todo: refactor this to move to dataHandlers
+    //todo: refactor this to move to dataHandlers and then use in controller
     const photosData = photos.map((photo) => {
       return {
         id: photo._id.toString(),

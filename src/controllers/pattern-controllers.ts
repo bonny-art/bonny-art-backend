@@ -6,6 +6,8 @@ import {
   setLanguageRequest,
 } from '../types/patterns-type.js';
 
+//todo: rfactor this to give patterns by pages
+//todo: refactor this to use filters
 export const getAllPatterns = async (
   req: setLanguageRequest,
   res: Response,
