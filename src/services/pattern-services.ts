@@ -1,61 +1,64 @@
-import {
-  FormattedPattern,
-  GetAllPatternsResult,
-  Language,
-  PatternDb,
-} from '../types/patterns-type.js';
 import { Pattern } from '../db/models/Pattern.js';
 import { Work } from '../db/models/Work.js';
 import { WorkPhoto } from '../db/models/WorkPhoto.js';
 import { Master } from '../db/models/Master.js';
+import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
+import { PatternDoc } from '../types/patterns-type.js';
 
-export const getAllPatterns = async (
-  language: Language
-): Promise<GetAllPatternsResult> => {
-  const patterns: PatternDb[] = await Pattern.find({});
+export const getAllPatterns = async () => {
+  const patterns: PatternDoc[] = await Pattern.find({});
 
-  const formattedPatterns: FormattedPattern[] = patterns.map((pattern) => {
-    const widthHeightMatch = pattern.codename.match(/\((\d+)x(\d+)\)/);
-    const width = widthHeightMatch ? parseInt(widthHeightMatch[1]) : null;
-    const height = widthHeightMatch ? parseInt(widthHeightMatch[2]) : null;
-
-    return {
-      id: pattern._id.toString(),
-      title: pattern.title[language],
-      codename: pattern.codename,
-      width,
-      height,
-      colors: pattern.solids + pattern.blends,
-      solids: pattern.solids,
-      blends: pattern.blends,
-      author: pattern.author[language],
-      origin: pattern.origin[language],
-      mainPictureUrl: pattern.pictures.main.url,
-    };
-  });
-
-  return { patterns: formattedPatterns };
+  return patterns;
 };
 
-export const getPhotosWithMasterAndWork = async (patternId: string) => {
+export const getPatternById = async (
+  patternId: string
+): Promise<PatternDoc | null> => {
+  const pattern = await Pattern.findById(patternId).lean<PatternDoc>();
+
+  return pattern;
+};
+
+export const getPhotosByPatternWithMasterAndWork = async (
+  patternId: string
+) => {
   try {
-    const photos = await WorkPhoto.find({ pattern: patternId }).populate({
-      path: 'work',
-      populate: {
-        path: 'master',
-        model: 'Master',
-      },
+    const photos = await WorkPhoto.find({
+      pattern: patternId,
+    })
+      .populate({
+        path: 'work',
+        populate: {
+          path: 'master',
+          model: 'Master',
+        },
+      })
+      .lean<PhotoExtendedByWorkExtendedByMaster[]>();
+
+    //todo: refactor this to move to dataHandlers
+    const photosData = photos.map((photo) => {
+      return {
+        id: photo._id.toString(),
+        masterId: photo.work.master._id.toString(),
+        masterName: photo.work.master.name,
+        review: photo.review,
+        fabric: photo.work.fabric,
+        fabricCount: photo.work.fabricCount,
+        stitchType: photo.work.stitchType,
+        threadCount: photo.work.threadCount,
+        threads: photo.work.threads,
+        progress: photo.progress,
+        imageUrl: photo.imageUrl,
+        dateReceived: photo.dateReceived,
+        episodeNumber: photo.episodeNumber,
+        numberWithinEpisode: photo.numberWithinEpisode,
+      };
     });
 
-    return photos;
+    return photosData;
   } catch (error) {
     console.error('Error fetching photos:', error);
   }
-};
-
-export const getPatternDetails = async (patternId: string) => {
-  const pattern = await Pattern.findById(patternId);
-  return pattern;
 };
 
 export const getWorkByID = async (patternId: string) => {

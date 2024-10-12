@@ -1,41 +1,92 @@
 import { Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
+import * as dataHandlers from '../helpers/data-handlers.js';
 import {
-  GetAllPatternsRequest,
-  GetPhotosByPattern,
-  Language,
+  checkPatternExistsRequest,
+  setLanguageRequest,
 } from '../types/patterns-type.js';
 
 export const getAllPatterns = async (
-  req: GetAllPatternsRequest,
+  req: setLanguageRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { language } = req.params;
-    const selectedLanguage: Language =
-      language === 'uk' || language === 'en' ? language : 'uk';
-    const allPatterns = await patternServices.getAllPatterns(selectedLanguage);
+    const { lang } = req;
+    if (!lang) {
+      res.status(404).send({ message: 'Language was not set' });
+      return;
+    }
 
-    res.send(allPatterns);
+    const patterns = await patternServices.getAllPatterns();
+
+    const patternsData = dataHandlers.getAllPatternsDataByLanguage(
+      patterns,
+      lang
+    );
+
+    res.send({
+      patterns: patternsData,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-export const getPhotosByPattern = async (
-  req: GetPhotosByPattern,
-  res: Response
+export const getPatternData = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
-    const { patternId } = req.params;
+    const { lang, pattern } = req;
+    if (!lang) {
+      res.status(404).send({ message: 'Language was not set' });
+      return;
+    }
+    if (!pattern) {
+      res.status(404).send({ message: 'Pattern not found in request' });
+      return;
+    }
 
-    const photos = await patternServices.getPhotosWithMasterAndWork(patternId);
+    const responsePattern = await dataHandlers.getPatternDataByLanguage(
+      pattern,
+      lang
+    );
+
+    res.send({
+      pattern: responsePattern,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//todo: refactor this to give photos by pages
+//todo: refactor this to use language
+export const getPhotosByPattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { lang, pattern } = req;
+    if (!lang) {
+      res.status(404).send({ message: 'Language was not set' });
+      return;
+    }
+    if (!pattern) {
+      res.status(404).send({ message: 'Pattern not found in request' });
+      return;
+    }
+
+    const patternId = pattern._id.toString();
+
+    const photos =
+      await patternServices.getPhotosByPatternWithMasterAndWork(patternId);
 
     res.json({ photos });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error fetching photos for pattern', error });
+    next(error);
   }
 };
