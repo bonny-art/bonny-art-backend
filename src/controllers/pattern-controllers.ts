@@ -51,7 +51,7 @@ export const getPatternData = async (
       return;
     }
 
-    const responsePattern = await dataHandlers.getPatternDataByLanguage(
+    const responsePattern = dataHandlers.getPatternDataByLanguage(
       pattern,
       lang
     );
@@ -64,8 +64,7 @@ export const getPatternData = async (
   }
 };
 
-//todo: refactor this to give photos by pages
-//todo: refactor this to use language
+//todo: add sorting by date or by master before getting data from DB
 export const getPhotosByPattern = async (
   req: checkPatternExistsRequest,
   res: Response,
@@ -73,6 +72,9 @@ export const getPhotosByPattern = async (
 ): Promise<void> => {
   try {
     const { lang, pattern } = req;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 3;
+
     if (!lang) {
       res.status(404).send({ message: 'Language was not set' });
       return;
@@ -84,10 +86,41 @@ export const getPhotosByPattern = async (
 
     const patternId = pattern._id.toString();
 
-    const photos =
-      await patternServices.getPhotosByPatternWithMasterAndWork(patternId);
+    // const photos =
+    //   await patternServices.getPhotosByPatternWithMasterAndWork(patternId);
 
-    res.json({ photos });
+    // const { photos, totalCount } =
+    //   await patternServices.getPhotosByPatternWithMasterAndWorkByPage(
+    //     patternId,
+    //     page,
+    //     limit
+    //   );
+
+    const { photos, totalCount } =
+      await patternServices.getPhotosByPatternWithMasterAndWorkByPageWithSorting(
+        patternId,
+        page,
+        limit,
+        'master',
+        'asc',
+        'uk'
+      );
+
+    // const responsePhotos = dataHandlers.getPhotosDataByLanguage(photos, lang);
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasMore = page < totalPages;
+
+    res.json({
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+        hasMore,
+      },
+      photos,
+    });
   } catch (error) {
     next(error);
   }

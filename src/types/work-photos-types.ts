@@ -10,5 +10,8 @@ export type PhotoExtendedByWorkExtendedByMaster = {
   imageUrl: string;
   episodeNumber: number;
   numberWithinEpisode: number;
-  review?: string;
+  review?: {
+    uk: string;
+    en: string;
+  };
 };

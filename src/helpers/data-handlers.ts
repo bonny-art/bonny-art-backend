@@ -1,6 +1,7 @@
 import { extractPatternDetails } from './data-extractors.js';
 import { Language, PatternDoc } from '../types/patterns-type.js';
-import { originTranslations } from './data-mappers.js';
+import { canvasTranslations, originTranslations } from './data-mappers.js';
+import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
 
 export const getPatternDataByLanguage = (
   pattern: PatternDoc,
@@ -60,6 +61,35 @@ export const getAllPatternsDataByLanguage = (
       mainPictureUrl: pattern.pictures.main.url,
       maxSize: Math.max(safeWidth, safeHeight),
       patternType,
+    };
+  });
+};
+
+export const getPhotosDataByLanguage = (
+  photos: PhotoExtendedByWorkExtendedByMaster[],
+  language: Language
+) => {
+  return photos.map((photo) => {
+    const translatedCanvas = canvasTranslations[photo.work.canvas]
+      ? canvasTranslations[photo.work.canvas][language]
+      : photo.work.canvas;
+
+    return {
+      _id: photo._id.toString(),
+      masterId: photo.work.master._id.toString(),
+      masterName: photo.work.master.name[language],
+      review: photo.review?.[language],
+      workId: photo.work._id.toString(),
+      canvas: translatedCanvas,
+      canvasCount: photo.work.canvasCount,
+      stitchType: photo.work.stitchType,
+      threadCount: photo.work.threadCount,
+      threads: photo.work.threads,
+      progress: photo.progress,
+      imageUrl: photo.imageUrl,
+      dateReceived: photo.dateReceived,
+      episodeNumber: photo.episodeNumber,
+      numberWithinEpisode: photo.numberWithinEpisode,
     };
   });
 };
