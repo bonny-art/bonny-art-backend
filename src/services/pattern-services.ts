@@ -1,9 +1,15 @@
+import { Types } from 'mongoose';
 import { Pattern } from '../db/models/Pattern.js';
 import { Work } from '../db/models/Work.js';
 import { WorkPhoto } from '../db/models/WorkPhoto.js';
 import { Master } from '../db/models/Master.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
 import { PatternDoc } from '../types/patterns-type.js';
+import {
+  Language,
+  SortDirection,
+  SortPhotosBy,
+} from '../types/common-types.js';
 
 export const getAllPatterns = async () => {
   const patterns: PatternDoc[] = await Pattern.find({});
@@ -22,43 +28,102 @@ export const getPatternById = async (
 export const getPhotosByPatternWithMasterAndWork = async (
   patternId: string
 ) => {
-  try {
-    const photos = await WorkPhoto.find({
-      pattern: patternId,
+  const photos = await WorkPhoto.find({
+    pattern: patternId,
+  })
+    .populate({
+      path: 'work',
+      populate: {
+        path: 'master',
+        model: 'Master',
+      },
     })
-      .populate({
-        path: 'work',
-        populate: {
-          path: 'master',
-          model: 'Master',
-        },
-      })
-      .lean<PhotoExtendedByWorkExtendedByMaster[]>();
+    .lean<PhotoExtendedByWorkExtendedByMaster[]>();
 
-    //todo: refactor this to move to dataHandlers and then use in controller
-    const photosData = photos.map((photo) => {
-      return {
-        id: photo._id.toString(),
-        masterId: photo.work.master._id.toString(),
-        masterName: photo.work.master.name,
-        review: photo.review,
-        fabric: photo.work.fabric,
-        fabricCount: photo.work.fabricCount,
-        stitchType: photo.work.stitchType,
-        threadCount: photo.work.threadCount,
-        threads: photo.work.threads,
-        progress: photo.progress,
-        imageUrl: photo.imageUrl,
-        dateReceived: photo.dateReceived,
-        episodeNumber: photo.episodeNumber,
-        numberWithinEpisode: photo.numberWithinEpisode,
-      };
-    });
+  return photos;
+};
 
-    return photosData;
-  } catch (error) {
-    console.error('Error fetching photos:', error);
+export const getPhotosByPatternWithMasterAndWorkByPage = async (
+  patternId: string,
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
+
+  const photos = await WorkPhoto.find({
+    pattern: patternId,
+  })
+    .populate({
+      path: 'work',
+      populate: {
+        path: 'master',
+        model: 'Master',
+      },
+    })
+    .skip(skip)
+    .limit(limit)
+    .lean<PhotoExtendedByWorkExtendedByMaster[]>();
+
+  const totalCount = await WorkPhoto.countDocuments({ pattern: patternId });
+
+  return { photos, totalCount };
+};
+
+export const getPhotosByPatternWithMasterAndWorkByPageWithSorting = async (
+  patternId: string,
+  page: number,
+  limit: number,
+  sortBy: SortPhotosBy,
+  order: SortDirection,
+  language: Language
+) => {
+  const skip = (page - 1) * limit;
+
+  const sortParam: Record<string, 1 | -1> = {};
+
+  if (sortBy === 'dateReceived') {
+    sortParam['dateReceived'] = order === 'asc' ? 1 : -1;
   }
+
+  if (sortBy === 'master') {
+    sortParam[`work.master.name.${language}`] = order === 'asc' ? 1 : -1;
+    sortParam['dateReceived'] = 1;
+  }
+
+  const photos = await WorkPhoto.aggregate([
+    { $match: { pattern: new Types.ObjectId(patternId) } },
+    {
+      $lookup: {
+        from: 'works',
+        localField: 'work',
+        foreignField: '_id',
+        as: 'work',
+      },
+    },
+    {
+      $unwind: '$work',
+    },
+    {
+      $lookup: {
+        from: 'masters',
+        localField: 'work.master',
+        foreignField: '_id',
+        as: 'work.master',
+      },
+    },
+    {
+      $unwind: '$work.master',
+    },
+    { $sort: sortParam },
+    { $skip: skip },
+    { $limit: limit },
+  ]);
+
+  console.log(JSON.stringify(photos, null, 2));
+
+  const totalCount = await WorkPhoto.countDocuments({ pattern: patternId });
+
+  return { photos, totalCount };
 };
 
 export const getWorkByID = async (patternId: string) => {

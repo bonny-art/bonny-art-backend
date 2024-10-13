@@ -11,7 +11,10 @@ const workPhotoSchema = new Schema({
     ref: 'Work',
     required: true,
   },
-  review: { type: String },
+  review: {
+    uk: { type: String },
+    en: { type: String },
+  },
   progress: { type: Number },
   dateReceived: { type: Date, required: true },
   episodeNumber: { type: Number, required: true },
@@ -19,4 +22,4 @@ const workPhotoSchema = new Schema({
   imageUrl: { type: String, required: true },
 });
 
-export const WorkPhoto = model('WorkPhoto', workPhotoSchema, 'work-photos');
+export const WorkPhoto = model('WorkPhoto', workPhotoSchema, 'work_photos');
