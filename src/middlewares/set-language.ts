@@ -1,4 +1,5 @@
-import { Language, setLanguageRequest } from '@/types/patterns-type';
+import { Language } from '../types/common-types';
+import { setLanguageRequest } from '@/types/patterns-type';
 import { Response, NextFunction } from 'express';
 
 export const setLanguage = (

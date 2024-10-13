@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { ObjectId } from 'mongoose';
-
-export type Language = 'uk' | 'en';
+import { Language } from './common-types';
 
 export type Genre =
   | 'animalism'

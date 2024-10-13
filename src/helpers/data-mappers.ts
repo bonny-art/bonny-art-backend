@@ -1,4 +1,4 @@
-import { Language } from '../types/patterns-type';
+import { Language } from '../types/common-types';
 
 export const originTranslations: {
   [key: string]: { [key in Language]: string };

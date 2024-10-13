@@ -5,6 +5,7 @@ import {
   checkPatternExistsRequest,
   setLanguageRequest,
 } from '../types/patterns-type.js';
+import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 
 //todo: rfactor this to give patterns by pages
 //todo: refactor this to use filters
@@ -64,7 +65,6 @@ export const getPatternData = async (
   }
 };
 
-//todo: add sorting by date or by master before getting data from DB
 export const getPhotosByPattern = async (
   req: checkPatternExistsRequest,
   res: Response,
@@ -74,6 +74,10 @@ export const getPhotosByPattern = async (
     const { lang, pattern } = req;
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 3;
+    const sortBy = (req.query.sortBy as SortPhotosBy) || 'dateReceived';
+    const order =
+      (req.query.order as SortDirection) ||
+      (sortBy === 'dateReceived' ? 'desc' : 'asc');
 
     if (!lang) {
       res.status(404).send({ message: 'Language was not set' });
@@ -86,27 +90,17 @@ export const getPhotosByPattern = async (
 
     const patternId = pattern._id.toString();
 
-    // const photos =
-    //   await patternServices.getPhotosByPatternWithMasterAndWork(patternId);
-
-    // const { photos, totalCount } =
-    //   await patternServices.getPhotosByPatternWithMasterAndWorkByPage(
-    //     patternId,
-    //     page,
-    //     limit
-    //   );
-
     const { photos, totalCount } =
       await patternServices.getPhotosByPatternWithMasterAndWorkByPageWithSorting(
         patternId,
         page,
         limit,
-        'master',
-        'asc',
-        'uk'
+        sortBy,
+        order,
+        lang
       );
 
-    // const responsePhotos = dataHandlers.getPhotosDataByLanguage(photos, lang);
+    const responsePhotos = dataHandlers.getPhotosDataByLanguage(photos, lang);
 
     const totalPages = Math.ceil(totalCount / limit);
     const hasMore = page < totalPages;
@@ -119,7 +113,7 @@ export const getPhotosByPattern = async (
         itemsPerPage: limit,
         hasMore,
       },
-      photos,
+      responsePhotos,
     });
   } catch (error) {
     next(error);

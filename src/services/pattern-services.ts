@@ -5,6 +5,11 @@ import { WorkPhoto } from '../db/models/WorkPhoto.js';
 import { Master } from '../db/models/Master.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
 import { PatternDoc } from '../types/patterns-type.js';
+import {
+  Language,
+  SortDirection,
+  SortPhotosBy,
+} from '../types/common-types.js';
 
 export const getAllPatterns = async () => {
   const patterns: PatternDoc[] = await Pattern.find({});
@@ -68,9 +73,9 @@ export const getPhotosByPatternWithMasterAndWorkByPageWithSorting = async (
   patternId: string,
   page: number,
   limit: number,
-  sortBy: 'dateReceived' | 'master',
-  order: 'asc' | 'desc',
-  language: 'uk' | 'en'
+  sortBy: SortPhotosBy,
+  order: SortDirection,
+  language: Language
 ) => {
   const skip = (page - 1) * limit;
 
@@ -81,7 +86,7 @@ export const getPhotosByPatternWithMasterAndWorkByPageWithSorting = async (
   }
 
   if (sortBy === 'master') {
-    sortParam['masterName'] = order === 'asc' ? 1 : -1;
+    sortParam[`work.master.name.${language}`] = order === 'asc' ? 1 : -1;
     sortParam['dateReceived'] = 1;
   }
 
@@ -92,27 +97,22 @@ export const getPhotosByPatternWithMasterAndWorkByPageWithSorting = async (
         from: 'works',
         localField: 'work',
         foreignField: '_id',
-        as: 'work_info',
+        as: 'work',
       },
     },
     {
-      $unwind: '$work_info',
+      $unwind: '$work',
     },
     {
       $lookup: {
         from: 'masters',
-        localField: 'work_info.master',
+        localField: 'work.master',
         foreignField: '_id',
-        as: 'master_info',
+        as: 'work.master',
       },
     },
     {
-      $unwind: '$master_info',
-    },
-    {
-      $addFields: {
-        masterName: `$master_info.name.${language}`,
-      },
+      $unwind: '$work.master',
     },
     { $sort: sortParam },
     { $skip: skip },

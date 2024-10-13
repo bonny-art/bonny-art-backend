@@ -1,7 +1,8 @@
 import { extractPatternDetails } from './data-extractors.js';
-import { Language, PatternDoc } from '../types/patterns-type.js';
+import { PatternDoc } from '../types/patterns-type.js';
 import { canvasTranslations, originTranslations } from './data-mappers.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
+import { Language } from '../types/common-types.js';
 
 export const getPatternDataByLanguage = (
   pattern: PatternDoc,
