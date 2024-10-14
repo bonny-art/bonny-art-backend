@@ -1,15 +1,8 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import Joi from 'joi';
 import { handleSaveError } from './hooks.js';
-
-interface IUser extends Document {
-  email: string;
-  password: string;
-  name: string;
-  token?: string;
-}
-
-const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+import { IUser } from '../../types/user-types.js';
+import { emailRegexp } from '../../helpers/data-regexps.js';
 
 const userSchema = new Schema<IUser>(
   {
@@ -33,7 +26,6 @@ const userSchema = new Schema<IUser>(
   { versionKey: false, timestamps: true }
 );
 userSchema.post<IUser>('save', handleSaveError);
-// userSchema.pre<IUser>('findOneAndUpdate', preUpdate as any);
 userSchema.post<IUser>('findOneAndUpdate', handleSaveError);
 
 const User = model('user', userSchema);
