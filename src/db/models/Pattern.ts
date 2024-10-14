@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { genreTranslations } from '../../helpers/data-mappers.js';
 
 const patternSchema = new Schema({
   codename: { type: String, required: true },
@@ -12,10 +13,10 @@ const patternSchema = new Schema({
     uk: { type: String, required: true },
     en: { type: String, required: true },
   },
-  origin: {
-    uk: { type: String, required: true },
-    en: { type: String, required: true },
-  },
+  origin: { type: String, required: true },
+  genre: [
+    { type: String, enum: Object.keys(genreTranslations), required: true },
+  ],
   ratings: [
     {
       userId: {
@@ -36,7 +37,6 @@ const patternSchema = new Schema({
         en: { type: String, required: true },
       },
     },
-    stitchPhotos: [{ type: Schema.Types.ObjectId, ref: 'StitchPhoto' }],
   },
 });
 

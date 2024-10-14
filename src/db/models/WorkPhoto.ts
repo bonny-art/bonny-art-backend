@@ -1,24 +1,25 @@
 import { Schema, model } from 'mongoose';
 
-const workInProgressPhotoSchema = new Schema({
+const workPhotoSchema = new Schema({
   pattern: {
     type: Schema.Types.ObjectId,
     ref: 'Pattern',
     required: true,
   },
-  workInProgress: {
+  work: {
     type: Schema.Types.ObjectId,
-    ref: 'WorkInProgress',
+    ref: 'Work',
     required: true,
   },
-  progress: { type: Number, required: true },
+  review: {
+    uk: { type: String },
+    en: { type: String },
+  },
+  progress: { type: Number },
   dateReceived: { type: Date, required: true },
   episodeNumber: { type: Number, required: true },
   numberWithinEpisode: { type: Number, required: true },
   imageUrl: { type: String, required: true },
 });
 
-export const WorkInProgressPhoto = model(
-  'workInProgressPhoto',
-  workInProgressPhotoSchema
-);
+export const WorkPhoto = model('WorkPhoto', workPhotoSchema, 'work_photos');

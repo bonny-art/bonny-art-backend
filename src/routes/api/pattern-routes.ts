@@ -1,16 +1,25 @@
 import express from 'express';
 import * as patternControllers from '../../controllers/pattern-controllers.js';
 
-import { checkPatternExists } from '../../middlewares/checkPatternExists.js';
+import { checkPatternExists } from '../../middlewares/check-pattern-exists.js';
+import { setLanguage } from '../../middlewares/set-language.js';
 
-const patternRouter = express.Router({ mergeParams: true });
+export const patternRouter = express.Router({ mergeParams: true });
 
-patternRouter.get('/', patternControllers.getAllPatterns);
+patternRouter.get('/', setLanguage, patternControllers.getAllPatterns);
 
 patternRouter.get(
   '/:patternId',
+  setLanguage,
   checkPatternExists,
   patternControllers.getPatternData
 );
 
-export default patternRouter;
+patternRouter.get(
+  '/:patternId/photos',
+  setLanguage,
+  checkPatternExists,
+  patternControllers.getPhotosByPattern
+);
+
+// patternRouter.get('/:patternId', patternControllers.getPhotosByPattern);

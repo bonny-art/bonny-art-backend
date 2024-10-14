@@ -1,67 +1,137 @@
-import {
-  FormattedPattern,
-  GetAllPatternsResult,
-  Language,
-  PatternDb,
-} from '@/types/patterns-type.js';
+import { Types } from 'mongoose';
 import { Pattern } from '../db/models/Pattern.js';
-import { extractWidthHeight } from '../helpers/widthHeightExtractor.js';
+import { Work } from '../db/models/Work.js';
+import { WorkPhoto } from '../db/models/WorkPhoto.js';
+import { Master } from '../db/models/Master.js';
+import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
+import { PatternDoc } from '../types/patterns-type.js';
+import {
+  Language,
+  SortDirection,
+  SortPhotosBy,
+} from '../types/common-types.js';
 
-export const getAllPatterns = async (
-  language: Language
-): Promise<GetAllPatternsResult> => {
-  const patterns: PatternDb[] = await Pattern.find({});
+export const getAllPatterns = async () => {
+  const patterns: PatternDoc[] = await Pattern.find({});
 
-  const formattedPatterns: FormattedPattern[] = patterns.map((pattern) => {
-    const { width, height } = extractWidthHeight(pattern.codename);
-
-    return {
-      id: pattern._id.toString(),
-      title: pattern.title[language],
-      codename: pattern.codename,
-      width,
-      height,
-      colors: pattern.solids + pattern.blends,
-      solids: pattern.solids,
-      blends: pattern.blends,
-      author: pattern.author[language],
-      origin: pattern.origin[language],
-      mainPictureUrl: pattern.pictures.main.url,
-    };
-  });
-
-  return { patterns: formattedPatterns };
+  return patterns;
 };
 
-export const getPattern = async (pattern: PatternDb, language: Language) => {
-  if (pattern) {
-    const { width, height } = extractWidthHeight(pattern.codename);
+export const getPatternById = async (
+  patternId: string
+): Promise<PatternDoc | null> => {
+  const pattern = await Pattern.findById(patternId).lean<PatternDoc>();
 
-    return {
-      pattern: {
-        id: pattern._id.toString(),
-        title: pattern.title?.[language],
-        codename: pattern.codename,
-        origin: pattern.origin?.[language],
-        author: pattern.author?.[language],
-        width,
-        height,
-        colors: pattern.solids + pattern.blends,
-        solids: pattern.solids,
-        blends: pattern.blends,
-        mainPictureUrl: pattern.pictures?.main?.url || '',
-        mainPatternUrl: pattern.pictures?.pattern?.url?.[language] || '',
-      },
-    };
-  }
-
-  return null;
-};
-
-export const getPatternById = async (patternId: string) => {
-  const pattern = await Pattern.findById(patternId);
-  if (!pattern) {
-    return null;
-  }
   return pattern;
+};
+
+export const getPhotosByPatternWithMasterAndWork = async (
+  patternId: string
+) => {
+  const photos = await WorkPhoto.find({
+    pattern: patternId,
+  })
+    .populate({
+      path: 'work',
+      populate: {
+        path: 'master',
+        model: 'Master',
+      },
+    })
+    .lean<PhotoExtendedByWorkExtendedByMaster[]>();
+
+  return photos;
+};
+
+export const getPhotosByPatternWithMasterAndWorkByPage = async (
+  patternId: string,
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
+
+  const photos = await WorkPhoto.find({
+    pattern: patternId,
+  })
+    .populate({
+      path: 'work',
+      populate: {
+        path: 'master',
+        model: 'Master',
+      },
+    })
+    .skip(skip)
+    .limit(limit)
+    .lean<PhotoExtendedByWorkExtendedByMaster[]>();
+
+  const totalCount = await WorkPhoto.countDocuments({ pattern: patternId });
+
+  return { photos, totalCount };
+};
+
+export const getPhotosByPatternWithMasterAndWorkByPageWithSorting = async (
+  patternId: string,
+  page: number,
+  limit: number,
+  sortBy: SortPhotosBy,
+  order: SortDirection,
+  language: Language
+) => {
+  const skip = (page - 1) * limit;
+
+  const sortParam: Record<string, 1 | -1> = {};
+
+  if (sortBy === 'dateReceived') {
+    sortParam['dateReceived'] = order === 'asc' ? 1 : -1;
+  }
+
+  if (sortBy === 'master') {
+    sortParam[`work.master.name.${language}`] = order === 'asc' ? 1 : -1;
+    sortParam['dateReceived'] = 1;
+  }
+
+  const photos = await WorkPhoto.aggregate([
+    { $match: { pattern: new Types.ObjectId(patternId) } },
+    {
+      $lookup: {
+        from: 'works',
+        localField: 'work',
+        foreignField: '_id',
+        as: 'work',
+      },
+    },
+    {
+      $unwind: '$work',
+    },
+    {
+      $lookup: {
+        from: 'masters',
+        localField: 'work.master',
+        foreignField: '_id',
+        as: 'work.master',
+      },
+    },
+    {
+      $unwind: '$work.master',
+    },
+    { $sort: sortParam },
+    { $skip: skip },
+    { $limit: limit },
+  ]);
+
+  console.log(JSON.stringify(photos, null, 2));
+
+  const totalCount = await WorkPhoto.countDocuments({ pattern: patternId });
+
+  return { photos, totalCount };
+};
+
+export const getWorkByID = async (patternId: string) => {
+  const work = await Work.findById(patternId);
+  return work;
+};
+
+export const getMasterByID = async (masterId: string) => {
+  const master = await Master.findById(masterId);
+  return master;
 };
