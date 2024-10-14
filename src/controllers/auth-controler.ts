@@ -5,20 +5,28 @@ import HttpError from '../helpers/http-error.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { nanoid } from 'nanoid';
 import { Request, Response } from 'express';
+import { createUser, getUserByProperty } from '../services/auth-serviece.js';
 
 const { JWT_SECRET } = process.env;
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
 
-  const user = await User.findOne({ email });
+  // const user = await User.findOne({ email });
+  const user = await getUserByProperty({ email });
   if (user) {
     throw HttpError(409, 'Email already exist');
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
-  const newUser = await User.create({
+  // const newUser = await User.create({
+  //   email,
+  //   password: hashPassword,
+  //   name,
+  //   verificationToken,
+  // });
+  const newUser = await createUser({
     email,
     password: hashPassword,
     name,
