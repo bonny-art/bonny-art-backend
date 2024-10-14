@@ -1,6 +1,6 @@
-import { Language } from '../types/common-types';
-import { setLanguageRequest } from '@/types/patterns-type';
 import { Response, NextFunction } from 'express';
+
+import { Language, setLanguageRequest } from '../types/common-types.js';
 
 export const setLanguage = (
   req: setLanguageRequest,

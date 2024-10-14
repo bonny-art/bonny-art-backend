@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { ObjectId } from 'mongoose';
 import { Language } from './common-types';
 
@@ -20,14 +19,6 @@ export type Genre =
   | 'nude'
   | 'genepainting'
   | 'wildlife';
-
-export interface setLanguageRequest extends Request {
-  lang?: Language;
-}
-
-export interface checkPatternExistsRequest extends setLanguageRequest {
-  pattern?: PatternDoc;
-}
 
 export type PatternDoc = {
   _id: ObjectId;

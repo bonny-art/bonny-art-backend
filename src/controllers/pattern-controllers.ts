@@ -4,8 +4,9 @@ import * as dataHandlers from '../helpers/data-handlers.js';
 import {
   checkPatternExistsRequest,
   setLanguageRequest,
-} from '../types/patterns-type.js';
+} from '../types/common-types.js';
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
+import HttpError from '../helpers/http-error.js';
 
 //todo: rfactor this to give patterns by pages
 //todo: refactor this to use filters
@@ -17,8 +18,7 @@ export const getAllPatterns = async (
   try {
     const { lang } = req;
     if (!lang) {
-      res.status(404).send({ message: 'Language was not set' });
-      return;
+      throw HttpError(404, 'Language was not set');
     }
 
     const patterns = await patternServices.getAllPatterns();
@@ -44,12 +44,10 @@ export const getPatternData = async (
   try {
     const { lang, pattern } = req;
     if (!lang) {
-      res.status(404).send({ message: 'Language was not set' });
-      return;
+      throw HttpError(404, 'Language was not set');
     }
     if (!pattern) {
-      res.status(404).send({ message: 'Pattern not found in request' });
-      return;
+      throw HttpError(404, 'Pattern not found in request');
     }
 
     const responsePattern = dataHandlers.getPatternDataByLanguage(
@@ -80,12 +78,10 @@ export const getPhotosByPattern = async (
       (sortBy === 'dateReceived' ? 'desc' : 'asc');
 
     if (!lang) {
-      res.status(404).send({ message: 'Language was not set' });
-      return;
+      throw HttpError(404, 'Language was not set');
     }
     if (!pattern) {
-      res.status(404).send({ message: 'Pattern not found in request' });
-      return;
+      throw HttpError(404, 'Pattern not found in request');
     }
 
     const patternId = pattern._id.toString();
