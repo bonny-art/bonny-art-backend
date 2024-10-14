@@ -1,10 +1,7 @@
 import { Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
-import {
-  PatternDoc,
-  checkPatternExistsRequest,
-} from '../types/patterns-type.js';
-import { isValidObjectId } from 'mongoose';
+import { checkPatternExistsRequest } from '../types/common-types.js';
+import { PatternDoc } from '../types/patterns-type.js';
 import HttpError from '../helpers/http-error.js';
 
 export const checkPatternExists = async (
@@ -15,15 +12,10 @@ export const checkPatternExists = async (
   try {
     const { patternId } = req.params;
 
-    if (!isValidObjectId(patternId)) {
-      return next(HttpError(404, `${patternId} is not valid id`));
-    }
-
     const pattern = await patternServices.getPatternById(patternId);
 
     if (!pattern) {
-      res.status(404).send({ message: 'Pattern not found' });
-      return;
+      throw HttpError(404, 'Pattern not found');
     }
 
     req.pattern = pattern as PatternDoc;
