@@ -33,8 +33,6 @@ const userSchema = new Schema<IUser>(
   { versionKey: false, timestamps: true }
 );
 userSchema.post<IUser>('save', handleSaveError);
-// // @ts-expect-error
-// userSchema.pre<IUser>('findOneAndUpdate', preUpdate);
 // userSchema.pre<IUser>('findOneAndUpdate', preUpdate as any);
 userSchema.post<IUser>('findOneAndUpdate', handleSaveError);
 
