@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
 
 export interface IUser extends Document {
-  _id: Types.ObjectId;  
+  _id: Types.ObjectId;
   email: string;
   password: string;
   name: string;
@@ -9,7 +9,7 @@ export interface IUser extends Document {
 }
 
 export interface UserQuery {
-  email?: string; 
+  email?: string;
 }
 
 export interface CreateUserData {

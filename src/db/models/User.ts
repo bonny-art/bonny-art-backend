@@ -37,11 +37,13 @@ export default User;
 export const registerSchema = Joi.object({
   name: Joi.string().pattern(nameRegexp).required().messages({
     'any.required': 'Missing required name field',
-    'string.pattern.base': 'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
+    'string.pattern.base':
+      'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
     'any.required': 'missing required email field',
-    'string.pattern.base': 'Email must be a valid email address (e.g., user@example.com)',
+    'string.pattern.base':
+      'Email must be a valid email address (e.g., user@example.com)',
   }),
   password: Joi.string().min(8).max(48).required(),
 });
