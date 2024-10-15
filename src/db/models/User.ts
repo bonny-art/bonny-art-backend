@@ -4,6 +4,8 @@ import { handleSaveError } from './hooks.js';
 import { IUser } from '../../types/user-types.js';
 import { emailRegexp } from '../../helpers/data-regexps.js';
 
+const nameRegexp = /^[A-Za-zА-Яа-яЁё\s-]+$/;
+
 const userSchema = new Schema<IUser>(
   {
     name: {
@@ -33,9 +35,13 @@ const User = model('user', userSchema);
 export default User;
 
 export const registerSchema = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().pattern(nameRegexp).required().messages({
+    'any.required': 'Missing required name field',
+    'string.pattern.base': 'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
+  }),
   email: Joi.string().pattern(emailRegexp).required().messages({
     'any.required': 'missing required email field',
+    'string.pattern.base': 'Email must be a valid email address (e.g., user@example.com)',
   }),
   password: Joi.string().min(8).max(48).required(),
 });

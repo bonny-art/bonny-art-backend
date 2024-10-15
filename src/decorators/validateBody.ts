@@ -7,7 +7,8 @@ const validateBody = (schema: ObjectSchema) => {
   const func = (req: Request, res: Response, next: NextFunction) => {
     const { error } = schema.validate(req.body);
     if (error) {
-      return next(HttError(400, error.message));
+      const fieldName = error.details[0].path;
+      return next(HttError(400, `${fieldName} is not valid`));
     }
     next();
   };
