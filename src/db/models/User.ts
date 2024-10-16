@@ -4,7 +4,8 @@ import { handleSaveError } from './hooks.js';
 import { IUser } from '../../types/user-types.js';
 import { emailRegexp } from '../../helpers/data-regexps.js';
 
-const nameRegexp = /^(?=.*[A-Za-zА-Яа-яЇїЄєІіҐґ])[A-Za-zА-Яа-яЇїЄєІіҐґ\s'-]{2,}$/;
+const nameRegexp =
+  /^(?=.*[A-Za-zА-Яа-яЇїЄєІіҐґ])[A-Za-zА-Яа-яЇїЄєІіҐґ\s'-]{2,}$/;
 
 const userSchema = new Schema<IUser>(
   {
