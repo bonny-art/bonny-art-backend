@@ -1,5 +1,5 @@
 import { registerSchema } from '../../db/models/User.js';
-import validateBody from '../../decorators/validateBody.js';
+import validateBody from '../../middlewares/validateBody.js';
 import authController from '../../controllers/auth-controler.js';
 import express from 'express';
 const authRouter = express.Router();

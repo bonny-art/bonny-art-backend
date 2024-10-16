@@ -16,5 +16,7 @@ export interface CreateUserData {
   email: string;
   password: string;
   name: string;
-  verificationToken: string;
+}
+export interface Payload {
+  id: string;
 }
