@@ -20,5 +20,6 @@ module.exports = {
     semi: ['error', 'always'],
     quotes: ['error', 'single'],
     'linebreak-style': ['error', 'windows'],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
 };

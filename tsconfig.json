@@ -19,6 +19,7 @@
     }
   },
   "include": [
+    "src/**/*",
     "src/controllers/pattern-controllers.js",
     "src/**/*.ts",
     "src/routes/api/auth-routes.js",
