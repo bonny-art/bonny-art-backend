@@ -1,7 +1,6 @@
 import { Payload } from '../types/user-types';
 import jwt from 'jsonwebtoken';
 
-
 export const generateToken = (payload: Payload): string => {
   const { JWT_SECRET } = process.env;
 

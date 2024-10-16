@@ -9,7 +9,10 @@ const userSchema = new Schema<IUser>(
     name: {
       type: String,
       minlength: 2,
-      match: [nameRegexp, 'Name must contain only letters, spaces, or hyphens (e.g., John Doe)'],
+      match: [
+        nameRegexp,
+        'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
+      ],
       required: [true, 'Name is required'],
     },
     email: {
