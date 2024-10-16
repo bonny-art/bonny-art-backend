@@ -7,6 +7,6 @@ export const generateToken = (payload: Payload): string => {
   if (!JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in the environment variables');
   }
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '14d' });
   return token;
 };
