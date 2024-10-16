@@ -2,16 +2,14 @@ import { Schema, model } from 'mongoose';
 import Joi from 'joi';
 import { handleSaveError } from './hooks.js';
 import { IUser } from '../../types/user-types.js';
-import { emailRegexp } from '../../helpers/data-regexps.js';
-
-const nameRegexp =
-  /^(?=.*[A-Za-zА-Яа-яЇїЄєІіҐґ])[A-Za-zА-Яа-яЇїЄєІіҐґ\s'-]{2,}$/;
+import { emailRegexp, nameRegexp } from '../../helpers/data-regexps.js';
 
 const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
       minlength: 2,
+      match: [nameRegexp, 'Name must contain only letters, spaces, or hyphens (e.g., John Doe)'],
       required: [true, 'Name is required'],
     },
     email: {
