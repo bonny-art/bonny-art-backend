@@ -23,7 +23,9 @@
     "src/controllers/pattern-controllers.js",
     "src/**/*.ts",
     "src/routes/api/auth-routes.js",
-    "src/routes/index.js"
+    "src/routes/index.js",
+    "src/db/models/User.ts",
+    "src/middlewares/validateBody.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -10,7 +10,7 @@ const messageList: MessageListT = {
 
 const HttpError = (
   status: number,
-  message: string = messageList[status.toString()]
+  message: string = messageList[status.toString()] || 'Unknown Error'
 ): IHttpError => {
   const error = new Error(message) as IHttpError;
   error.status = status;
