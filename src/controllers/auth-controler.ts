@@ -6,6 +6,13 @@ import { Request, Response } from 'express';
 import { createUser, getUserByProperty } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 
+interface AuthenticatedRequest extends Request {
+  user?: {
+    _id: string;
+    token: string;
+  };
+}
+
 const signup = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
   const normalizedEmail = email.toLowerCase();
@@ -38,6 +45,20 @@ const signup = async (req: Request, res: Response) => {
   });
 };
 
+const signout = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(
+    _id,
+    { token: '' },
+    { new: true, runValidators: true }
+  );
+  res.status(204).json();
+};
+
 export default {
   signup: ctrlWrapper(signup),
+  signout: ctrlWrapper(signout),
 };
