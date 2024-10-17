@@ -9,23 +9,28 @@ export const getPatternDataByLanguage = (
   language: Language
 ) => {
   if (pattern) {
+    console.log('🚀 ~ pattern:', JSON.stringify(pattern, null, 2));
     const { width, height, patternType } = extractPatternDetails(
       pattern.codename
     );
+
+    const translatedOrigin = originTranslations[pattern.origin]
+      ? originTranslations[pattern.origin][language]
+      : pattern.origin;
 
     return {
       id: pattern._id.toString(),
       title: pattern.title?.[language],
       codename: pattern.codename,
-      origin: pattern.origin, // todo: give proper value depending on language (think if it's needed)
+      origin: translatedOrigin,
       author: pattern.author?.[language],
       width,
       height,
       colors: pattern.solids + pattern.blends,
       solids: pattern.solids,
       blends: pattern.blends,
-      mainPictureUrl: pattern.pictures?.main?.url || '',
-      mainPatternUrl: pattern.pictures?.pattern?.url?.[language] || '',
+      mainPictureUrl: pattern?.pictures?.main?.url || '',
+      mainPatternUrl: pattern?.pictures?.pattern?.url?.[language] || '',
       patternType,
     };
   }
@@ -59,7 +64,7 @@ export const getAllPatternsDataByLanguage = (
       blends: pattern.blends,
       author: pattern.author[language],
       origin: translatedOrigin,
-      mainPictureUrl: pattern.pictures.main.url,
+      mainPictureUrl: pattern.pictures?.main?.url,
       maxSize: Math.max(safeWidth, safeHeight),
       patternType,
     };
