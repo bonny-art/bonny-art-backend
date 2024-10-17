@@ -8,8 +8,6 @@ import {
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
 
-//todo: rfactor this to give patterns by pages
-//todo: refactor this to use filters
 export const getAllPatterns = async (
   req: setLanguageRequest,
   res: Response,
@@ -30,6 +28,49 @@ export const getAllPatterns = async (
 
     res.send({
       patterns: patternsData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//todo: refactor this to use filters
+export const getAllPatternsWithPagination = async (
+  req: setLanguageRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { lang } = req;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 3;
+
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
+
+    const { patterns, totalCount } = await patternServices.getAllPatternsByPage(
+      page,
+      limit
+    );
+
+    const patternsData = dataHandlers.getAllPatternsDataByLanguage(
+      patterns,
+      lang
+    );
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasMore = page < totalPages;
+
+    res.send({
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+        hasMore,
+      },
+      patternsData,
     });
   } catch (error) {
     next(error);
@@ -101,7 +142,7 @@ export const getPhotosByPattern = async (
     const totalPages = Math.ceil(totalCount / limit);
     const hasMore = page < totalPages;
 
-    res.json({
+    res.send({
       pagination: {
         currentPage: page,
         totalPages,

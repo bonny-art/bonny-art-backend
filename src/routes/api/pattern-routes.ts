@@ -7,7 +7,11 @@ import { isValidId } from '../../middlewares/is-valid-id.js';
 
 export const patternRouter = express.Router({ mergeParams: true });
 
-patternRouter.get('/', setLanguage, patternControllers.getAllPatterns);
+patternRouter.get(
+  '/',
+  setLanguage,
+  patternControllers.getAllPatternsWithPagination
+);
 
 patternRouter.get(
   '/:patternId',
