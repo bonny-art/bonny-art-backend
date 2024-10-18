@@ -5,13 +5,7 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
 import { createUser, getUserByProperty } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    _id: string;
-    token: string;
-  };
-}
+import { AuthenticatedRequest } from '../types/common-types.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;

@@ -14,3 +14,10 @@ export interface setLanguageRequest extends Request {
 export interface checkPatternExistsRequest extends setLanguageRequest {
   pattern?: PatternDoc;
 }
+
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    _id: string;
+    token: string;
+  };
+}

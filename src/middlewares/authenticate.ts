@@ -2,17 +2,11 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import HttpError from '../helpers/http-error.js';
 import User from '../db/models/User.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import 'dotenv/config';
+import { AuthenticatedRequest } from '../types/common-types.js';
 
 const { JWT_SECRET } = process.env;
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    _id: string;
-    token: string;
-  };
-}
 
 const authenticate = async (
   req: AuthenticatedRequest,
@@ -30,21 +24,16 @@ const authenticate = async (
   if (bearer !== 'Bearer') {
     return next(HttpError(401, 'Not authorized'));
   }
-  try {
-    const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload | { id: string };
-    const user = await User.findById(id);
-    if (!user || !user.token || user.token !== token) {
-      return next(HttpError(401, 'Not authorized'));
-    }
-    req.user = {
-      _id: user._id.toString(),
-      token: user.token,
-    };
-    next();
-  } catch (error) {
-    console.error('Authentication error:', error);
+  const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload | { id: string };
+  const user = await User.findById(id);
+  if (!user || !user.token || user.token !== token) {
     return next(HttpError(401, 'Not authorized'));
   }
+  req.user = {
+    _id: user._id.toString(),
+    token: user.token,
+  };
+  next();
 };
 
 export default ctrlWrapper(authenticate);
