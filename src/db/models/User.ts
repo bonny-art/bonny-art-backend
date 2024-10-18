@@ -50,3 +50,12 @@ export const registerSchema = Joi.object({
   }),
   password: Joi.string().min(8).max(48).required(),
 });
+
+export const loginSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    'any.required': 'missing required email field',
+    'string.pattern.base':
+      'Email must be a valid email address (e.g., user@example.com)',
+  }),
+  password: Joi.string().min(8).max(48).required(),
+});
