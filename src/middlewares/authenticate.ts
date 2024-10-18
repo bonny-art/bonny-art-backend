@@ -15,19 +15,19 @@ const authenticate = async (
 ) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    return next(HttpError(401, 'Not authorized'));
+    throw HttpError(401, 'Not authorized');
   }
   if (!JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in environment variables');
   }
   const [bearer, token] = authorization.split(' ');
   if (bearer !== 'Bearer') {
-    return next(HttpError(401, 'Not authorized'));
+    throw HttpError(401, 'Not authorized');
   }
   const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload | { id: string };
   const user = await User.findById(id);
   if (!user || !user.token || user.token !== token) {
-    return next(HttpError(401, 'Not authorized'));
+    throw HttpError(401, 'Not authorized');
   }
   req.user = {
     _id: user._id.toString(),
