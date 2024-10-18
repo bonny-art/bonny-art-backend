@@ -45,17 +45,17 @@ const signin = async (req: Request, res: Response) => {
 
   const user = await getUserByProperty({ email: normalizedEmail });
   if (!user) {
-    throw HttpError(401, "Email or password is wrong");
+    throw HttpError(401, 'Email or password is wrong');
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw HttpError(401, "Email or password is wrong");
+    throw HttpError(401, 'Email or password is wrong');
   }
 
   const token = generateToken({ id: user._id.toString() });
   await User.findByIdAndUpdate(user._id, { token });
-  
+
   res.json({
     user: {
       email: user.email,
