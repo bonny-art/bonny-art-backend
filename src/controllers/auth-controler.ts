@@ -39,6 +39,32 @@ const signup = async (req: Request, res: Response) => {
   });
 };
 
+const signin = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const normalizedEmail = email.toLowerCase();
+
+  const user = await getUserByProperty({ email: normalizedEmail });
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
+  const passwordCompare = await bcrypt.compare(password, user.password);
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
+  const token = generateToken({ id: user._id.toString() });
+  await User.findByIdAndUpdate(user._id, { token });
+  
+  res.json({
+    user: {
+      email: user.email,
+      userName: user.name,
+    },
+    token,
+  });
+};
+
 const signout = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
@@ -54,5 +80,6 @@ const signout = async (req: AuthenticatedRequest, res: Response) => {
 
 export default {
   signup: ctrlWrapper(signup),
+  signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
 };
