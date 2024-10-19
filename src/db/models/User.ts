@@ -1,7 +1,11 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
 import { handleSaveError } from './hooks.js';
-import { IUser, PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '../../types/user-types.js';
+import {
+  IUser,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from '../../types/user-types.js';
 import { emailRegexp, nameRegexp } from '../../helpers/data-regexps.js';
 
 const userSchema = new Schema<IUser>(
@@ -48,7 +52,10 @@ export const registerSchema = Joi.object({
     'string.pattern.base':
       'Email must be a valid email address (e.g., user@example.com)',
   }),
-  password: Joi.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH).required(),
+  password: Joi.string()
+    .min(PASSWORD_MIN_LENGTH)
+    .max(PASSWORD_MAX_LENGTH)
+    .required(),
 });
 
 export const loginSchema = Joi.object({
