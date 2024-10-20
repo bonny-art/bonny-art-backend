@@ -78,8 +78,20 @@ const signout = async (req: AuthenticatedRequest, res: Response) => {
   res.status(204).json();
 };
 
+const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
+  const { name, email } = req.user;
+  res.json({
+    email,
+    name,
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
+  getCurrent: ctrlWrapper(getCurrent),
 };

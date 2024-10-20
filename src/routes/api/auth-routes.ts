@@ -10,9 +10,8 @@ authRouter.post(
   validateBody(registerSchema),
   authController.signup
 );
-
 authRouter.post('/login', validateBody(loginSchema), authController.signin);
-
 authRouter.get('/logout', authenticate, authController.signout);
+authRouter.get('/user-info', authenticate, authController.getCurrent);
 
 export default authRouter;
