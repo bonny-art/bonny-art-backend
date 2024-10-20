@@ -33,7 +33,7 @@ const signup = async (req: Request, res: Response) => {
   res.status(201).send({
     user: {
       email: newUser.email,
-      name: newUser.name,
+      userName: newUser.name,
     },
     token,
   });
@@ -82,10 +82,13 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
-  const { name, email } = req.user;
+  const { name, email, _id } = req.user;
   res.json({
-    email,
-    name,
+    user: {
+      _id,
+      email,
+      userName: name,
+    },
   });
 };
 

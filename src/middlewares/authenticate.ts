@@ -18,7 +18,7 @@ const authenticate = async (
     throw HttpError(401, 'Not authorized');
   }
   if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined in environment variables');
+    throw HttpError(401, 'Not authorized');
   }
   const [bearer, token] = authorization.split(' ');
   if (!token) {
