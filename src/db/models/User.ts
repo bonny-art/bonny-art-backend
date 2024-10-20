@@ -10,7 +10,7 @@ import { emailRegexp, nameRegexp } from '../../helpers/data-regexps.js';
 
 const userSchema = new Schema<IUser>(
   {
-    name: {
+    userName: {
       type: String,
       minlength: 2,
       match: [
@@ -42,7 +42,7 @@ const User = model('user', userSchema);
 export default User;
 
 export const registerSchema = Joi.object({
-  name: Joi.string().pattern(nameRegexp).min(2).required().messages({
+  userName: Joi.string().pattern(nameRegexp).min(2).required().messages({
     'any.required': 'Missing required name field',
     'string.pattern.base':
       'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',

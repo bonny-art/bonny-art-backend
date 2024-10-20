@@ -7,7 +7,7 @@ export interface IUser extends Document {
   _id: Types.ObjectId;
   email: string;
   password: string;
-  name: string;
+  userName: string;
   token?: string;
 }
 
@@ -18,7 +18,7 @@ export interface UserQuery {
 export interface CreateUserData {
   email: string;
   password: string;
-  name: string;
+  userName: string;
 }
 export interface Payload {
   id: string;

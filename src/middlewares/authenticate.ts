@@ -36,7 +36,7 @@ const authenticate = async (
     _id: user._id.toString(),
     token: user.token,
     email: user.email,
-    name: user.name,
+    userName: user.userName,
   };
   next();
 };

@@ -20,6 +20,6 @@ export interface AuthenticatedRequest extends Request {
     _id: string;
     token: string;
     email: string;
-    name: string;
+    userName: string;
   };
 }
