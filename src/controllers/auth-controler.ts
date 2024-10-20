@@ -8,7 +8,7 @@ import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 
 const signup = async (req: Request, res: Response) => {
-  const { email, password, name } = req.body;
+  const { email, password, userName } = req.body;
   const normalizedEmail = email.toLowerCase();
   const user = await getUserByProperty({ email: normalizedEmail });
   if (user) {
@@ -19,7 +19,7 @@ const signup = async (req: Request, res: Response) => {
   const newUser = await createUser({
     email: normalizedEmail,
     password: hashPassword,
-    name,
+    userName,
   });
 
   const token = generateToken({ id: newUser._id.toString() });
@@ -33,7 +33,7 @@ const signup = async (req: Request, res: Response) => {
   res.status(201).send({
     user: {
       email: newUser.email,
-      name: newUser.name,
+      userName: newUser.userName,
     },
     token,
   });
@@ -59,7 +59,7 @@ const signin = async (req: Request, res: Response) => {
   res.json({
     user: {
       email: user.email,
-      userName: user.name,
+      userName: user.userName,
     },
     token,
   });
@@ -78,8 +78,23 @@ const signout = async (req: AuthenticatedRequest, res: Response) => {
   res.status(204).json();
 };
 
+const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
+  const { userName, email, _id } = req.user;
+  res.json({
+    user: {
+      _id,
+      email,
+      userName: userName,
+    },
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
+  getCurrent: ctrlWrapper(getCurrent),
 };

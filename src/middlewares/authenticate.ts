@@ -14,13 +14,16 @@ const authenticate = async (
   next: NextFunction
 ) => {
   const { authorization } = req.headers;
-  if (!authorization) {
+  if (!authorization || authorization === '') {
     throw HttpError(401, 'Not authorized');
   }
   if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined in environment variables');
+    throw HttpError(401, 'Not authorized');
   }
   const [bearer, token] = authorization.split(' ');
+  if (!token) {
+    throw HttpError(401, 'Not authorized');
+  }
   if (bearer !== 'Bearer') {
     throw HttpError(401, 'Not authorized');
   }
@@ -32,6 +35,8 @@ const authenticate = async (
   req.user = {
     _id: user._id.toString(),
     token: user.token,
+    email: user.email,
+    userName: user.userName,
   };
   next();
 };
