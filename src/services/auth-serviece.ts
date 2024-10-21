@@ -14,7 +14,7 @@ export const createUser = async (userData: CreateUserData) => {
 export const getUserByUsernameIgnoreCase = async (userName: string) => {
   const normalizedUserName = userName.toLowerCase();
   const user = await User.findOne({
-    userName: { $regex: `^${normalizedUserName}$`, $options: 'i' }
+    userName: { $regex: `^${normalizedUserName}$`, $options: 'i' },
   });
   return user;
 };

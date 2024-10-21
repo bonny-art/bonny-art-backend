@@ -3,7 +3,11 @@ import User from '../db/models/User.js';
 import HttpError from '../helpers/http-error.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
-import { createUser, getUserByProperty, getUserByUsernameIgnoreCase } from '../services/auth-serviece.js';
+import {
+  createUser,
+  getUserByProperty,
+  getUserByUsernameIgnoreCase,
+} from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 
