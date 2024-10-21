@@ -12,15 +12,15 @@ const signup = async (req: Request, res: Response) => {
   const normalizedEmail = email.toLowerCase();
   const normalizedUserName = userName.toLowerCase();
 
-  // const user = await getUserByProperty({ email: normalizedEmail });
-  // if (user) {
-  //   throw HttpError(409, 'Email already exist');
-  // }
-  const existingUserByEmail = await getUserByProperty({ email: normalizedEmail });
+  const existingUserByEmail = await getUserByProperty({
+    email: normalizedEmail,
+  });
   if (existingUserByEmail) {
     throw HttpError(409, 'Email already exists');
   }
-  const existingUserByName = await getUserByProperty({ userName: normalizedUserName });
+  const existingUserByName = await getUserByProperty({
+    userName: normalizedUserName,
+  });
   if (existingUserByName) {
     throw HttpError(409, 'Username already exists');
   }
