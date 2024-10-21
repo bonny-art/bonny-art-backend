@@ -3,14 +3,13 @@ import User from '../db/models/User.js';
 import HttpError from '../helpers/http-error.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
-import { createUser, getUserByProperty } from '../services/auth-serviece.js';
+import { createUser, getUserByProperty, getUserByUsernameIgnoreCase } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
   const normalizedEmail = email.toLowerCase();
-  const normalizedUserName = userName.toLowerCase();
 
   const existingUserByEmail = await getUserByProperty({
     email: normalizedEmail,
@@ -18,9 +17,8 @@ const signup = async (req: Request, res: Response) => {
   if (existingUserByEmail) {
     throw HttpError(409, 'Email already exists');
   }
-  const existingUserByName = await getUserByProperty({
-    userName: normalizedUserName,
-  });
+
+  const existingUserByName = await getUserByUsernameIgnoreCase(userName);
   if (existingUserByName) {
     throw HttpError(409, 'Username already exists');
   }
