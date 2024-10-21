@@ -13,6 +13,7 @@ export interface IUser extends Document {
 
 export interface UserQuery {
   email?: string;
+  userName?: string;
 }
 
 export interface CreateUserData {

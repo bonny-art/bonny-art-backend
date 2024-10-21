@@ -17,6 +17,7 @@ const userSchema = new Schema<IUser>(
         nameRegexp,
         'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
       ],
+      unique: true,
       required: [true, 'Name is required'],
     },
     email: {

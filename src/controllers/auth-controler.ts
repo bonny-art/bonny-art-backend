@@ -10,10 +10,21 @@ import { AuthenticatedRequest } from '../types/common-types.js';
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
   const normalizedEmail = email.toLowerCase();
-  const user = await getUserByProperty({ email: normalizedEmail });
-  if (user) {
-    throw HttpError(409, 'Email already exist');
+  const normalizedUserName = userName.toLowerCase();
+
+  // const user = await getUserByProperty({ email: normalizedEmail });
+  // if (user) {
+  //   throw HttpError(409, 'Email already exist');
+  // }
+  const existingUserByEmail = await getUserByProperty({ email: normalizedEmail });
+  if (existingUserByEmail) {
+    throw HttpError(409, 'Email already exists');
   }
+  const existingUserByName = await getUserByProperty({ userName: normalizedUserName });
+  if (existingUserByName) {
+    throw HttpError(409, 'Username already exists');
+  }
+
   const hashPassword = await bcrypt.hash(password, 10);
 
   const newUser = await createUser({
@@ -87,7 +98,7 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
     user: {
       _id,
       email,
-      userName: userName,
+      userName,
     },
   });
 };
