@@ -25,7 +25,8 @@ const signup = async (req: Request, res: Response) => {
     throw HttpError(409, 'Email already exists');
   }
 
-  const existingUserByName = await getUserByUsernameIgnoreCase(sanitizedUserName);
+  const existingUserByName =
+    await getUserByUsernameIgnoreCase(sanitizedUserName);
   if (existingUserByName) {
     throw HttpError(409, 'Username already exists');
   }
