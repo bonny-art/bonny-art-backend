@@ -24,10 +24,9 @@ export const sanitizeUserName = (
   allowSpaces: boolean = true
 ): string => {
   let trimmedName = userName.trim();
-  if (allowSpaces) {
-    trimmedName = trimmedName.replace(/\s+/g, ' ');
-  } else {
-    trimmedName = trimmedName.replace(/\s+/g, '');
-  }
-  return trimmedName;
+  const sanitizedName = allowSpaces 
+  ? trimmedName.replace(/\s+/g, ' ') 
+  : trimmedName.replace(/\s+/g, '');
+
+  return sanitizedName;
 };
