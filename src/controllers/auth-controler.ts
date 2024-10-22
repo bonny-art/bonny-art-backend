@@ -3,23 +3,40 @@ import User from '../db/models/User.js';
 import HttpError from '../helpers/http-error.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
-import { createUser, getUserByProperty } from '../services/auth-serviece.js';
+import {
+  createUser,
+  getUserByProperty,
+  getUserByUsernameIgnoreCase,
+  sanitizeUserName,
+} from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
   const normalizedEmail = email.toLowerCase();
-  const user = await getUserByProperty({ email: normalizedEmail });
-  if (user) {
-    throw HttpError(409, 'Email already exist');
+
+  const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
+
+  const existingUserByEmail = await getUserByProperty({
+    email: normalizedEmail,
+  });
+  if (existingUserByEmail) {
+    throw HttpError(409, 'Email already exists');
   }
+
+  const existingUserByName =
+    await getUserByUsernameIgnoreCase(sanitizedUserName);
+  if (existingUserByName) {
+    throw HttpError(409, 'Username already exists');
+  }
+
   const hashPassword = await bcrypt.hash(password, 10);
 
   const newUser = await createUser({
     email: normalizedEmail,
     password: hashPassword,
-    userName,
+    userName: sanitizedUserName,
   });
 
   const token = generateToken({ id: newUser._id.toString() });
@@ -87,7 +104,7 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
     user: {
       _id,
       email,
-      userName: userName,
+      userName,
     },
   });
 };

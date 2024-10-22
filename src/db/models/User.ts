@@ -15,8 +15,9 @@ const userSchema = new Schema<IUser>(
       minlength: 2,
       match: [
         nameRegexp,
-        'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
+        'Name must contain only letters, spaces, hyphens, or apostrophes (e.g., John Doe)',
       ],
+      unique: true,
       required: [true, 'Name is required'],
     },
     email: {
@@ -43,9 +44,9 @@ export default User;
 
 export const registerSchema = Joi.object({
   userName: Joi.string().pattern(nameRegexp).min(2).required().messages({
-    'any.required': 'Missing required name field',
+    'any.required': 'Missing required userName field',
     'string.pattern.base':
-      'Name must contain only letters, spaces, or hyphens (e.g., John Doe)',
+      'UserName must contain only letters, spaces, or hyphens (e.g., John Doe)',
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
     'any.required': 'missing required email field',
