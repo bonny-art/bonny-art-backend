@@ -23,10 +23,10 @@ export const sanitizeUserName = (
   userName: string,
   allowSpaces: boolean = true
 ): string => {
-  let trimmedName = userName.trim();
-  const sanitizedName = allowSpaces 
-  ? trimmedName.replace(/\s+/g, ' ') 
-  : trimmedName.replace(/\s+/g, '');
+  const trimmedName = userName.trim();
+  const sanitizedName = allowSpaces
+    ? trimmedName.replace(/\s+/g, ' ')
+    : trimmedName.replace(/\s+/g, '');
 
   return sanitizedName;
 };
