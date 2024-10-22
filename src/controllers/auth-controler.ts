@@ -7,6 +7,7 @@ import {
   createUser,
   getUserByProperty,
   getUserByUsernameIgnoreCase,
+  sanitizeUserName,
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
@@ -15,6 +16,8 @@ const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
   const normalizedEmail = email.toLowerCase();
 
+  const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
+
   const existingUserByEmail = await getUserByProperty({
     email: normalizedEmail,
   });
@@ -22,7 +25,7 @@ const signup = async (req: Request, res: Response) => {
     throw HttpError(409, 'Email already exists');
   }
 
-  const existingUserByName = await getUserByUsernameIgnoreCase(userName);
+  const existingUserByName = await getUserByUsernameIgnoreCase(sanitizedUserName);
   if (existingUserByName) {
     throw HttpError(409, 'Username already exists');
   }
@@ -32,7 +35,7 @@ const signup = async (req: Request, res: Response) => {
   const newUser = await createUser({
     email: normalizedEmail,
     password: hashPassword,
-    userName,
+    userName: sanitizedUserName,
   });
 
   const token = generateToken({ id: newUser._id.toString() });

@@ -18,3 +18,13 @@ export const getUserByUsernameIgnoreCase = async (userName: string) => {
   });
   return user;
 };
+
+export const sanitizeUserName = (userName: string, allowSpaces: boolean = true): string => {
+  let trimmedName = userName.trim();
+  if (allowSpaces) {
+    trimmedName = trimmedName.replace(/\s+/g, ' ');
+  } else {
+    trimmedName = trimmedName.replace(/\s+/g, '');
+  }
+  return trimmedName;
+}
