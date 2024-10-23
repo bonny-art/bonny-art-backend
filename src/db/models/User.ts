@@ -67,3 +67,21 @@ export const loginSchema = Joi.object({
   }),
   password: Joi.string().min(PASSWORD_MIN_LENGTH).required(),
 });
+
+
+export const updateUserSchema = Joi.object({
+  userName: Joi.string().pattern(nameRegexp).min(2).messages({
+    'string.pattern.base':
+      'UserName must contain only letters, spaces, or hyphens (e.g., John Doe)',
+  }),
+  email: Joi.string().pattern(emailRegexp).messages({
+    'string.pattern.base':
+      'Email must be a valid email address (e.g., user@example.com)',
+  }),
+  oldPassword: Joi.string().when('newPassword', {
+    is: Joi.exist(),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
+  newPassword: Joi.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
+});
