@@ -114,7 +114,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
-  
+
   const { _id } = req.user;
   const { userName, email, oldPassword, newPassword } = req.body;
 
@@ -122,16 +122,26 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 
   if (userName) {
     updates.userName = sanitizeUserName(userName, true);
-    const existingUserByName = await getUserByUsernameIgnoreCase(updates.userName);
-    if (existingUserByName && existingUserByName._id.toString() !== _id.toString()) {
+    const existingUserByName = await getUserByUsernameIgnoreCase(
+      updates.userName
+    );
+    if (
+      existingUserByName &&
+      existingUserByName._id.toString() !== _id.toString()
+    ) {
       throw HttpError(409, 'Username already exists');
     }
   }
 
   if (email) {
     const normalizedEmail = email.toLowerCase();
-    const existingUserByEmail = await getUserByProperty({ email: normalizedEmail });
-    if (existingUserByEmail && existingUserByEmail._id.toString() !== _id.toString()) {
+    const existingUserByEmail = await getUserByProperty({
+      email: normalizedEmail,
+    });
+    if (
+      existingUserByEmail &&
+      existingUserByEmail._id.toString() !== _id.toString()
+    ) {
       throw HttpError(409, 'Email already exists');
     }
     updates.email = normalizedEmail;

@@ -68,7 +68,6 @@ export const loginSchema = Joi.object({
   password: Joi.string().min(PASSWORD_MIN_LENGTH).required(),
 });
 
-
 export const updateUserSchema = Joi.object({
   userName: Joi.string().pattern(nameRegexp).min(2).messages({
     'string.pattern.base':
