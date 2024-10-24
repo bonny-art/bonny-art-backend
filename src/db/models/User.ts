@@ -46,7 +46,7 @@ export const registerSchema = Joi.object({
   userName: Joi.string().pattern(nameRegexp).min(2).required().messages({
     'any.required': 'Missing required userName field',
     'string.pattern.base':
-      'UserName must contain only letters, spaces, or hyphens (e.g., John Doe)',
+      'UserName must contain only letters, spaces, hyphens, or apostrophes  (e.g., John Doe)',
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
     'any.required': 'missing required email field',
@@ -71,7 +71,7 @@ export const loginSchema = Joi.object({
 export const updateUserSchema = Joi.object({
   userName: Joi.string().pattern(nameRegexp).min(2).messages({
     'string.pattern.base':
-      'UserName must contain only letters, spaces, or hyphens (e.g., John Doe)',
+      'UserName must contain only letters, spaces, hyphens, or apostrophes  (e.g., John Doe)',
   }),
   email: Joi.string().pattern(emailRegexp).messages({
     'string.pattern.base':

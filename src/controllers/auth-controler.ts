@@ -148,10 +148,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 
   if (oldPassword || newPassword) {
-    const user = await User.findById(_id);
-    if (!user) {
-      throw HttpError(404, 'User not found');
-    }
+    const user = req.user;
 
     if (oldPassword) {
       const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
