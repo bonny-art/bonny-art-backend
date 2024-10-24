@@ -37,6 +37,7 @@ const authenticate = async (
     token: user.token,
     email: user.email,
     userName: user.userName,
+    password: user.password,
   };
   next();
 };
