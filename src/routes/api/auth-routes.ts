@@ -23,5 +23,7 @@ authRouter.patch(
   validateBody(updateUserSchema),
   authController.updateUser
 );
+authRouter.delete('/delete', authenticate, authController.deleteUser);
+
 
 export default authRouter;
