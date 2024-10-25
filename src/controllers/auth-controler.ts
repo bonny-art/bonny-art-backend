@@ -182,7 +182,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
-  }  
+  }
   const { _id } = req.user;
 
   const user = await deleteUserById(_id);
@@ -190,7 +190,7 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
     throw HttpError(404, 'User not found');
   }
 
-  res.status(204).json(); 
+  res.status(204).json();
 };
 
 export default {
