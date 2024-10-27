@@ -197,7 +197,7 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     throw HttpError(401, 'Incorrect password');
-  }  
+  }
   const deletedUser = await deleteUserById(_id);
   if (!deletedUser) {
     throw HttpError(404, 'User not found');

@@ -86,8 +86,11 @@ export const updateUserSchema = Joi.object({
 });
 
 export const deleteUserSchema = Joi.object({
-  password: Joi.string().min(PASSWORD_MIN_LENGTH).required().messages({
-    'any.required': 'Password is required for account deletion',
-    'string.min': `Password must be at least ${PASSWORD_MIN_LENGTH} characters long`,
-  }),
+  password: Joi.string()
+    .min(PASSWORD_MIN_LENGTH)
+    .required()
+    .messages({
+      'any.required': 'Password is required for account deletion',
+      'string.min': `Password must be at least ${PASSWORD_MIN_LENGTH} characters long`,
+    }),
 });
