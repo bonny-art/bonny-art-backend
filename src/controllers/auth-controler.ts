@@ -184,9 +184,22 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
     throw HttpError(401, 'Not authorized');
   }
   const { _id } = req.user;
+  const { password } = req.body;
 
-  const user = await deleteUserById(_id);
+  if (!password) {
+    throw HttpError(400, 'Password is required for account deletion');
+  }
+  const user = await User.findById(_id);
   if (!user) {
+    throw HttpError(404, 'User not found');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw HttpError(401, 'Incorrect password');
+  }  
+  const deletedUser = await deleteUserById(_id);
+  if (!deletedUser) {
     throw HttpError(404, 'User not found');
   }
 
