@@ -86,9 +86,7 @@ export const updateUserSchema = Joi.object({
 });
 
 export const deleteUserSchema = Joi.object({
-  password: Joi.string()
-    .required()
-    .messages({
-      'any.required': 'Password is required for account deletion',
-    }),
+  password: Joi.string().required().messages({
+    'any.required': 'Password is required for account deletion',
+  }),
 });
