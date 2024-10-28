@@ -1,4 +1,5 @@
 import {
+  deleteUserSchema,
   loginSchema,
   registerSchema,
   updateUserSchema,
@@ -22,6 +23,12 @@ authRouter.patch(
   authenticate,
   validateBody(updateUserSchema),
   authController.updateUser
+);
+authRouter.delete(
+  '/delete',
+  authenticate,
+  validateBody(deleteUserSchema),
+  authController.deleteUser
 );
 
 export default authRouter;

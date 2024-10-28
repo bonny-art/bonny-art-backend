@@ -5,6 +5,7 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
 import {
   createUser,
+  deleteUserById,
   getUserByProperty,
   getUserByUsernameIgnoreCase,
   sanitizeUserName,
@@ -178,10 +179,34 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
+  const { _id, password: storedPassword } = req.user;
+  const { password } = req.body;
+
+  if (!password) {
+    throw HttpError(400, 'Password is required for account deletion');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, storedPassword);
+  if (!isPasswordValid) {
+    throw HttpError(401, 'Incorrect password');
+  }
+  const deletedUser = await deleteUserById(_id);
+  if (!deletedUser) {
+    throw HttpError(404, 'User not found');
+  }
+
+  res.status(204).json();
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
   getCurrent: ctrlWrapper(getCurrent),
   updateUser: ctrlWrapper(updateUser),
+  deleteUser: ctrlWrapper(deleteUser),
 };
