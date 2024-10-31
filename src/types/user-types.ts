@@ -9,17 +9,21 @@ export interface IUser extends Document {
   password: string;
   userName: string;
   token?: string;
+  verify?: boolean;
+  verifyToken?: string;
 }
 
 export interface UserQuery {
   email?: string;
   userName?: string;
+  verifyToken?: string; 
 }
 
 export interface CreateUserData {
   email: string;
   password: string;
   userName: string;
+  verifyToken: string;
 }
 export interface Payload {
   id: string;

@@ -13,6 +13,8 @@ import {
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 import { IUser } from '@/types/user-types.js';
+import { generateVerificationToken } from '../helpers/crypto-helper.js';
+import { sendVerificationEmail } from '../services/sendMailServices.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
@@ -35,26 +37,21 @@ const signup = async (req: Request, res: Response) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
 
+  const verifyToken = generateVerificationToken();
+  await sendVerificationEmail(email, verifyToken);
+
   const newUser = await createUser({
     email: normalizedEmail,
     password: hashPassword,
     userName: sanitizedUserName,
+    verifyToken,
   });
-
-  const token = generateToken({ id: newUser._id.toString() });
-
-  await User.findByIdAndUpdate(
-    newUser._id,
-    { token },
-    { new: true, runValidators: true }
-  );
 
   res.status(201).send({
     user: {
       email: newUser.email,
       userName: newUser.userName,
     },
-    token,
   });
 };
 
@@ -70,6 +67,10 @@ const signin = async (req: Request, res: Response) => {
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
     throw HttpError(401, 'Email or password is wrong');
+  }
+
+  if (user.verify === false) {
+    throw HttpError(401, "Your email is not verified");
   }
 
   const token = generateToken({ id: user._id.toString() });
@@ -202,6 +203,20 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   res.status(204).json();
 };
 
+const verificateUser = async (req: Request, res: Response) => {
+  const { verifyToken } = req.params;
+
+  const user = await getUserByProperty({ verifyToken });
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verifyToken: null,
+  });
+  res.send({ message: "Verification successful" });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
@@ -209,4 +224,5 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   updateUser: ctrlWrapper(updateUser),
   deleteUser: ctrlWrapper(deleteUser),
+  verificateUser: ctrlWrapper(verificateUser),
 };
