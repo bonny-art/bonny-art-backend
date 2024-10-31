@@ -16,7 +16,7 @@ export interface IUser extends Document {
 export interface UserQuery {
   email?: string;
   userName?: string;
-  verifyToken?: string; 
+  verifyToken?: string;
 }
 
 export interface CreateUserData {

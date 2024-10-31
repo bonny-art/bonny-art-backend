@@ -70,7 +70,7 @@ const signin = async (req: Request, res: Response) => {
   }
 
   if (user.verify === false) {
-    throw HttpError(401, "Your email is not verified");
+    throw HttpError(401, 'Your email is not verified');
   }
 
   const token = generateToken({ id: user._id.toString() });
@@ -208,13 +208,13 @@ const verificateUser = async (req: Request, res: Response) => {
 
   const user = await getUserByProperty({ verifyToken });
   if (!user) {
-    throw HttpError(404, "User not found");
+    throw HttpError(404, 'User not found');
   }
   await User.findByIdAndUpdate(user._id, {
     verify: true,
     verifyToken: null,
   });
-  res.send({ message: "Verification successful" });
+  res.send({ message: 'Verification successful' });
 };
 
 export default {
