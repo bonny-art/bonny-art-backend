@@ -30,5 +30,6 @@ authRouter.delete(
   validateBody(deleteUserSchema),
   authController.deleteUser
 );
+authRouter.get('/verify/:verifyToken', authController.verificateUser);
 
 export default authRouter;

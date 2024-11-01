@@ -31,6 +31,14 @@ const userSchema = new Schema<IUser>(
       minLength: PASSWORD_MIN_LENGTH,
       required: [true, 'Password is required'],
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verifyToken: {
+      type: String,
+      default: null,
+    },
     token: String,
   },
   { versionKey: false, timestamps: true }
