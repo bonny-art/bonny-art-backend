@@ -9,12 +9,14 @@ import {
   getUserByProperty,
   getUserByUsernameIgnoreCase,
   sanitizeUserName,
+  updateUserVerificationStatus,
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 import { IUser } from '@/types/user-types.js';
-import { generateVerificationToken } from '../helpers/crypto-helper.js';
-import { sendVerificationEmail } from '../services/sendMailServices.js';
+import { checkIfUserExists, findUserByVerifyToken } from '../services/userService.js';
+import { hashPassword, generateVerificationToken } from '../helpers/authHelpers.js';
+import { sendVerificationEmail } from '../services/mailService.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
@@ -22,30 +24,19 @@ const signup = async (req: Request, res: Response) => {
 
   const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
 
-  const existingUserByEmail = await getUserByProperty({
-    email: normalizedEmail,
-  });
-  if (existingUserByEmail) {
-    throw HttpError(409, 'Email already exists');
-  }
+  await checkIfUserExists(normalizedEmail, sanitizedUserName);
 
-  const existingUserByName =
-    await getUserByUsernameIgnoreCase(sanitizedUserName);
-  if (existingUserByName) {
-    throw HttpError(409, 'Username already exists');
-  }
-
-  const hashPassword = await bcrypt.hash(password, 10);
-
+  const hash = await hashPassword(password);
   const verifyToken = generateVerificationToken();
-  await sendVerificationEmail(email, verifyToken);
 
   const newUser = await createUser({
     email: normalizedEmail,
-    password: hashPassword,
+    password: hash,
     userName: sanitizedUserName,
     verifyToken,
   });
+
+  await sendVerificationEmail(newUser.email, verifyToken);
 
   res.status(201).send({
     user: {
@@ -206,14 +197,9 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
 const verificateUser = async (req: Request, res: Response) => {
   const { verifyToken } = req.params;
 
-  const user = await getUserByProperty({ verifyToken });
-  if (!user) {
-    throw HttpError(404, 'User not found');
-  }
-  await User.findByIdAndUpdate(user._id, {
-    verify: true,
-    verifyToken: null,
-  });
+  const user = await findUserByVerifyToken(verifyToken);
+  await updateUserVerificationStatus(user._id.toString());
+
   res.send({ message: 'Verification successful' });
 };
 

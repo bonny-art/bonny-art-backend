@@ -1,27 +1,27 @@
 import nodemailer from 'nodemailer';
 
-const { META_PASS, META_EMAIL } = process.env;
+const { MAILTRAP_PASS, MAILTRAP_USER } = process.env;
 
 const transport = nodemailer.createTransport({
   host: 'sandbox.smtp.mailtrap.io',
   port: 2525,
   auth: {
-    user: META_EMAIL,
-    pass: META_PASS,
+    user: MAILTRAP_USER,
+    pass: MAILTRAP_PASS,
   },
 });
 
-export const sendVerificationEmail = async (
+export const sendMail = async (
   to: string,
-  verifyToken: string
+  subject: string,
+  html: string,
+  text: string
 ) => {
-  const verificationLink = `http://localhost:8080/api/auth/verify/${verifyToken}`;
-
   await transport.sendMail({
     to,
     from: 'ovsyannikovnikolai1790@gmail.com',
-    subject: 'Welcome',
-    html: `Please click <a href='${verificationLink}'>here</a> to verify your email.`,
-    text: `Please open this link in your browser: ${verificationLink}`,
+    subject,
+    html,
+    text,
   });
 };
