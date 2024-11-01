@@ -14,8 +14,14 @@ import {
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
 import { IUser } from '@/types/user-types.js';
-import { checkIfUserExists, findUserByVerifyToken } from '../services/userService.js';
-import { hashPassword, generateVerificationToken } from '../helpers/authHelpers.js';
+import {
+  checkIfUserExists,
+  findUserByVerifyToken,
+} from '../services/userService.js';
+import {
+  hashPassword,
+  generateVerificationToken,
+} from '../helpers/authHelpers.js';
 import { sendVerificationEmail } from '../services/mailService.js';
 
 const signup = async (req: Request, res: Response) => {

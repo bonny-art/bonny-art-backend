@@ -1,5 +1,8 @@
 import HttpError from '../helpers/http-error.js';
-import { getUserByProperty, getUserByUsernameIgnoreCase } from '../services/auth-serviece.js';
+import {
+  getUserByProperty,
+  getUserByUsernameIgnoreCase,
+} from '../services/auth-serviece.js';
 
 export const checkIfUserExists = async (email: string, userName: string) => {
   const existingUserByEmail = await getUserByProperty({ email });
@@ -7,7 +10,7 @@ export const checkIfUserExists = async (email: string, userName: string) => {
     throw HttpError(409, 'Email already exists');
   }
 
-  const existingUserByName = await getUserByUsernameIgnoreCase( userName );
+  const existingUserByName = await getUserByUsernameIgnoreCase(userName);
   if (existingUserByName) {
     throw HttpError(409, 'Username already exists');
   }
