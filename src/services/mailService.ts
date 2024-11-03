@@ -8,3 +8,10 @@ export const sendVerificationEmail = async (
   const { subject, html, text } = getVerificationEmailContent(verifyToken);
   await sendMail(to, subject, html, text);
 };
+
+
+export const sendPasswordResetEmail = async (to: string, resetToken: string) => {
+  const { subject, html, text } = getVerificationEmailContent(resetToken);
+  
+  await sendMail(to, subject, html, text);
+};

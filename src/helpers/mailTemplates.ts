@@ -6,3 +6,12 @@ export const getVerificationEmailContent = (verifyToken: string) => {
     text: `Please open this link in your browser: ${verificationLink}`,
   };
 };
+
+
+export const getPasswordContent = (resetToken: string) => {
+  return {
+    subject: 'Password Reset Request',
+    html: `${resetToken}`,
+    text: `${resetToken}`,
+  };
+};

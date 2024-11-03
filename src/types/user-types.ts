@@ -11,6 +11,7 @@ export interface IUser extends Document {
   token?: string;
   verify?: boolean;
   verifyToken?: string;
+  passwordRecoveryToken?: string | null;
 }
 
 export interface UserQuery {

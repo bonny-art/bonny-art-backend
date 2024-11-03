@@ -21,8 +21,9 @@ import {
 import {
   hashPassword,
   generateVerificationToken,
+  generatePasswordResetToken,
 } from '../helpers/authHelpers.js';
-import { sendVerificationEmail } from '../services/mailService.js';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../services/mailService.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
@@ -109,59 +110,32 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+
 const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
 
   const { _id } = req.user;
-  const { userName, email, oldPassword, newPassword } = req.body;
+  const { userName, email } = req.body;
 
   const updates: Partial<IUser> = {};
 
   if (userName) {
     updates.userName = sanitizeUserName(userName, true);
-    const existingUserByName = await getUserByUsernameIgnoreCase(
-      updates.userName
-    );
-    if (
-      existingUserByName &&
-      existingUserByName._id.toString() !== _id.toString()
-    ) {
+    const existingUserByName = await getUserByUsernameIgnoreCase(updates.userName);
+    if (existingUserByName && existingUserByName._id.toString() !== _id.toString()) {
       throw HttpError(409, 'Username already exists');
     }
   }
 
   if (email) {
     const normalizedEmail = email.toLowerCase();
-    const existingUserByEmail = await getUserByProperty({
-      email: normalizedEmail,
-    });
-    if (
-      existingUserByEmail &&
-      existingUserByEmail._id.toString() !== _id.toString()
-    ) {
+    const existingUserByEmail = await getUserByProperty({ email: normalizedEmail });
+    if (existingUserByEmail && existingUserByEmail._id.toString() !== _id.toString()) {
       throw HttpError(409, 'Email already exists');
     }
     updates.email = normalizedEmail;
-  }
-
-  if (oldPassword || newPassword) {
-    const user = req.user;
-
-    if (oldPassword) {
-      const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-      if (!isPasswordValid) {
-        throw HttpError(401, 'Old password is incorrect');
-      }
-    } else {
-      throw HttpError(400, 'Old password is required to change the password');
-    }
-
-    if (newPassword) {
-      const hashPassword = await bcrypt.hash(newPassword, 10);
-      updates.password = hashPassword;
-    }
   }
 
   const updatedUser = await User.findByIdAndUpdate(_id, updates, {
@@ -209,6 +183,41 @@ const verificateUser = async (req: Request, res: Response) => {
   res.send({ message: 'Verification successful' });
 };
 
+
+const requestPasswordReset = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw HttpError(404, 'User not found');
+  }
+
+  const resetToken = generatePasswordResetToken();
+  user.passwordRecoveryToken = resetToken;
+  await user.save();
+
+  await sendPasswordResetEmail(user.email, resetToken);
+
+  res.send({ message: 'Password reset email sent' });
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+   
+  const user = await User.findOne({ passwordRecoveryToken: token });
+  if (!user) {
+    throw HttpError(404, 'Invalid or expired token');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
+  user.passwordRecoveryToken = null;
+  await user.save();
+
+  res.send({ message: 'Password has been reset successfully' });
+};
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
@@ -217,4 +226,6 @@ export default {
   updateUser: ctrlWrapper(updateUser),
   deleteUser: ctrlWrapper(deleteUser),
   verificateUser: ctrlWrapper(verificateUser),
+  requestPasswordReset: ctrlWrapper(requestPasswordReset),
+  resetPassword: ctrlWrapper(resetPassword)
 };
