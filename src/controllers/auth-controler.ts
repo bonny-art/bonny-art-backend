@@ -23,7 +23,10 @@ import {
   generateVerificationToken,
   generatePasswordResetToken,
 } from '../helpers/authHelpers.js';
-import { sendPasswordResetEmail, sendVerificationEmail } from '../services/mailService.js';
+import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from '../services/mailService.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
@@ -110,7 +113,6 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
-
 const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
@@ -123,16 +125,26 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 
   if (userName) {
     updates.userName = sanitizeUserName(userName, true);
-    const existingUserByName = await getUserByUsernameIgnoreCase(updates.userName);
-    if (existingUserByName && existingUserByName._id.toString() !== _id.toString()) {
+    const existingUserByName = await getUserByUsernameIgnoreCase(
+      updates.userName
+    );
+    if (
+      existingUserByName &&
+      existingUserByName._id.toString() !== _id.toString()
+    ) {
       throw HttpError(409, 'Username already exists');
     }
   }
 
   if (email) {
     const normalizedEmail = email.toLowerCase();
-    const existingUserByEmail = await getUserByProperty({ email: normalizedEmail });
-    if (existingUserByEmail && existingUserByEmail._id.toString() !== _id.toString()) {
+    const existingUserByEmail = await getUserByProperty({
+      email: normalizedEmail,
+    });
+    if (
+      existingUserByEmail &&
+      existingUserByEmail._id.toString() !== _id.toString()
+    ) {
       throw HttpError(409, 'Email already exists');
     }
     updates.email = normalizedEmail;
@@ -183,10 +195,9 @@ const verificateUser = async (req: Request, res: Response) => {
   res.send({ message: 'Verification successful' });
 };
 
-
 const requestPasswordReset = async (req: Request, res: Response) => {
   const { email } = req.body;
-  
+
   const user = await User.findOne({ email });
   if (!user) {
     throw HttpError(404, 'User not found');
@@ -204,7 +215,7 @@ const requestPasswordReset = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
   const { token } = req.params;
   const { newPassword } = req.body;
-   
+
   const user = await User.findOne({ passwordRecoveryToken: token });
   if (!user) {
     throw HttpError(404, 'Invalid or expired token');
@@ -227,5 +238,5 @@ export default {
   deleteUser: ctrlWrapper(deleteUser),
   verificateUser: ctrlWrapper(verificateUser),
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
-  resetPassword: ctrlWrapper(resetPassword)
+  resetPassword: ctrlWrapper(resetPassword),
 };

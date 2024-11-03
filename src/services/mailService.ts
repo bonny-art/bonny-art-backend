@@ -9,9 +9,11 @@ export const sendVerificationEmail = async (
   await sendMail(to, subject, html, text);
 };
 
-
-export const sendPasswordResetEmail = async (to: string, resetToken: string) => {
+export const sendPasswordResetEmail = async (
+  to: string,
+  resetToken: string
+) => {
   const { subject, html, text } = getVerificationEmailContent(resetToken);
-  
+
   await sendMail(to, subject, html, text);
 };

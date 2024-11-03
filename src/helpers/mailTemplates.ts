@@ -7,7 +7,6 @@ export const getVerificationEmailContent = (verifyToken: string) => {
   };
 };
 
-
 export const getPasswordContent = (resetToken: string) => {
   return {
     subject: 'Password Reset Request',
