@@ -13,15 +13,17 @@ import {
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
-import { IUser } from '@/types/user-types.js';
+import { IUser } from '../types/user-types.js';
 import {
   checkIfUserExists,
   findUserByVerifyToken,
+  generateAndSavePasswordResetToken,
+  getUserByEmail,
+  resetUserPassword,
 } from '../services/userService.js';
 import {
   hashPassword,
   generateVerificationToken,
-  generatePasswordResetToken,
 } from '../helpers/authHelpers.js';
 import {
   sendPasswordResetEmail,
@@ -198,15 +200,8 @@ const verificateUser = async (req: Request, res: Response) => {
 const requestPasswordReset = async (req: Request, res: Response) => {
   const { email } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw HttpError(404, 'User not found');
-  }
-
-  const resetToken = generatePasswordResetToken();
-  user.passwordRecoveryToken = resetToken;
-  await user.save();
-
+  const user = await getUserByEmail(email);
+  const resetToken = await generateAndSavePasswordResetToken(user);
   await sendPasswordResetEmail(user.email, resetToken);
 
   res.send({ message: 'Password reset email sent' });
@@ -216,19 +211,11 @@ const resetPassword = async (req: Request, res: Response) => {
   const { token } = req.params;
   const { newPassword } = req.body;
 
-  const user = await User.findOne({ passwordRecoveryToken: token });
-  if (!user) {
-    throw HttpError(404, 'Invalid or expired token');
-  }
-
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  user.password = hashedPassword;
-  user.passwordRecoveryToken = null;
-  await user.save();
+  await resetUserPassword(token, newPassword);
 
   res.send({ message: 'Password has been reset successfully' });
 };
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
