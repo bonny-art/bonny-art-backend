@@ -18,6 +18,6 @@ export const getPasswordContent = (resetToken: string) => {
       <p>If you did not request this, please ignore this email.</p>
       <p>Thank you!</p>
     `,
-    text: `Hello,\n\nWe received a request to reset your password. Please use the following code to complete the process:\n\n${resetToken}\n\nCopy this code and paste it in the required field to reset your password.\n\nIf you did not request this, please ignore this email.\n\nThank you!`
+    text: `Hello,\n\nWe received a request to reset your password. Please use the following code to complete the process:\n\n${resetToken}\n\nCopy this code and paste it in the required field to reset your password.\n\nIf you did not request this, please ignore this email.\n\nThank you!`,
   };
 };

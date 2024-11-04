@@ -37,12 +37,11 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const generateAndSavePasswordResetToken = async (user: IUser) => {
-  const resetToken = generatePasswordResetToken(); 
+  const resetToken = generatePasswordResetToken();
   user.passwordRecoveryToken = resetToken;
   await user.save();
   return resetToken;
 };
-
 
 export const resetUserPassword = async (token: string, newPassword: string) => {
   const user = await User.findOne({ passwordRecoveryToken: token });

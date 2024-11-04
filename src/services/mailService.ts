@@ -1,5 +1,8 @@
 import { sendMail } from '../services/sendMailServices.js';
-import { getPasswordContent, getVerificationEmailContent } from '../helpers/mailTemplates.js';
+import {
+  getPasswordContent,
+  getVerificationEmailContent,
+} from '../helpers/mailTemplates.js';
 
 export const sendVerificationEmail = async (
   to: string,
