@@ -10,7 +10,7 @@ export interface IUser extends Document {
   userName: string;
   token?: string;
   verify?: boolean;
-  verifyToken?: string;
+  verifyToken?: string | null;
   passwordRecoveryToken?: string | null;
 }
 
@@ -18,6 +18,7 @@ export interface UserQuery {
   email?: string;
   userName?: string;
   verifyToken?: string;
+  passwordRecoveryToken?: string | null;
 }
 
 export interface CreateUserData {
