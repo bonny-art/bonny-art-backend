@@ -1,16 +1,21 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
 
-const authorSchema = new Schema({
-  name: {
-    uk: { type: String, required: true },
-    en: { type: String, required: true },
+const authorSchema = new Schema(
+  {
+    name: {
+      uk: { type: String, required: true },
+      en: { type: String, required: true },
+    },
+    bio: {
+      uk: { type: String },
+      en: { type: String },
+    },
   },
-  bio: {
-    uk: { type: String },
-    en: { type: String },
-  },
-});
+  {
+    versionKey: false,
+  }
+);
 
 export const addAuthorSchema = Joi.object({
   name: Joi.object({

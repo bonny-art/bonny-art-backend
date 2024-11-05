@@ -1,16 +1,21 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
 
-const cycleSchema = new Schema({
-  name: {
-    uk: { type: String, required: true },
-    en: { type: String, required: true },
+const cycleSchema = new Schema(
+  {
+    name: {
+      uk: { type: String, required: true },
+      en: { type: String, required: true },
+    },
+    description: {
+      uk: { type: String, required: true },
+      en: { type: String, required: true },
+    },
   },
-  description: {
-    uk: { type: String, required: true },
-    en: { type: String, required: true },
-  },
-});
+  {
+    versionKey: false,
+  }
+);
 
 export const addCycleSchema = Joi.object({
   name: Joi.object({

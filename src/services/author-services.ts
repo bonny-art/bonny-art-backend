@@ -6,6 +6,14 @@ export const getAuthorById = async (authorId: string) => {
   return author;
 };
 
+export const getAuthorByName = async (name: string) => {
+  const author = await Author.findOne({
+    $or: [{ 'name.uk': name }, { 'name.en': name }],
+  });
+
+  return author;
+};
+
 export const createAuthor = async (authorData: {
   name: {
     uk: string;

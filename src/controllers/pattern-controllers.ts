@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
-import * as authorServices from '../services/author-services.js';
-import * as genreServices from '../services/genre-services.js';
-import * as cycleServices from '../services/cycle-services.js';
+import * as serviceHelpers from '../services/helpers.js';
 import * as dataHandlers from '../helpers/data-handlers.js';
 import {
   checkPatternExistsRequest,
@@ -178,69 +176,27 @@ export const addPattern = async (
       pictures,
     } = req.body;
 
-    let existingAuthor;
+    const patternExists = await patternServices.getPatternByCodename(codename);
 
-    if (typeof author === 'string') {
-      existingAuthor = await authorServices.getAuthorById(author);
-      if (!existingAuthor) {
-        throw HttpError(404, 'Author not found');
-      }
-    } else {
-      const newAuthorData = {
-        name: {
-          uk: author.name.uk,
-          en: author.name.en,
-        },
-        bio: {
-          uk: author.bio?.uk,
-          en: author.bio?.en,
-        },
-      };
-      existingAuthor = await authorServices.createAuthor(newAuthorData);
+    if (patternExists) {
+      throw HttpError(400, `Pattern with codename ${codename} already exists`);
     }
 
-    let existingGenre;
+    const existingAuthor = await serviceHelpers.findOrCreateAuthor(author);
 
-    if (typeof genre === 'string') {
-      existingGenre = await genreServices.getGenreById(genre);
-      if (!existingGenre) {
-        throw HttpError(404, 'Genre not found');
-      }
-    } else {
-      const newGenreData = {
-        name: {
-          uk: genre.name.uk,
-          en: genre.name.en,
-        },
-        description: {
-          uk: genre.description?.uk,
-          en: genre.description?.en,
-        },
-      };
-      existingGenre = await genreServices.createGenre(newGenreData);
+    if (!existingAuthor) {
+      throw HttpError(404, 'Author not found or could not be created');
     }
 
-    let existingCycle;
-    if (cycle) {
-      if (typeof cycle === 'string') {
-        existingCycle = await cycleServices.getCycleById(cycle);
-        if (!existingCycle) {
-          throw HttpError(404, 'Cycle not found');
-        }
-      } else {
-        const newCycleData = {
-          name: {
-            uk: cycle.name.uk,
-            en: cycle.name.en,
-          },
-          description: {
-            uk: cycle.description?.uk,
-            en: cycle.description?.en,
-          },
-        };
-        existingCycle = await cycleServices.createCycle(newCycleData);
-      }
+    const existingGenre = await serviceHelpers.findOrCreateGenre(genre);
+
+    if (!existingGenre) {
+      throw HttpError(404, 'Genre not found or could not be created');
     }
+
+    const existingCycle = cycle
+      ? await serviceHelpers.findOrCreateCycle(cycle)
+      : undefined;
 
     const patternNumber = codename.substring(0, 4);
     const patternType = codename.charAt(6);
@@ -272,7 +228,6 @@ export const addPattern = async (
       cycle: existingCycle?._id || undefined,
       pictures,
     });
-    console.log('🚀 ~ newPattern:', newPattern);
 
     res.status(201).send({ pattern: newPattern });
   } catch (error) {

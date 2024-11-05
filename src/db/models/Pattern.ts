@@ -4,92 +4,97 @@ import { addAuthorSchema } from './Author.js';
 import { addGenreSchema } from './Genre.js';
 import { addCycleSchema } from './Cycle.js';
 
-const patternNumberRegex = /^[A-Za-z]?\d{3}$/;
+const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
 const validPatternTypes = ['S', 'B', 'T'];
 
-const patternSchema = new Schema({
-  codename: { type: String, required: true },
-  patternNumber: {
-    type: String,
-    required: true,
-    match: [
-      patternNumberRegex,
-      'Number must be either 4 digits or 1 letter followed by 3 digits',
+const patternSchema = new Schema(
+  {
+    codename: { type: String, required: true },
+    patternNumber: {
+      type: String,
+      required: true,
+      match: [
+        patternNumberRegex,
+        'Number must be either 4 digits or 1 letter followed by 3 digits',
+      ],
+    },
+    patternType: {
+      type: String,
+      required: true,
+      enum: {
+        values: validPatternTypes,
+        message: 'Pattern type must be either S, B, or T',
+      },
+    },
+    width: {
+      type: Number,
+      required: true,
+      min: [1, 'Width must be greater than zero'],
+    },
+    height: {
+      type: Number,
+      required: true,
+      min: [1, 'Height must be greater than zero'],
+    },
+    maxSize: {
+      type: Number,
+      required: true,
+    },
+    colors: { type: Number, required: true },
+    solids: { type: Number, required: true },
+    blends: { type: Number, required: true },
+    title: {
+      uk: { type: String, required: true },
+      en: { type: String, required: true },
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'Author',
+      required: true,
+    },
+    origin: {
+      type: String,
+      required: true,
+      enum: {
+        values: ['painting', 'illustration', 'photo'],
+        message: 'Origin must be either painting, illustration, or photo',
+      },
+    },
+    genre: {
+      type: Schema.Types.ObjectId,
+      ref: 'Genre',
+      required: true,
+    },
+    cycle: {
+      type: Schema.Types.ObjectId,
+      ref: 'Cycle',
+    },
+    ratings: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+          required: true,
+        },
+        rating: { type: Number, required: true, min: 0, max: 5 },
+      },
     ],
-  },
-  patternType: {
-    type: String,
-    required: true,
-    enum: {
-      values: validPatternTypes,
-      message: 'Pattern type must be either S, B, or T',
-    },
-  },
-  width: {
-    type: Number,
-    required: true,
-    min: [1, 'Width must be greater than zero'],
-  },
-  height: {
-    type: Number,
-    required: true,
-    min: [1, 'Height must be greater than zero'],
-  },
-  maxSize: {
-    type: Number,
-    required: true,
-  },
-  colors: { type: Number, required: true },
-  solids: { type: Number, required: true },
-  blends: { type: Number, required: true },
-  title: {
-    uk: { type: String, required: true },
-    en: { type: String, required: true },
-  },
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: 'Author',
-    required: true,
-  },
-  origin: {
-    type: String,
-    required: true,
-    enum: {
-      values: ['painting', 'illustration', 'photo'],
-      message: 'Origin must be either painting, illustration, or photo',
-    },
-  },
-  genre: {
-    type: Schema.Types.ObjectId,
-    ref: 'Genre',
-    required: true,
-  },
-  cycle: {
-    type: Schema.Types.ObjectId,
-    ref: 'Cycle',
-  },
-  ratings: [
-    {
-      userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+    pictures: {
+      main: {
+        url: { type: String, required: true },
       },
-      rating: { type: Number, required: true, min: 0, max: 5 },
-    },
-  ],
-  pictures: {
-    main: {
-      url: { type: String, required: true },
-    },
-    pattern: {
-      url: {
-        uk: { type: String, required: true },
-        en: { type: String, required: true },
+      pattern: {
+        url: {
+          uk: { type: String, required: true },
+          en: { type: String, required: true },
+        },
       },
     },
   },
-});
+  {
+    versionKey: false,
+  }
+);
 
 export const addPatternSchema = Joi.object({
   codename: Joi.string().required().messages({

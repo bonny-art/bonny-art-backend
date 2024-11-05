@@ -6,6 +6,14 @@ export const getGenreById = async (genreId: string) => {
   return genre;
 };
 
+export const getGenreByName = async (name: string) => {
+  const genre = await Genre.findOne({
+    $or: [{ 'name.uk': name }, { 'name.en': name }],
+  });
+
+  return genre;
+};
+
 export const createGenre = async (genreData: {
   name: {
     uk: string;

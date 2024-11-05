@@ -154,3 +154,8 @@ export const createPattern = async (patternData: PatternData) => {
   await newPattern.save();
   return newPattern;
 };
+
+export const getPatternByCodename = async (codename: string) => {
+  const pattern = await Pattern.findOne({ codename });
+  return pattern;
+};

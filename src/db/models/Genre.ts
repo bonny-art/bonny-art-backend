@@ -1,16 +1,21 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
 
-const genreSchema = new Schema({
-  name: {
-    uk: { type: String, required: true },
-    en: { type: String, required: true },
+const genreSchema = new Schema(
+  {
+    name: {
+      uk: { type: String, required: true },
+      en: { type: String, required: true },
+    },
+    description: {
+      uk: { type: String },
+      en: { type: String },
+    },
   },
-  description: {
-    uk: { type: String },
-    en: { type: String },
-  },
-});
+  {
+    versionKey: false,
+  }
+);
 
 export const addGenreSchema = Joi.object({
   name: Joi.object({
