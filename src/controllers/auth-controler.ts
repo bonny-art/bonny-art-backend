@@ -18,10 +18,7 @@ import {
   findUserByVerifyToken,
   updateUserProperty,
 } from '../services/userService.js';
-import {
-  hashPassword,
-  generateCryptoToken,
-} from '../helpers/authHelpers.js';
+import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
 import {
   sendPasswordResetEmail,
   sendVerificationEmail,
@@ -221,7 +218,9 @@ const requestPasswordReset = async (req: Request, res: Response) => {
   }
 
   const resetToken = generateCryptoToken();
-  await updateUserProperty(user._id.toString(), { passwordRecoveryToken: resetToken });
+  await updateUserProperty(user._id.toString(), {
+    passwordRecoveryToken: resetToken,
+  });
   await sendPasswordResetEmail(user.email, resetToken);
 
   res.send({ message: 'Password reset email sent' });
@@ -236,8 +235,10 @@ const resetPassword = async (req: Request, res: Response) => {
     throw HttpError(404, 'Invalid or expired token');
   }
   const hashedPassword = await hashPassword(newPassword);
-  const updatedUser = await updateUserProperty(user._id.toString(), { password: hashedPassword, passwordRecoveryToken: null });
-
+  const updatedUser = await updateUserProperty(user._id.toString(), {
+    password: hashedPassword,
+    passwordRecoveryToken: null,
+  });
 
   if (!updatedUser) {
     throw HttpError(404, 'User not found');

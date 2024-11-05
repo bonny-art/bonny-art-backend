@@ -26,7 +26,10 @@ export const findUserByVerifyToken = async (verifyToken: string) => {
   return user;
 };
 
-export const updateUserProperty = async (userId: string, updates: Partial<IUser>) => {
+export const updateUserProperty = async (
+  userId: string,
+  updates: Partial<IUser>
+) => {
   const user = await User.findByIdAndUpdate(userId, updates, { new: true });
   return user;
 };
