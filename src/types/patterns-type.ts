@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import { Language } from './common-types';
 
 export type Genre =
@@ -55,4 +56,39 @@ export type FormattedPattern = {
 
 export type GetAllPatternsResult = {
   patterns: FormattedPattern[];
+};
+
+export type PatternData = {
+  codename: string;
+  patternNumber: string;
+  patternType: 'S' | 'B' | 'T';
+  width: number;
+  height: number;
+  maxSize: number;
+  colors: number;
+  solids: number;
+  blends: number;
+  title: {
+    uk: string;
+    en: string;
+  };
+  author: mongoose.Types.ObjectId;
+  origin: 'painting' | 'illustration' | 'photo';
+  genre: mongoose.Types.ObjectId;
+  cycle?: mongoose.Types.ObjectId;
+  ratings?: {
+    userId: string;
+    rating: number;
+  }[];
+  pictures: {
+    main: {
+      url: string;
+    };
+    pattern: {
+      url: {
+        uk: string;
+        en: string;
+      };
+    };
+  };
 };

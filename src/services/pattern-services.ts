@@ -4,7 +4,7 @@ import { Work } from '../db/models/Work.js';
 import { WorkPhoto } from '../db/models/WorkPhoto.js';
 import { Master } from '../db/models/Master.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
-import { PatternDoc } from '../types/patterns-type.js';
+import { PatternData, PatternDoc } from '../types/patterns-type.js';
 import {
   Language,
   SortDirection,
@@ -147,4 +147,10 @@ export const getWorkByID = async (patternId: string) => {
 export const getMasterByID = async (masterId: string) => {
   const master = await Master.findById(masterId);
   return master;
+};
+
+export const createPattern = async (patternData: PatternData) => {
+  const newPattern = new Pattern(patternData);
+  await newPattern.save();
+  return newPattern;
 };
