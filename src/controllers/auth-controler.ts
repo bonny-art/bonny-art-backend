@@ -19,9 +19,7 @@ import {
   updateUserProperty,
 } from '../services/userService.js';
 import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
-import {
-  sendEmail,
-} from '../services/mailService.js';
+import { sendEmail } from '../services/mailService.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
@@ -42,7 +40,6 @@ const signup = async (req: Request, res: Response) => {
     verifyToken,
   });
 
-  // await sendVerificationEmail(newUser.email, verifyToken);
   await sendEmail(newUser.email, verifyToken, 'verification', language);
 
   res.status(201).send({
@@ -224,7 +221,6 @@ const requestPasswordReset = async (req: Request, res: Response) => {
   await updateUserProperty(user._id.toString(), {
     passwordRecoveryToken: resetToken,
   });
-  // await sendPasswordResetEmail(user.email, resetToken);
   await sendEmail(user.email, resetToken, 'passwordReset', language);
   res.send({ message: 'Password reset email sent' });
 };
