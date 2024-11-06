@@ -1,8 +1,8 @@
-export const getVerificationEmailContent = (
+export const getEmailVerificationEmailContent = (
   verifyToken: string,
-  language: string = 'en'
+  language: string = 'uk'
 ) => {
-  const verificationLink = `http://localhost:8080/api/auth/verify/${verifyToken}`;
+  const verificationLink = `http://localhost:8080/api/${language}/auth/verify/${verifyToken}`;
   return language === 'uk'
     ? {
         subject: 'Ласкаво просимо',
@@ -16,9 +16,9 @@ export const getVerificationEmailContent = (
       };
 };
 
-export const getPasswordContent = (
+export const getPasswordRecoveryEmailContent = (
   resetToken: string,
-  language: string = 'en'
+  language: string = 'uk'
 ) => {
   return language === 'uk'
     ? {

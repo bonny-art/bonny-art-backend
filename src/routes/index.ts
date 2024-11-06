@@ -5,7 +5,7 @@ import { patternRouter } from './api/pattern-routes.js';
 
 const router = express.Router();
 
-router.use('/auth', authRoutes);
+router.use('/:language/auth', authRoutes);
 router.use('/:language/patterns', patternRouter);
 
 export default router;

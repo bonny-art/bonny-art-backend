@@ -20,12 +20,12 @@ import {
 } from '../services/userService.js';
 import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
 import {
-  sendPasswordResetEmail,
-  sendVerificationEmail,
+  sendEmail,
 } from '../services/mailService.js';
 
 const signup = async (req: Request, res: Response) => {
   const { email, password, userName } = req.body;
+  const language = req.params.language || 'uk';
   const normalizedEmail = email.toLowerCase();
 
   const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
@@ -42,7 +42,8 @@ const signup = async (req: Request, res: Response) => {
     verifyToken,
   });
 
-  await sendVerificationEmail(newUser.email, verifyToken);
+  // await sendVerificationEmail(newUser.email, verifyToken);
+  await sendEmail(newUser.email, verifyToken, 'verification', language);
 
   res.status(201).send({
     user: {
@@ -211,8 +212,10 @@ const verificateUser = async (req: Request, res: Response) => {
 
 const requestPasswordReset = async (req: Request, res: Response) => {
   const { email } = req.body;
+  const language = req.params.language || 'uk';
+  const trimmedEmail = email.trim();
 
-  const user = await getUserByProperty({ email });
+  const user = await getUserByProperty({ email: trimmedEmail });
   if (!user) {
     throw HttpError(404, 'User not found');
   }
@@ -221,8 +224,8 @@ const requestPasswordReset = async (req: Request, res: Response) => {
   await updateUserProperty(user._id.toString(), {
     passwordRecoveryToken: resetToken,
   });
-  await sendPasswordResetEmail(user.email, resetToken);
-
+  // await sendPasswordResetEmail(user.email, resetToken);
+  await sendEmail(user.email, resetToken, 'passwordReset', language);
   res.send({ message: 'Password reset email sent' });
 };
 
