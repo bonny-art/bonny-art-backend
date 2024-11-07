@@ -35,10 +35,3 @@ export const sanitizeUserName = (
 
   return sanitizedName;
 };
-
-export const updateUserVerificationStatus = async (userId: string) => {
-  await User.findByIdAndUpdate(userId, {
-    verify: true,
-    verifyToken: null,
-  });
-};

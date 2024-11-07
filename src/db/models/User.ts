@@ -39,6 +39,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: null,
     },
+    passwordRecoveryToken: {
+      type: String,
+      default: null,
+    },
     token: String,
   },
   { versionKey: false, timestamps: true }
