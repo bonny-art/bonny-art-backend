@@ -12,6 +12,9 @@ export interface setLanguageRequest extends Request {
 }
 
 export interface checkPatternExistsRequest extends setLanguageRequest {
+  params: {
+    patternId: string; // Указываем patternId как обязательный параметр
+  };
   pattern?: PatternDoc;
 }
 

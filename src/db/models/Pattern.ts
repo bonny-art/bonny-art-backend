@@ -27,14 +27,15 @@ const patternSchema = new Schema({
       rating: { type: Number, required: true, min: 0, max: 5 },
     },
   ],
+  averageRating: { type: Number, default: 0 },
   pictures: {
     main: {
       url: { type: String, required: true },
     },
     pattern: {
       url: {
-        uk: { type: String, required: true },
-        en: { type: String, required: true },
+        uk: { type: String, required: false }, // поставил для проверки false (изменить)
+        en: { type: String, required: false }, // поставил для проверки false (изменить)
       },
     },
   },

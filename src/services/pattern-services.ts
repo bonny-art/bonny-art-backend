@@ -148,3 +148,20 @@ export const getMasterByID = async (masterId: string) => {
   const master = await Master.findById(masterId);
   return master;
 };
+
+
+export const addRating = async (patternId: string, userId: string, rating: number) => {
+  const pattern = await Pattern.findById(patternId);
+
+  if (!pattern) {
+    throw new Error('Pattern not found');
+  }
+
+  pattern.ratings.push({ userId, rating });
+
+  const totalRating = pattern.ratings.reduce((acc, i) => acc + i.rating, 0);
+  pattern.averageRating = parseFloat((totalRating / pattern.ratings.length).toFixed(1));
+
+  await pattern.save();
+  return pattern;
+};

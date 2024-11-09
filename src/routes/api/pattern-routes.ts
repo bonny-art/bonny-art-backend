@@ -29,4 +29,7 @@ patternRouter.get(
   patternControllers.getPhotosByPattern
 );
 
+patternRouter.post('/:patternId/rate', patternControllers.ratePattern);
+
+
 // patternRouter.get('/:patternId', patternControllers.getPhotosByPattern);

@@ -7,6 +7,7 @@ import {
 } from '../types/common-types.js';
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
+import { addRating } from '../services/pattern-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -152,6 +153,22 @@ export const getPhotosByPattern = async (
       },
       responsePhotos,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const ratePattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { patternId } = req.params;
+  const { userId, rating } = req.body;
+
+  try {
+    const updatedPattern = await addRating(patternId, userId, rating);
+    res.send({ averageRating: updatedPattern.averageRating });
   } catch (error) {
     next(error);
   }
