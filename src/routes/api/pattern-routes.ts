@@ -30,6 +30,10 @@ patternRouter.get(
   patternControllers.getPhotosByPattern
 );
 
-patternRouter.post('/:patternId/rate', authenticate , patternControllers.ratePattern);
+patternRouter.post(
+  '/:patternId/rate',
+  authenticate,
+  patternControllers.ratePattern
+);
 
 // patternRouter.get('/:patternId', patternControllers.getPhotosByPattern);

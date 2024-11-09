@@ -167,7 +167,7 @@ export const ratePattern = async (
   const { rating } = req.body;
 
   try {
-    const userId = req.user?._id; 
+    const userId = req.user?._id;
     if (!userId) {
       throw new Error('User not authenticated');
     }

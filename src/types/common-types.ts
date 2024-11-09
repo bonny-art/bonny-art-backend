@@ -16,7 +16,7 @@ export interface checkPatternExistsRequest extends setLanguageRequest {
     patternId: string;
   };
   pattern?: PatternDoc;
-  user?: { 
+  user?: {
     _id: string;
   };
 }

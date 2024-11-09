@@ -160,12 +160,14 @@ export const addRating = async (
     throw new Error('Pattern not found');
   }
 
-  const existingRating = pattern.ratings.find((r) => r.userId.toString() === userId);
+  const existingRating = pattern.ratings.find(
+    (r) => r.userId.toString() === userId
+  );
   if (existingRating) {
     existingRating.rating = rating;
   } else {
     pattern.ratings.push({ userId, rating });
-  }  
+  }
 
   const totalRating = pattern.ratings.reduce((acc, i) => acc + i.rating, 0);
   pattern.averageRating = parseFloat(
