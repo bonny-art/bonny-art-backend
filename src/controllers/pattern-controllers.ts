@@ -164,9 +164,14 @@ export const ratePattern = async (
   next: NextFunction
 ) => {
   const { patternId } = req.params;
-  const { userId, rating } = req.body;
+  const { rating } = req.body;
 
   try {
+    const userId = req.user?._id; 
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
+
     const updatedPattern = await addRating(patternId, userId, rating);
     res.send({ averageRating: updatedPattern.averageRating });
   } catch (error) {
