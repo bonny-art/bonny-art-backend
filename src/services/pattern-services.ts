@@ -23,6 +23,25 @@ export const getAllPatternsByPage = async (page: number, limit: number) => {
   const patterns: PatternDoc[] = await Pattern.find({})
     .skip(skip)
     .limit(limit)
+    .populate('author', 'name')
+    .populate('genre', 'name')
+    .populate('cycle', 'name')
+    .lean<PatternDoc[]>();
+
+  const totalCount = await Pattern.countDocuments();
+
+  return { patterns, totalCount };
+};
+
+export const getAllPatternsByPageAndFilter = async (
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
+
+  const patterns: PatternDoc[] = await Pattern.find({})
+    .skip(skip)
+    .limit(limit)
     .lean<PatternDoc[]>();
 
   const totalCount = await Pattern.countDocuments();

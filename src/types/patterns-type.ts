@@ -24,6 +24,12 @@ export type Genre =
 export type PatternDoc = {
   _id: ObjectId;
   codename: string;
+  patternNumber: string;
+  patternType: 'S' | 'B' | 'T';
+  width: number;
+  height: number;
+  maxSize: number;
+  colors: number;
   solids: number;
   blends: number;
   title: { [key in Language]: string };

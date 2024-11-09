@@ -8,8 +8,8 @@ const cycleSchema = new Schema(
       en: { type: String, required: true },
     },
     description: {
-      uk: { type: String, required: true },
-      en: { type: String, required: true },
+      uk: { type: String },
+      en: { type: String },
     },
   },
   {
@@ -29,15 +29,13 @@ export const addCycleSchema = Joi.object({
     }),
   }),
   description: Joi.object({
-    uk: Joi.string().required().messages({
+    uk: Joi.string().optional().messages({
       'string.base': 'Description in Ukrainian must be a string',
-      'any.required': 'Description in Ukrainian is required',
     }),
-    en: Joi.string().required().messages({
+    en: Joi.string().optional().messages({
       'string.base': 'Description in English must be a string',
-      'any.required': 'Description in English is required',
     }),
   }),
 });
 
-export const Cycle = model('Collection', cycleSchema);
+export const Cycle = model('Cycle', cycleSchema);
