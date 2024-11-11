@@ -10,6 +10,7 @@ import {
   SortDirection,
   SortPhotosBy,
 } from '../types/common-types.js';
+import { RatingModel } from '../db/models/Reiting.js';
 
 export const getAllPatterns = async () => {
   const patterns: PatternDoc[] = await Pattern.find({});
@@ -147,4 +148,46 @@ export const getWorkByID = async (patternId: string) => {
 export const getMasterByID = async (masterId: string) => {
   const master = await Master.findById(masterId);
   return master;
+};
+
+export const addRating = async (
+  patternId: string,
+  userId: string,
+  rating: number
+) => {
+  const pattern = await Pattern.findById(patternId);
+
+  if (!pattern) {
+    throw new Error('Pattern not found');
+  }
+
+  if (!pattern.rating) {
+    pattern.rating = { averageRating: 0, ratings: [] };
+  }
+
+  const userObjectId = new Types.ObjectId(userId);
+
+  const existingRating = pattern.rating.ratings.find(
+    (r) => r.userId.toString() === userObjectId.toString()
+  );
+
+  if (existingRating) {
+    existingRating.rating = rating;
+  } else {
+    pattern.rating.ratings.push(
+      new RatingModel({ userId: userObjectId, rating })
+    );
+  }
+
+  const totalRating = pattern.rating.ratings.reduce(
+    (acc, i) => acc + i.rating,
+    0
+  );
+
+  pattern.rating.averageRating = parseFloat(
+    (totalRating / pattern.rating.ratings.length).toFixed(1)
+  );
+
+  await pattern.save();
+  return pattern;
 };

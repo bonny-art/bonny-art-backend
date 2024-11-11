@@ -7,6 +7,7 @@ import {
 } from '../types/common-types.js';
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
+import { addRating } from '../services/pattern-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -152,6 +153,33 @@ export const getPhotosByPattern = async (
       },
       responsePhotos,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const ratePattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { patternId } = req.params;
+  const { rating } = req.body;
+
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
+
+    const updatedPattern = await addRating(patternId, userId, rating);
+
+    // Используем if-else вместо тернарного оператора
+    if (updatedPattern.rating) {
+      res.send({ averageRating: updatedPattern.rating.averageRating });
+    } else {
+      throw new Error('Pattern rating not found');
+    }
   } catch (error) {
     next(error);
   }

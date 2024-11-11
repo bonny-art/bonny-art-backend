@@ -12,7 +12,13 @@ export interface setLanguageRequest extends Request {
 }
 
 export interface checkPatternExistsRequest extends setLanguageRequest {
+  params: {
+    patternId: string;
+  };
   pattern?: PatternDoc;
+  user?: {
+    _id: string;
+  };
 }
 
 export interface AuthenticatedRequest extends Request {

@@ -21,9 +21,9 @@ import {
 import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
 import { sendEmail } from '../services/mailService.js';
 
-const signup = async (req: Request, res: Response) => {
+const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
-  const language = req.params.language || 'uk';
+  const language = req.lang || 'uk';
   const normalizedEmail = email.toLowerCase();
 
   const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
@@ -207,9 +207,12 @@ const verificateUser = async (req: Request, res: Response) => {
   res.send({ message: 'Verification successful' });
 };
 
-const requestPasswordReset = async (req: Request, res: Response) => {
+const requestPasswordReset = async (
+  req: Request & { lang?: string },
+  res: Response
+) => {
   const { email } = req.body;
-  const language = req.params.language || 'uk';
+  const language = req.lang || 'uk';
   const trimmedEmail = email.trim();
 
   const user = await getUserByProperty({ email: trimmedEmail });
