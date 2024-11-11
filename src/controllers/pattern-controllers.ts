@@ -173,7 +173,13 @@ export const ratePattern = async (
     }
 
     const updatedPattern = await addRating(patternId, userId, rating);
-    res.send({ averageRating: updatedPattern.averageRating });
+
+    // Используем if-else вместо тернарного оператора
+    if (updatedPattern.rating) {
+      res.send({ averageRating: updatedPattern.rating.averageRating });
+    } else {
+      throw new Error('Pattern rating not found');
+    }
   } catch (error) {
     next(error);
   }
