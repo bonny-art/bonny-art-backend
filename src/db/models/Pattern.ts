@@ -4,6 +4,7 @@ import { addAuthorSchema } from './Author.js';
 import { addGenreSchema } from './Genre.js';
 import { addCycleSchema } from './Cycle.js';
 import { PatternSchemaI } from '../../types/pattern-type.js';
+import { ratingSchema } from './Raiting.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
@@ -74,17 +75,9 @@ const patternSchema = new Schema<PatternSchemaI>(
     rating: {
       averageRating: { type: Number, default: 0 },
       ratings: {
-        type: [
-          {
-            userId: {
-              type: Schema.Types.ObjectId,
-              ref: 'User',
-              required: true,
-            },
-            rating: { type: Number, required: true, min: 0, max: 5 },
-          },
-        ],
+        type: [ratingSchema],
         default: [],
+        
       },
     },
     pictures: {
@@ -179,5 +172,16 @@ export const addPatternSchema = Joi.object({
     }).required(),
   }).required(),
 });
+
+export const addRatingSchema = Joi.object({
+  rating: Joi.number().min(0).max(5).required().messages({
+    'number.base': 'Rating must be a number',
+    'number.min': 'Rating must be at least 0',
+    'number.max': 'Rating must be at most 5',
+    'any.required': 'Rating is required',
+  }),
+});
+
+
 
 export const Pattern = model('Pattern', patternSchema);
