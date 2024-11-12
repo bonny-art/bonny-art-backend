@@ -4,6 +4,7 @@ import { addAuthorSchema } from './Author.js';
 import { addGenreSchema } from './Genre.js';
 import { addCycleSchema } from './Cycle.js';
 
+const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
 const validPatternTypes = ['S', 'B', 'T'];
 
@@ -69,16 +70,22 @@ const patternSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Cycle',
     },
-    ratings: [
-      {
-        userId: {
-          type: Schema.Types.ObjectId,
-          ref: 'User',
-          required: true,
-        },
-        rating: { type: Number, required: true, min: 0, max: 5 },
+    rating: {
+      averageRating: { type: Number, default: 0 },
+      ratings: {
+        type: [
+          {
+            userId: {
+              type: Schema.Types.ObjectId,
+              ref: 'User',
+              required: true,
+            },
+            rating: { type: Number, required: true, min: 0, max: 5 },
+          },
+        ],
+        default: [],
       },
-    ],
+    },
     pictures: {
       main: {
         url: { type: String, required: true },
@@ -101,6 +108,38 @@ export const addPatternSchema = Joi.object({
     'string.base': 'Codename must be a string',
     'any.required': 'Codename is required',
   }),
+  patternNumber: Joi.string().pattern(patternNumberRegex).required().messages({
+    'string.base': 'Pattern number must be a string',
+    'string.pattern.base':
+      'Pattern number must be either 4 digits or 1 letter followed by 3 digits',
+    'any.required': 'Pattern number is required',
+  }),
+  patternType: Joi.string()
+    .valid(...validPatternTypes)
+    .required()
+    .messages({
+      'string.base': 'Pattern type must be a string',
+      'any.only': 'Pattern type must be either S, B, or T',
+      'any.required': 'Pattern type is required',
+    }),
+  width: Joi.number().min(1).required().messages({
+    'number.base': 'Width must be a number',
+    'number.min': 'Width must be greater than zero',
+    'any.required': 'Width is required',
+  }),
+  height: Joi.number().min(1).required().messages({
+    'number.base': 'Height must be a number',
+    'number.min': 'Height must be greater than zero',
+    'any.required': 'Height is required',
+  }),
+  maxSize: Joi.number().required().messages({
+    'number.base': 'Max size must be a number',
+    'any.required': 'Max size is required',
+  }),
+  colors: Joi.number().required().messages({
+    'number.base': 'Colors must be a number',
+    'any.required': 'Colors are required',
+  }),
   solids: Joi.number().required().messages({
     'number.base': 'Solids must be a number',
     'any.required': 'Solids are required',
@@ -120,14 +159,11 @@ export const addPatternSchema = Joi.object({
     }),
   }).required(),
   author: Joi.alternatives().try(
-    Joi.string()
-      .pattern(/^[0-9a-fA-F]{24}$/)
-      .required()
-      .messages({
-        'string.base': 'Author must be a valid ObjectId',
-        'string.pattern.base': 'Author must be a valid ObjectId',
-        'any.required': 'Author is required',
-      }),
+    Joi.string().pattern(objectIdRegex).required().messages({
+      'string.base': 'Author must be a valid ObjectId',
+      'string.pattern.base': 'Author must be a valid ObjectId',
+      'any.required': 'Author is required',
+    }),
     addAuthorSchema
   ),
   origin: Joi.string()
@@ -139,46 +175,20 @@ export const addPatternSchema = Joi.object({
       'any.required': 'Origin is required',
     }),
   genre: Joi.alternatives().try(
-    Joi.string()
-      .pattern(/^[0-9a-fA-F]{24}$/)
-      .required()
-      .messages({
-        'string.base': 'Genre must be a valid ObjectId',
-        'string.pattern.base': 'Genre must be a valid ObjectId',
-        'any.required': 'Genre is required',
-      }),
+    Joi.string().pattern(objectIdRegex).required().messages({
+      'string.base': 'Genre must be a valid ObjectId',
+      'string.pattern.base': 'Genre must be a valid ObjectId',
+      'any.required': 'Genre is required',
+    }),
     addGenreSchema
   ),
   cycle: Joi.alternatives().try(
-    Joi.string()
-      .pattern(/^[0-9a-fA-F]{24}$/)
-      .optional()
-      .messages({
-        'string.base': 'Cycle must be a valid ObjectId',
-        'string.pattern.base': 'Cycle must be a valid ObjectId',
-      }),
+    Joi.string().pattern(objectIdRegex).optional().messages({
+      'string.base': 'Cycle must be a valid ObjectId',
+      'string.pattern.base': 'Cycle must be a valid ObjectId',
+    }),
     addCycleSchema
   ),
-  ratings: Joi.array()
-    .items(
-      Joi.object({
-        userId: Joi.string()
-          .pattern(/^[0-9a-fA-F]{24}$/)
-          .required()
-          .messages({
-            'string.base': 'User ID must be a valid ObjectId',
-            'string.pattern.base': 'User ID must be a valid ObjectId',
-            'any.required': 'User ID is required',
-          }),
-        rating: Joi.number().min(0).max(5).required().messages({
-          'number.base': 'Rating must be a number',
-          'number.min': 'Rating must be at least 0',
-          'number.max': 'Rating must be at most 5',
-          'any.required': 'Rating is required',
-        }),
-      })
-    )
-    .optional(),
   pictures: Joi.object({
     main: Joi.object({
       url: Joi.string().required().messages({

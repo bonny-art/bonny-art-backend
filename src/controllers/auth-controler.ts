@@ -9,23 +9,21 @@ import {
   getUserByProperty,
   getUserByUsernameIgnoreCase,
   sanitizeUserName,
-  updateUserVerificationStatus,
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
-import { IUser } from '@/types/user-types.js';
+import { IUser } from '../types/user-types.js';
 import {
   checkIfUserExists,
   findUserByVerifyToken,
+  updateUserProperty,
 } from '../services/userService.js';
-import {
-  hashPassword,
-  generateVerificationToken,
-} from '../helpers/authHelpers.js';
-import { sendVerificationEmail } from '../services/mailService.js';
+import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
+import { sendEmail } from '../services/mailService.js';
 
-const signup = async (req: Request, res: Response) => {
+const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
+  const language = req.lang || 'uk';
   const normalizedEmail = email.toLowerCase();
 
   const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
@@ -33,7 +31,7 @@ const signup = async (req: Request, res: Response) => {
   await checkIfUserExists(normalizedEmail, sanitizedUserName);
 
   const hash = await hashPassword(password);
-  const verifyToken = generateVerificationToken();
+  const verifyToken = generateCryptoToken();
 
   const newUser = await createUser({
     email: normalizedEmail,
@@ -42,7 +40,7 @@ const signup = async (req: Request, res: Response) => {
     verifyToken,
   });
 
-  await sendVerificationEmail(newUser.email, verifyToken);
+  await sendEmail(newUser.email, verifyToken, 'verification', language);
 
   res.status(201).send({
     user: {
@@ -159,15 +157,12 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     if (newPassword) {
-      const hashPassword = await bcrypt.hash(newPassword, 10);
-      updates.password = hashPassword;
+      const hashPass = await hashPassword(newPassword);
+      updates.password = hashPass;
     }
   }
 
-  const updatedUser = await User.findByIdAndUpdate(_id, updates, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedUser = await updateUserProperty(_id.toString(), updates);
 
   res.json({
     user: {
@@ -204,9 +199,54 @@ const verificateUser = async (req: Request, res: Response) => {
   const { verifyToken } = req.params;
 
   const user = await findUserByVerifyToken(verifyToken);
-  await updateUserVerificationStatus(user._id.toString());
+  await updateUserProperty(user._id.toString(), {
+    verify: true,
+    verifyToken: null,
+  });
 
   res.send({ message: 'Verification successful' });
+};
+
+const requestPasswordReset = async (
+  req: Request & { lang?: string },
+  res: Response
+) => {
+  const { email } = req.body;
+  const language = req.lang || 'uk';
+  const trimmedEmail = email.trim();
+
+  const user = await getUserByProperty({ email: trimmedEmail });
+  if (!user) {
+    throw HttpError(404, 'User not found');
+  }
+
+  const resetToken = generateCryptoToken();
+  await updateUserProperty(user._id.toString(), {
+    passwordRecoveryToken: resetToken,
+  });
+  await sendEmail(user.email, resetToken, 'passwordReset', language);
+  res.send({ message: 'Password reset email sent' });
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  const user = await getUserByProperty({ passwordRecoveryToken: token });
+  if (!user) {
+    throw HttpError(404, 'Invalid or expired token');
+  }
+  const hashedPassword = await hashPassword(newPassword);
+  const updatedUser = await updateUserProperty(user._id.toString(), {
+    password: hashedPassword,
+    passwordRecoveryToken: null,
+  });
+
+  if (!updatedUser) {
+    throw HttpError(404, 'User not found');
+  }
+
+  res.send({ message: 'Password has been reset successfully' });
 };
 
 export default {
@@ -217,4 +257,6 @@ export default {
   updateUser: ctrlWrapper(updateUser),
   deleteUser: ctrlWrapper(deleteUser),
   verificateUser: ctrlWrapper(verificateUser),
+  requestPasswordReset: ctrlWrapper(requestPasswordReset),
+  resetPassword: ctrlWrapper(resetPassword),
 };

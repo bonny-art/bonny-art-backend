@@ -1,10 +1,27 @@
 import { sendMail } from '../services/sendMailServices.js';
-import { getVerificationEmailContent } from '../helpers/mailTemplates.js';
+import {
+  getPasswordRecoveryEmailContent,
+  getEmailVerificationEmailContent,
+} from '../helpers/mailTemplates.js';
 
-export const sendVerificationEmail = async (
+type EmailType = 'verification' | 'passwordReset';
+
+export const sendEmail = async (
   to: string,
-  verifyToken: string
+  token: string,
+  type: EmailType,
+  language: string = 'uk'
 ) => {
-  const { subject, html, text } = getVerificationEmailContent(verifyToken);
+  let emailContent;
+
+  if (type === 'verification') {
+    emailContent = getEmailVerificationEmailContent(token, language);
+  } else if (type === 'passwordReset') {
+    emailContent = getPasswordRecoveryEmailContent(token, language);
+  } else {
+    throw new Error('Invalid email type');
+  }
+
+  const { subject, html, text } = emailContent;
   await sendMail(to, subject, html, text);
 };

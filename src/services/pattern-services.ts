@@ -178,3 +178,45 @@ export const getPatternByCodename = async (codename: string) => {
   const pattern = await Pattern.findOne({ codename });
   return pattern;
 };
+
+export const addOrUpdateRating = async (
+  patternId: string,
+  userId: string,
+  rating: number
+) => {
+  console.log('🚀 ~ rating:', rating);
+  console.log('🚀 ~ userId:', userId);
+  const pattern = await Pattern.findById(patternId);
+
+  if (!pattern) {
+    throw new Error('Pattern not found');
+  }
+
+  // if (!pattern.rating) {
+  //   pattern.rating = { averageRating: 0, ratings: [] };
+  // }
+
+  // const userObjectId = new Types.ObjectId(userId);
+
+  // const existingRating = pattern.rating.ratings.find(
+  //   (r) => r.userId.toString() === userObjectId.toString()
+  // );
+
+  // if (existingRating) {
+  //   existingRating.rating = rating;
+  // } else {
+  //   pattern.rating.ratings.push({ userId: userObjectId, rating });
+  // }
+
+  // const totalRating = pattern.rating.ratings.reduce(
+  //   (acc, i) => acc + i.rating,
+  //   0
+  // );
+
+  // pattern.rating.averageRating = parseFloat(
+  //   (totalRating / pattern.rating.ratings.length).toFixed(1)
+  // );
+
+  await pattern.save();
+  return pattern;
+};
