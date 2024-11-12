@@ -4,7 +4,6 @@ import { addAuthorSchema } from './Author.js';
 import { addGenreSchema } from './Genre.js';
 import { addCycleSchema } from './Cycle.js';
 import { PatternSchemaI } from '../../types/pattern-type.js';
-import { ratingSchema } from './Raiting.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
@@ -75,7 +74,17 @@ const patternSchema = new Schema<PatternSchemaI>(
     rating: {
       averageRating: { type: Number, default: 0 },
       ratings: {
-        type: [ratingSchema],
+        type: [
+          {
+            userId: {
+              type: Schema.Types.ObjectId,
+              ref: 'User',
+              required: true,
+            },
+            rating: { type: Number, required: true, min: 0, max: 5 },
+          },      
+        ],
+        _id: false,
         default: [],
       },
     },
