@@ -77,7 +77,6 @@ const patternSchema = new Schema<PatternSchemaI>(
       ratings: {
         type: [ratingSchema],
         default: [],
-        
       },
     },
     pictures: {
@@ -181,7 +180,5 @@ export const addRatingSchema = Joi.object({
     'any.required': 'Rating is required',
   }),
 });
-
-
 
 export const Pattern = model('Pattern', patternSchema);
