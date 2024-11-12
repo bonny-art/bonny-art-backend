@@ -184,39 +184,43 @@ export const addOrUpdateRating = async (
   userId: string,
   rating: number
 ) => {
-  console.log('🚀 ~ rating:', rating);
-  console.log('🚀 ~ userId:', userId);
   const pattern = await Pattern.findById(patternId);
-
   if (!pattern) {
     throw new Error('Pattern not found');
   }
 
-  // if (!pattern.rating) {
-  //   pattern.rating = { averageRating: 0, ratings: [] };
-  // }
+  if (!pattern.rating) {
+    pattern.rating = { averageRating: 0, ratings: [] };
+  }
 
-  // const userObjectId = new Types.ObjectId(userId);
+  const userObjectId = new Types.ObjectId(userId);
 
-  // const existingRating = pattern.rating.ratings.find(
-  //   (r) => r.userId.toString() === userObjectId.toString()
-  // );
+  const existingRating = pattern.rating.ratings.find(
+    (r) => r.userId.toString() === userObjectId.toString()
+  );
 
-  // if (existingRating) {
-  //   existingRating.rating = rating;
-  // } else {
-  //   pattern.rating.ratings.push({ userId: userObjectId, rating });
-  // }
+  if (existingRating) {
+    existingRating.rating = rating;
+  } else {
+    pattern.rating.ratings.push({ userId: userObjectId, rating });
+  }
 
-  // const totalRating = pattern.rating.ratings.reduce(
-  //   (acc, i) => acc + i.rating,
-  //   0
-  // );
+  const totalRating = pattern.rating.ratings.reduce(
+    (acc, i) => acc + i.rating,
+    0
+  );
+  const averageRating = totalRating / pattern.rating.ratings.length;
 
-  // pattern.rating.averageRating = parseFloat(
-  //   (totalRating / pattern.rating.ratings.length).toFixed(1)
-  // );
+  const updatedPattern = await Pattern.findOneAndUpdate(
+    { _id: patternId },
+    {
+      $set: {
+        'rating.averageRating': parseFloat(averageRating.toFixed(1)),
+        'rating.ratings': pattern.rating.ratings,
+      },
+    },
+    { new: true, runValidators: true }
+  );
 
-  await pattern.save();
-  return pattern;
+  return updatedPattern;
 };

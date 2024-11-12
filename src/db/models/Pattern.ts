@@ -3,12 +3,13 @@ import Joi from 'joi';
 import { addAuthorSchema } from './Author.js';
 import { addGenreSchema } from './Genre.js';
 import { addCycleSchema } from './Cycle.js';
+import { PatternSchemaI } from '../../types/pattern-type.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
 const validPatternTypes = ['S', 'B', 'T'];
 
-const patternSchema = new Schema(
+const patternSchema = new Schema<PatternSchemaI>(
   {
     codename: { type: String, required: true },
     patternNumber: {
@@ -107,38 +108,6 @@ export const addPatternSchema = Joi.object({
   codename: Joi.string().required().messages({
     'string.base': 'Codename must be a string',
     'any.required': 'Codename is required',
-  }),
-  patternNumber: Joi.string().pattern(patternNumberRegex).required().messages({
-    'string.base': 'Pattern number must be a string',
-    'string.pattern.base':
-      'Pattern number must be either 4 digits or 1 letter followed by 3 digits',
-    'any.required': 'Pattern number is required',
-  }),
-  patternType: Joi.string()
-    .valid(...validPatternTypes)
-    .required()
-    .messages({
-      'string.base': 'Pattern type must be a string',
-      'any.only': 'Pattern type must be either S, B, or T',
-      'any.required': 'Pattern type is required',
-    }),
-  width: Joi.number().min(1).required().messages({
-    'number.base': 'Width must be a number',
-    'number.min': 'Width must be greater than zero',
-    'any.required': 'Width is required',
-  }),
-  height: Joi.number().min(1).required().messages({
-    'number.base': 'Height must be a number',
-    'number.min': 'Height must be greater than zero',
-    'any.required': 'Height is required',
-  }),
-  maxSize: Joi.number().required().messages({
-    'number.base': 'Max size must be a number',
-    'any.required': 'Max size is required',
-  }),
-  colors: Joi.number().required().messages({
-    'number.base': 'Colors must be a number',
-    'any.required': 'Colors are required',
   }),
   solids: Joi.number().required().messages({
     'number.base': 'Solids must be a number',

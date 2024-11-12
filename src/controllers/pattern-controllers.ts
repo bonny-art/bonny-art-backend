@@ -247,15 +247,19 @@ export const ratePattern = async (
   try {
     const userId = req.user?._id;
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw HttpError(401, 'User not authenticated');
     }
 
     const updatedPattern = await addOrUpdateRating(patternId, userId, rating);
 
+    if (!updatedPattern) {
+      throw HttpError(404, 'Pattern not found or not updated');
+    }
+
     if (updatedPattern.rating) {
       res.send({ averageRating: updatedPattern.rating.averageRating });
     } else {
-      throw new Error('Pattern rating not found');
+      throw HttpError(404, 'Pattern rating not found');
     }
   } catch (error) {
     next(error);
