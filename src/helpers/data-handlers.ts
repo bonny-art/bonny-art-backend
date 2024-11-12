@@ -43,30 +43,23 @@ export const getAllPatternsDataByLanguage = (
   language: Language
 ) => {
   return patterns.map((pattern) => {
-    const { width, height, patternType } = extractPatternDetails(
-      pattern.codename
-    );
-    const safeWidth = width ?? 0;
-    const safeHeight = height ?? 0;
-
     const translatedOrigin = originTranslations[pattern.origin]
       ? originTranslations[pattern.origin][language]
       : pattern.origin;
 
+    //todo: add author in return
     return {
       id: pattern._id.toString(),
       title: pattern.title[language],
       codename: pattern.codename,
-      safeWidth,
-      safeHeight,
-      colors: pattern.solids + pattern.blends,
+      width: pattern.width,
+      height: pattern.height,
+      colors: pattern.colors,
       solids: pattern.solids,
       blends: pattern.blends,
       author: pattern.author[language],
       origin: translatedOrigin,
       mainPictureUrl: pattern.pictures?.main?.url,
-      maxSize: Math.max(safeWidth, safeHeight),
-      patternType,
     };
   });
 };

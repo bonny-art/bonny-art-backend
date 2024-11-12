@@ -4,13 +4,12 @@ import { Work } from '../db/models/Work.js';
 import { WorkPhoto } from '../db/models/WorkPhoto.js';
 import { Master } from '../db/models/Master.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
-import { PatternDoc } from '../types/patterns-type.js';
+import { PatternData, PatternDoc } from '../types/patterns-type.js';
 import {
   Language,
   SortDirection,
   SortPhotosBy,
 } from '../types/common-types.js';
-import { RatingModel } from '../db/models/Reiting.js';
 
 export const getAllPatterns = async () => {
   const patterns: PatternDoc[] = await Pattern.find({});
@@ -19,6 +18,25 @@ export const getAllPatterns = async () => {
 };
 
 export const getAllPatternsByPage = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+
+  const patterns: PatternDoc[] = await Pattern.find({})
+    .skip(skip)
+    .limit(limit)
+    .populate('author', 'name')
+    .populate('genre', 'name')
+    .populate('cycle', 'name')
+    .lean<PatternDoc[]>();
+
+  const totalCount = await Pattern.countDocuments();
+
+  return { patterns, totalCount };
+};
+
+export const getAllPatternsByPageAndFilter = async (
+  page: number,
+  limit: number
+) => {
   const skip = (page - 1) * limit;
 
   const patterns: PatternDoc[] = await Pattern.find({})
@@ -150,13 +168,23 @@ export const getMasterByID = async (masterId: string) => {
   return master;
 };
 
-export const addRating = async (
+export const createPattern = async (patternData: PatternData) => {
+  const newPattern = new Pattern(patternData);
+  await newPattern.save();
+  return newPattern;
+};
+
+export const getPatternByCodename = async (codename: string) => {
+  const pattern = await Pattern.findOne({ codename });
+  return pattern;
+};
+
+export const addOrUpdateRating = async (
   patternId: string,
   userId: string,
   rating: number
 ) => {
   const pattern = await Pattern.findById(patternId);
-
   if (!pattern) {
     throw new Error('Pattern not found');
   }
@@ -174,20 +202,25 @@ export const addRating = async (
   if (existingRating) {
     existingRating.rating = rating;
   } else {
-    pattern.rating.ratings.push(
-      new RatingModel({ userId: userObjectId, rating })
-    );
+    pattern.rating.ratings.push({ userId: userObjectId, rating });
   }
 
   const totalRating = pattern.rating.ratings.reduce(
     (acc, i) => acc + i.rating,
     0
   );
+  const averageRating = totalRating / pattern.rating.ratings.length;
 
-  pattern.rating.averageRating = parseFloat(
-    (totalRating / pattern.rating.ratings.length).toFixed(1)
+  const updatedPattern = await Pattern.findOneAndUpdate(
+    { _id: patternId },
+    {
+      $set: {
+        'rating.averageRating': parseFloat(averageRating.toFixed(1)),
+        'rating.ratings': pattern.rating.ratings,
+      },
+    },
+    { new: true, runValidators: true }
   );
 
-  await pattern.save();
-  return pattern;
+  return updatedPattern;
 };

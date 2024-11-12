@@ -1,24 +1,28 @@
 import { Types, Document } from 'mongoose';
 
-interface Rating extends Document {
+export interface Rating {
   userId: Types.ObjectId;
   rating: number;
 }
 
-export interface PatternSh extends Document {
+export interface PatternSchemaI extends Document {
   codename: string;
+  patternNumber: string;
+  patternType: 'S' | 'B' | 'T';
+  width: number;
+  height: number;
+  maxSize: number;
+  colors: number;
   solids: number;
   blends: number;
   title: {
     uk: string;
     en: string;
   };
-  author: {
-    uk: string;
-    en: string;
-  };
-  origin: string;
-  genre: string[];
+  author: Types.ObjectId;
+  origin: 'painting' | 'illustration' | 'photo';
+  genre: Types.ObjectId;
+  cycle?: Types.ObjectId;
   rating: {
     averageRating: number;
     ratings: Rating[];

@@ -1,5 +1,6 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
+import * as serviceHelpers from '../services/helpers.js';
 import * as dataHandlers from '../helpers/data-handlers.js';
 import {
   checkPatternExistsRequest,
@@ -7,7 +8,7 @@ import {
 } from '../types/common-types.js';
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
-import { addRating } from '../services/pattern-services.js';
+import { addOrUpdateRating } from '../services/pattern-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -158,6 +159,83 @@ export const getPhotosByPattern = async (
   }
 };
 
+export const addPattern = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const {
+      codename,
+      solids,
+      blends,
+      title,
+      author,
+      origin,
+      genre,
+      cycle,
+      pictures,
+    } = req.body;
+
+    const patternExists = await patternServices.getPatternByCodename(codename);
+
+    if (patternExists) {
+      throw HttpError(400, `Pattern with codename ${codename} already exists`);
+    }
+
+    const existingAuthor = await serviceHelpers.findOrCreateAuthor(author);
+
+    if (!existingAuthor) {
+      throw HttpError(404, 'Author not found or could not be created');
+    }
+
+    const existingGenre = await serviceHelpers.findOrCreateGenre(genre);
+
+    if (!existingGenre) {
+      throw HttpError(404, 'Genre not found or could not be created');
+    }
+
+    const existingCycle = cycle
+      ? await serviceHelpers.findOrCreateCycle(cycle)
+      : undefined;
+
+    const patternNumber = codename.substring(0, 4);
+    const patternType = codename.charAt(6);
+    const dimensions = codename.match(/\((\d+)x(\d+)\)/);
+
+    if (!dimensions || !patternType || !patternNumber) {
+      throw HttpError(400, 'Invalid codename format');
+    }
+
+    const width = parseInt(dimensions[1], 10);
+    const height = parseInt(dimensions[2], 10);
+    const maxSize = Math.max(width, height);
+    const colors = solids + blends;
+
+    const newPattern = await patternServices.createPattern({
+      codename,
+      patternNumber,
+      patternType,
+      width,
+      height,
+      maxSize,
+      colors,
+      solids,
+      blends,
+      title,
+      author: existingAuthor._id,
+      origin,
+      genre: existingGenre._id,
+      cycle: existingCycle?._id || undefined,
+      pictures,
+    });
+
+    res.status(201).send({ pattern: newPattern });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ratePattern = async (
   req: checkPatternExistsRequest,
   res: Response,
@@ -169,16 +247,19 @@ export const ratePattern = async (
   try {
     const userId = req.user?._id;
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw HttpError(401, 'User not authenticated');
     }
 
-    const updatedPattern = await addRating(patternId, userId, rating);
+    const updatedPattern = await addOrUpdateRating(patternId, userId, rating);
 
-    // Используем if-else вместо тернарного оператора
+    if (!updatedPattern) {
+      throw HttpError(404, 'Pattern not found or not updated');
+    }
+
     if (updatedPattern.rating) {
       res.send({ averageRating: updatedPattern.rating.averageRating });
     } else {
-      throw new Error('Pattern rating not found');
+      throw HttpError(404, 'Pattern rating not found');
     }
   } catch (error) {
     next(error);
