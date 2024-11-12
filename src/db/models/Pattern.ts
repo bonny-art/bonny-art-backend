@@ -82,7 +82,7 @@ const patternSchema = new Schema<PatternSchemaI>(
               required: true,
             },
             rating: { type: Number, required: true, min: 0, max: 5 },
-          },      
+          },
         ],
         _id: false,
         default: [],
