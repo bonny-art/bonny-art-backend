@@ -84,6 +84,7 @@ const patternSchema = new Schema<PatternSchemaI>(
             rating: { type: Number, required: true, min: 0, max: 5 },
           },
         ],
+        _id: false,
         default: [],
       },
     },
@@ -178,6 +179,15 @@ export const addPatternSchema = Joi.object({
       }).required(),
     }).required(),
   }).required(),
+});
+
+export const addRatingSchema = Joi.object({
+  rating: Joi.number().min(0).max(5).required().messages({
+    'number.base': 'Rating must be a number',
+    'number.min': 'Rating must be at least 0',
+    'number.max': 'Rating must be at most 5',
+    'any.required': 'Rating is required',
+  }),
 });
 
 export const Pattern = model('Pattern', patternSchema);
