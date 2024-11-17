@@ -9,6 +9,7 @@ import {
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
 import { addOrUpdateRating } from '../services/pattern-services.js';
+import Like from '../db/models/Like.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -261,6 +262,63 @@ export const ratePattern = async (
     } else {
       throw HttpError(404, 'Pattern rating not found');
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const likePattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> =>{
+  try {
+    const { patternId } = req.params;
+    const userId = req.user?._id;
+    if (!userId) {
+      throw HttpError(401, 'User not authenticated');
+    }
+
+    const existingLike = await Like.findOne({ patternId, userId });
+    if (existingLike) {
+      throw HttpError(401, 'Already liked');
+    }
+
+    await Like.create({ patternId, userId });
+    res.send({ message: 'Already liqued' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unlikePattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> =>{
+  try {
+    const { patternId } = req.params;
+    const userId = req.user?._id;
+    if (!userId) {
+      throw HttpError(401, 'User not authenticated');
+    }
+
+    await Like.deleteOne({ patternId, userId });
+    res.send({ message: 'Like removed' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLikesForPattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> =>{
+  try {
+    const { patternId } = req.params;
+    const likeCount = await Like.countDocuments({ patternId });
+    res.send({ likes: likeCount });
   } catch (error) {
     next(error);
   }
