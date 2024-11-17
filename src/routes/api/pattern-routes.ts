@@ -44,7 +44,6 @@ patternRouter.post(
   validateBody(addRatingSchema),
   patternControllers.ratePattern
 );
+patternRouter.post('/:patternId/like', authenticate, patternControllers.toggleLikePattern);
 
-patternRouter.post('/:patternId/like', authenticate, patternControllers.likePattern);
-patternRouter.delete('/:patternId/like', authenticate, patternControllers.unlikePattern);
 patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
