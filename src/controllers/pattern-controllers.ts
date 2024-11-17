@@ -267,48 +267,6 @@ export const ratePattern = async (
   }
 };
 
-export const likePattern = async (
-  req: checkPatternExistsRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> =>{
-  try {
-    const { patternId } = req.params;
-    const userId = req.user?._id;
-    if (!userId) {
-      throw HttpError(401, 'User not authenticated');
-    }
-
-    const existingLike = await Like.findOne({ patternId, userId });
-    if (existingLike) {
-      throw HttpError(401, 'Already liked');
-    }
-
-    await Like.create({ patternId, userId });
-    res.send({ message: 'Already liqued' });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const unlikePattern = async (
-  req: checkPatternExistsRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> =>{
-  try {
-    const { patternId } = req.params;
-    const userId = req.user?._id;
-    if (!userId) {
-      throw HttpError(401, 'User not authenticated');
-    }
-
-    await Like.deleteOne({ patternId, userId });
-    res.send({ message: 'Like removed' });
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const getLikesForPattern = async (
   req: checkPatternExistsRequest,
@@ -323,3 +281,31 @@ export const getLikesForPattern = async (
     next(error);
   }
 };
+
+export const toggleLikePattern = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { patternId } = req.params;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      throw HttpError(401, 'User not authenticated');
+    }
+
+    const existingLike = await Like.findOne({ patternId, userId });
+
+    if (existingLike) {
+      await Like.deleteOne({ _id: existingLike._id });
+      res.send({ message: 'Like removed' });
+    } else {      
+      await Like.create({ patternId, userId });
+      res.send({ message: 'Like added' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
