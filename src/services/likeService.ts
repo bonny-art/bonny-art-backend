@@ -1,6 +1,8 @@
-import Like  from '../db/models/Like.js';
+import Like from '../db/models/Like.js';
 
-export const countLikesForPattern = async (patternId: string): Promise<number> => {
+export const countLikesForPattern = async (
+  patternId: string
+): Promise<number> => {
   return Like.countDocuments({ patternId });
 };
 
@@ -12,6 +14,9 @@ export const removeLike = async (likeId: string): Promise<void> => {
   await Like.deleteOne({ _id: likeId });
 };
 
-export const addLike = async (patternId: string, userId: string): Promise<void> => {
+export const addLike = async (
+  patternId: string,
+  userId: string
+): Promise<void> => {
   await Like.create({ patternId, userId });
 };

@@ -9,7 +9,12 @@ import {
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
 import { addOrUpdateRating } from '../services/pattern-services.js';
-import { countLikesForPattern, findLike, removeLike, addLike } from '../services/likeService.js';
+import {
+  countLikesForPattern,
+  findLike,
+  removeLike,
+  addLike,
+} from '../services/likeService.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -267,12 +272,11 @@ export const ratePattern = async (
   }
 };
 
-
 export const getLikesForPattern = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
-): Promise<void> =>{
+): Promise<void> => {
   try {
     const { patternId } = req.params;
     const likeCount = await countLikesForPattern(patternId);
@@ -301,7 +305,7 @@ export const toggleLikePattern = async (
       await removeLike(existingLike._id.toString());
 
       res.send({ message: 'Like removed' });
-    } else {      
+    } else {
       await addLike(patternId, userId);
       res.send({ message: 'Like added' });
     }
@@ -309,4 +313,3 @@ export const toggleLikePattern = async (
     next(error);
   }
 };
-
