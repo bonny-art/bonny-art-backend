@@ -9,7 +9,12 @@ import {
 import { SortDirection, SortPhotosBy } from '../types/common-types.js';
 import HttpError from '../helpers/http-error.js';
 import { addOrUpdateRating } from '../services/pattern-services.js';
-import Like from '../db/models/Like.js';
+import {
+  countLikesForPattern,
+  findLike,
+  removeLike,
+  addLike,
+} from '../services/likeService.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -267,15 +272,14 @@ export const ratePattern = async (
   }
 };
 
-
 export const getLikesForPattern = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
-): Promise<void> =>{
+): Promise<void> => {
   try {
     const { patternId } = req.params;
-    const likeCount = await Like.countDocuments({ patternId });
+    const likeCount = await countLikesForPattern(patternId);
     res.send({ likes: likeCount });
   } catch (error) {
     next(error);
@@ -295,17 +299,17 @@ export const toggleLikePattern = async (
       throw HttpError(401, 'User not authenticated');
     }
 
-    const existingLike = await Like.findOne({ patternId, userId });
+    const existingLike = await findLike(patternId, userId);
 
     if (existingLike) {
-      await Like.deleteOne({ _id: existingLike._id });
+      await removeLike(existingLike._id.toString());
+
       res.send({ message: 'Like removed' });
-    } else {      
-      await Like.create({ patternId, userId });
+    } else {
+      await addLike(patternId, userId);
       res.send({ message: 'Like added' });
     }
   } catch (error) {
     next(error);
   }
 };
-
