@@ -43,6 +43,6 @@ export const getPaginatedLikesForUser = async (
 };
 
 export const getLocalizedPattern = (pattern: PatternDoc, lang: string) => {
-  const language: Language = lang as Language; 
+  const language: Language = lang as Language;
   return getPatternDataByLanguage(pattern, language);
 };

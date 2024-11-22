@@ -10,6 +10,6 @@ const router = express.Router();
 router.use('/:language', setLanguage);
 router.use('/:language/auth', authRoutes);
 router.use('/:language/patterns', patternRouter);
-router.use('/:language/user', userRouter); 
+router.use('/:language/user', userRouter);
 
 export default router;
