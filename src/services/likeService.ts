@@ -1,3 +1,4 @@
+import { PatternDoc } from '../types/patterns-type.js';
 import Like from '../db/models/Like.js';
 
 export const countLikesForPattern = async (
@@ -21,7 +22,7 @@ export const addLike = async (
   await Like.create({ patternId, userId });
 };
 
-export const getPaginatedLikesForUser = async (
+export const getPaginatedLikesPatternsForUser = async (
   userId: string,
   page: number,
   limit: number
@@ -29,12 +30,13 @@ export const getPaginatedLikesForUser = async (
   const likes = await Like.find({ userId })
     .skip((page - 1) * limit)
     .limit(limit)
-    .populate('patternId');
+    .populate<{ patternId: PatternDoc }>('patternId')
+    .lean();
 
   const totalLikes = await Like.countDocuments({ userId });
 
   return {
     total: totalLikes,
-    likes,
+    patterns: likes.map((like) => like.patternId),
   };
 };
