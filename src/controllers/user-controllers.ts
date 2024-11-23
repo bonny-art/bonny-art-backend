@@ -1,8 +1,8 @@
-import { PatternDoc } from '../types/patterns-type.js';
-import { getPaginatedLikesForUser } from '../services/likeService.js';
-import { checkPatternExistsRequest, Language } from '../types/common-types.js';
+import { checkPatternExistsRequest } from '../types/common-types.js';
 import { Response, NextFunction } from 'express';
-import { getPatternDataByLanguage } from '../helpers/data-handlers.js';
+import * as dataHandlers from '../helpers/data-handlers.js';
+import * as likesServices from '../services/likeService.js';
+import HttpError from '../helpers/http-error.js';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -14,38 +14,26 @@ export const getUserLikedPatterns = async (
     if (!userId) {
       throw new Error('User not authenticated');
     }
+    const { lang } = req;
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
 
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
 
-    const { total, likes } = await getPaginatedLikesForUser(
-      userId,
-      page,
-      limit
+    const { total, patterns } =
+      await likesServices.getPaginatedLikedPatternsForUser(userId, page, limit);
+
+    const patternsData = dataHandlers.getAllPatternsDataByLanguage(
+      patterns,
+      lang
     );
-    const lang: Language = req.lang || 'en';
-
-    const localizedLikes = await Promise.all(
-      likes.map(async (like) => {
-        const populatedLike = await like.populate<{ patternId: PatternDoc }>(
-          'patternId'
-        );
-        const pattern = populatedLike.patternId;
-        if (pattern) {
-          return getPatternDataByLanguage(pattern, lang);
-        }
-
-        return undefined;
-      })
-    );
-
-    const filteredLikes = localizedLikes.filter((like) => like !== undefined);
-
     res.send({
       total,
       page: Number(page),
       limit: Number(limit),
-      data: filteredLikes,
+      data: patternsData,
     });
   } catch (error) {
     next(error);
