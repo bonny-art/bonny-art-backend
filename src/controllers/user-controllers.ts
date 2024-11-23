@@ -1,12 +1,10 @@
 import { PatternDoc } from '../types/patterns-type.js';
-import {
-  getLocalizedPattern,
-  getPaginatedLikesForUser,
-} from '../services/likeService.js';
+import { getPaginatedLikesForUser } from '../services/likeService.js';
 import { checkPatternExistsRequest, Language } from '../types/common-types.js';
 import { Response, NextFunction } from 'express';
+import { getPatternDataByLanguage } from '../helpers/data-handlers.js';
 
-export const getUserLikes = async (
+export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
@@ -34,7 +32,7 @@ export const getUserLikes = async (
         );
         const pattern = populatedLike.patternId;
         if (pattern) {
-          return getLocalizedPattern(pattern, lang);
+          return getPatternDataByLanguage(pattern, lang);
         }
 
         return undefined;
