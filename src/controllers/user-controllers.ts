@@ -4,7 +4,7 @@ import { checkPatternExistsRequest, Language } from '../types/common-types.js';
 import { Response, NextFunction } from 'express';
 import { getPatternDataByLanguage } from '../helpers/data-handlers.js';
 
-export const getUserLikes = async (
+export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
