@@ -1,7 +1,4 @@
-import { PatternDoc } from '../types/patterns-type.js';
 import Like from '../db/models/Like.js';
-import { getPatternDataByLanguage } from '../helpers/data-handlers.js';
-import { Language } from '../types/common-types.js';
 
 export const countLikesForPattern = async (
   patternId: string
@@ -40,9 +37,4 @@ export const getPaginatedLikesForUser = async (
     total: totalLikes,
     likes,
   };
-};
-
-export const getLocalizedPattern = (pattern: PatternDoc, lang: string) => {
-  const language: Language = lang as Language;
-  return getPatternDataByLanguage(pattern, language);
 };
