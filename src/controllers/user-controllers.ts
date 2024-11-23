@@ -1,7 +1,5 @@
 import { PatternDoc } from '../types/patterns-type.js';
-import {
-  getPaginatedLikesForUser,
-} from '../services/likeService.js';
+import { getPaginatedLikesForUser } from '../services/likeService.js';
 import { checkPatternExistsRequest, Language } from '../types/common-types.js';
 import { Response, NextFunction } from 'express';
 import { getPatternDataByLanguage } from '../helpers/data-handlers.js';
