@@ -23,7 +23,7 @@ export const getUserLikedPatterns = async (
     const limit = parseInt(req.query.limit as string, 10) || 10;
 
     const { total, patterns } =
-      await likesServices.getPaginatedLikesPatternsForUser(userId, page, limit);
+      await likesServices.getPaginatedLikedPatternsForUser(userId, page, limit);
 
     const patternsData = dataHandlers.getAllPatternsDataByLanguage(
       patterns,

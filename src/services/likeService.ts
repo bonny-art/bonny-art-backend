@@ -22,7 +22,7 @@ export const addLike = async (
   await Like.create({ patternId, userId });
 };
 
-export const getPaginatedLikesPatternsForUser = async (
+export const getPaginatedLikedPatternsForUser = async (
   userId: string,
   page: number,
   limit: number
