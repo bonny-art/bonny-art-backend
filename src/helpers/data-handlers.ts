@@ -9,7 +9,7 @@ export const getPatternDataByLanguage = (
   language: Language
 ) => {
   if (pattern) {
-    console.log('🚀 ~ pattern:', JSON.stringify(pattern, null, 2));
+    // console.log('🚀 ~ pattern:', JSON.stringify(pattern, null, 2));
     const { width, height, patternType } = extractPatternDetails(
       pattern.codename
     );
