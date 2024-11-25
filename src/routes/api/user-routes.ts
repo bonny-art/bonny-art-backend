@@ -5,6 +5,11 @@ import { setLanguage } from '../../middlewares/set-language.js';
 
 const userRouter = express.Router({ mergeParams: true });
 
-userRouter.get('/likes', authenticate, setLanguage, userControllers.getUserLikedPatterns);
+userRouter.get(
+  '/likes',
+  authenticate,
+  setLanguage,
+  userControllers.getUserLikedPatterns
+);
 
 export default userRouter;
