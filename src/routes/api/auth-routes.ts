@@ -34,7 +34,11 @@ authRouter.delete(
   authController.deleteUser
 );
 authRouter.get('/verify/:verifyToken', authController.verificateUser);
-authRouter.post('/request-password-reset', setLanguage, authController.requestPasswordReset);
+authRouter.post(
+  '/request-password-reset',
+  setLanguage,
+  authController.requestPasswordReset
+);
 authRouter.post('/reset-password/:token', authController.resetPassword);
 
 export default authRouter;
