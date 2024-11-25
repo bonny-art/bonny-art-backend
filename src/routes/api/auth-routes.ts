@@ -8,10 +8,13 @@ import validateBody from '../../middlewares/validateBody.js';
 import authController from '../../controllers/auth-controler.js';
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';
-const authRouter = express.Router();
+import { setLanguage } from '../../middlewares/set-language.js';
+
+const authRouter = express.Router({ mergeParams: true });
 
 authRouter.post(
   '/register',
+  setLanguage,
   validateBody(registerSchema),
   authController.signup
 );
@@ -31,7 +34,7 @@ authRouter.delete(
   authController.deleteUser
 );
 authRouter.get('/verify/:verifyToken', authController.verificateUser);
-authRouter.post('/request-password-reset', authController.requestPasswordReset);
+authRouter.post('/request-password-reset', setLanguage, authController.requestPasswordReset);
 authRouter.post('/reset-password/:token', authController.resetPassword);
 
 export default authRouter;

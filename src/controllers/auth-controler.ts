@@ -23,7 +23,10 @@ import { sendEmail } from '../services/mailService.js';
 
 const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
-  const language = req.lang || 'uk';
+  const { lang } = req;
+  if (!lang) {
+    throw HttpError(404, 'Language was not set');
+  }
   const normalizedEmail = email.toLowerCase();
 
   const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
@@ -40,7 +43,7 @@ const signup = async (req: Request & { lang?: string }, res: Response) => {
     verifyToken,
   });
 
-  await sendEmail(newUser.email, verifyToken, 'verification', language);
+  await sendEmail(newUser.email, verifyToken, 'verification', lang);
 
   res.status(201).send({
     user: {
@@ -212,7 +215,10 @@ const requestPasswordReset = async (
   res: Response
 ) => {
   const { email } = req.body;
-  const language = req.lang || 'uk';
+  const { lang } = req;
+  if (!lang) {
+    throw HttpError(404, 'Language was not set');
+  }
   const trimmedEmail = email.trim();
 
   const user = await getUserByProperty({ email: trimmedEmail });
@@ -224,7 +230,7 @@ const requestPasswordReset = async (
   await updateUserProperty(user._id.toString(), {
     passwordRecoveryToken: resetToken,
   });
-  await sendEmail(user.email, resetToken, 'passwordReset', language);
+  await sendEmail(user.email, resetToken, 'passwordReset', lang);
   res.send({ message: 'Password reset email sent' });
 };
 
