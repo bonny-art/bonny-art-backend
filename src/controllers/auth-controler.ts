@@ -5,10 +5,12 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
 import {
   createUser,
+  deleteLikesByUser,
   deleteUserById,
   getUserByProperty,
   getUserByUsernameIgnoreCase,
   sanitizeUserName,
+  updateRatingsForDeletedUser,
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
@@ -194,6 +196,10 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!deletedUser) {
     throw HttpError(404, 'User not found');
   }
+
+  await deleteLikesByUser(_id);
+
+  await updateRatingsForDeletedUser(_id);
 
   res.status(204).json();
 };

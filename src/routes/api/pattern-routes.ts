@@ -44,6 +44,7 @@ patternRouter.post(
   validateBody(addRatingSchema),
   patternControllers.ratePattern
 );
+
 patternRouter.post(
   '/:patternId/like',
   authenticate,
