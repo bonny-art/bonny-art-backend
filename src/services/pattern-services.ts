@@ -194,10 +194,14 @@ export const addOrUpdateRating = async (
   }
 
   const userObjectId = new Types.ObjectId(userId);
+  
+  // Удалить записи с null userId
+  pattern.rating.ratings = pattern.rating.ratings.filter((r) => r.userId !== null);
 
   const existingRating = pattern.rating.ratings.find(
-    (r) => r.userId.toString() === userObjectId.toString()
+    (r) => r.userId && r.userId.toString() === userObjectId.toString()
   );
+  
 
   if (existingRating) {
     existingRating.rating = rating;
