@@ -30,7 +30,9 @@ export const deleteLikesByUser = async (userId: string): Promise<void> => {
   await Like.deleteMany({ userId });
 };
 
-export const updateRatingsForDeletedUser = async (userId: string): Promise<void> => {
+export const updateRatingsForDeletedUser = async (
+  userId: string
+): Promise<void> => {
   await Pattern.updateMany(
     { 'rating.ratings.userId': userId }, // Найти паттерны с рейтингами от этого пользователя
     { $set: { 'rating.ratings.$[elem].userId': null } }, // Установить userId в null
