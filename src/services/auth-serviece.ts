@@ -30,15 +30,40 @@ export const deleteLikesByUser = async (userId: string): Promise<void> => {
   await Like.deleteMany({ userId });
 };
 
-export const updateRatingsForDeletedUser = async (
+export const deleteRatingsByUser = async (
   userId: string
 ): Promise<void> => {
   await Pattern.updateMany(
     { 'rating.ratings.userId': userId }, // Найти паттерны с рейтингами от этого пользователя
-    { $set: { 'rating.ratings.$[elem].userId': null } }, // Установить userId в null
-    { arrayFilters: [{ 'elem.userId': userId }] } // Применить изменения только к элементам с этим userId
+    {
+      $pull: { 'rating.ratings': { userId } }, // Удалить элементы с userId
+    }
   );
 };
+
+// Пересчёт рейтинга для всех затронутых паттернов
+export const recalculateRatingsForAffectedPatterns = async (
+  userId: string
+): Promise<void> => {
+  const affectedPatterns = await Pattern.find({ 'rating.ratings.userId': userId });
+  for (const pattern of affectedPatterns) {
+    await recalculateAverageRating(pattern._id as string);
+  }
+};
+
+export const recalculateAverageRating = async (patternId: string): Promise<void> => {
+  const pattern = await Pattern.findById(patternId);
+  if (!pattern || !pattern.rating) return;
+
+  const totalRating = pattern.rating.ratings.reduce((acc, r) => acc + r.rating, 0);
+  const averageRating = pattern.rating.ratings.length
+    ? totalRating / pattern.rating.ratings.length
+    : 0;
+
+  pattern.rating.averageRating = parseFloat(averageRating.toFixed(1));
+  await pattern.save();
+};
+
 
 export const sanitizeUserName = (
   userName: string,

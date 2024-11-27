@@ -6,11 +6,12 @@ import { Request, Response } from 'express';
 import {
   createUser,
   deleteLikesByUser,
+  deleteRatingsByUser,
   deleteUserById,
   getUserByProperty,
   getUserByUsernameIgnoreCase,
+  recalculateRatingsForAffectedPatterns,
   sanitizeUserName,
-  updateRatingsForDeletedUser,
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { AuthenticatedRequest } from '../types/common-types.js';
@@ -198,8 +199,8 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 
   await deleteLikesByUser(_id);
-
-  await updateRatingsForDeletedUser(_id);
+  await deleteRatingsByUser(_id);
+  await recalculateRatingsForAffectedPatterns(_id);
 
   res.status(204).json();
 };
