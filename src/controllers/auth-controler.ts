@@ -198,9 +198,9 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!deletedUser) {
     throw HttpError(404, 'User not found');
   }
-    // Найти все паттерны с оценками пользователя
-    const affectedPatterns = await Pattern.find({ 'rating.ratings.userId': _id });
-    await deleteRatingsByUser(_id);
+  // Найти все паттерны с оценками пользователя
+  const affectedPatterns = await Pattern.find({ 'rating.ratings.userId': _id });
+  await deleteRatingsByUser(_id);
   // Пересчитать рейтинг для затронутых паттернов
   for (const pattern of affectedPatterns) {
     await recalculateAverageRating(pattern._id as string);

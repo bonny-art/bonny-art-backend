@@ -50,7 +50,7 @@ export const recalculateAverageRating = async (
     (acc, r) => acc + r.rating,
     0
   );
-  
+
   const averageRating = pattern.rating.ratings.length
     ? totalRating / pattern.rating.ratings.length
     : 0;
