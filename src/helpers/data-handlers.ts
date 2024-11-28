@@ -9,7 +9,6 @@ export const getPatternDataByLanguage = (
   language: Language
 ) => {
   if (pattern) {
-    // console.log('🚀 ~ pattern:', JSON.stringify(pattern, null, 2));
     const { width, height, patternType } = extractPatternDetails(
       pattern.codename
     );
@@ -20,17 +19,19 @@ export const getPatternDataByLanguage = (
 
     return {
       id: pattern._id.toString(),
-      title: pattern.title?.[language],
+      title: pattern.title.name[language],
       codename: pattern.codename,
       origin: translatedOrigin,
-      author: pattern.author?.[language],
+      author: pattern.author.name[language],
+      genre: pattern.genre.name[language],
+      cycle: pattern.cycle.name[language],
       width,
       height,
       colors: pattern.solids + pattern.blends,
       solids: pattern.solids,
       blends: pattern.blends,
-      mainPictureUrl: pattern?.pictures?.main?.url || '',
-      mainPatternUrl: pattern?.pictures?.pattern?.url?.[language] || '',
+      mainPictureUrl: pattern.pictures.main.url,
+      mainPatternUrl: pattern.pictures.pattern.url[language],
       patternType,
     };
   }
@@ -47,19 +48,18 @@ export const getAllPatternsDataByLanguage = (
       ? originTranslations[pattern.origin][language]
       : pattern.origin;
 
-    //todo: add author in return
     return {
       id: pattern._id.toString(),
-      title: pattern.title[language],
+      title: pattern.title.name[language],
       codename: pattern.codename,
       width: pattern.width,
       height: pattern.height,
       colors: pattern.colors,
       solids: pattern.solids,
       blends: pattern.blends,
-      author: pattern.author[language],
+      author: pattern.author.name[language],
       origin: translatedOrigin,
-      mainPictureUrl: pattern.pictures?.main?.url,
+      mainPictureUrl: pattern.pictures.main.url,
     };
   });
 };

@@ -27,7 +27,7 @@ import { Pattern } from '../db/models/Pattern.js';
 
 const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
-  const { lang } = req;
+  const lang = req.lang;
   if (!lang) {
     throw HttpError(404, 'Language was not set');
   }
@@ -230,7 +230,7 @@ const requestPasswordReset = async (
   res: Response
 ) => {
   const { email } = req.body;
-  const { lang } = req;
+  const lang = req.lang;
   if (!lang) {
     throw HttpError(404, 'Language was not set');
   }

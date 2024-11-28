@@ -14,7 +14,7 @@ export const getUserLikedPatterns = async (
     if (!userId) {
       throw new Error('User not authenticated');
     }
-    const { lang } = req;
+    const lang = req.lang;
     if (!lang) {
       throw HttpError(404, 'Language was not set');
     }
@@ -24,6 +24,7 @@ export const getUserLikedPatterns = async (
 
     const { total, patterns } =
       await likesServices.getPaginatedLikedPatternsForUser(userId, page, limit);
+    console.log('🚀 ~ patterns:', JSON.stringify(patterns, null, 2));
 
     const patternsData = dataHandlers.getAllPatternsDataByLanguage(
       patterns,

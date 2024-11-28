@@ -23,6 +23,7 @@ export const getAllPatternsByPage = async (page: number, limit: number) => {
   const patterns: PatternDoc[] = await Pattern.find({})
     .skip(skip)
     .limit(limit)
+    .populate('title', 'name')
     .populate('author', 'name')
     .populate('genre', 'name')
     .populate('cycle', 'name')
@@ -52,7 +53,12 @@ export const getAllPatternsByPageAndFilter = async (
 export const getPatternById = async (
   patternId: string
 ): Promise<PatternDoc | null> => {
-  const pattern = await Pattern.findById(patternId).lean<PatternDoc>();
+  const pattern = await Pattern.findById(patternId)
+    .populate('title', 'name')
+    .populate('author', 'name')
+    .populate('genre', 'name')
+    .populate('cycle', 'name')
+    .lean<PatternDoc>();
 
   return pattern;
 };

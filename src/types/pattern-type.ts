@@ -15,10 +15,7 @@ export interface PatternSchemaI extends Document {
   colors: number;
   solids: number;
   blends: number;
-  title: {
-    uk: string;
-    en: string;
-  };
+  title: Types.ObjectId;
   author: Types.ObjectId;
   origin: 'painting' | 'illustration' | 'photo';
   genre: Types.ObjectId;

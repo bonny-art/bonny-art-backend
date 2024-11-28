@@ -22,7 +22,7 @@ export const getAllPatterns = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { lang } = req;
+    const lang = req.lang;
     if (!lang) {
       throw HttpError(404, 'Language was not set');
     }
@@ -49,7 +49,7 @@ export const getAllPatternsWithPagination = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { lang } = req;
+    const lang = req.lang;
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 3;
 
@@ -118,22 +118,22 @@ export const getPhotosByPattern = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { lang, pattern } = req;
+    const lang = req.lang;
+    if (!lang) {
+      throw HttpError(404, 'Pattern not found in request');
+    }
+
+    const patternId = req.pattern?._id.toString();
+    if (!patternId) {
+      throw HttpError(404, 'Pattern not found in request');
+    }
+
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 3;
     const sortBy = (req.query.sortBy as SortPhotosBy) || 'dateReceived';
     const order =
       (req.query.order as SortDirection) ||
       (sortBy === 'dateReceived' ? 'desc' : 'asc');
-
-    if (!lang) {
-      throw HttpError(404, 'Language was not set');
-    }
-    if (!pattern) {
-      throw HttpError(404, 'Pattern not found in request');
-    }
-
-    const patternId = pattern._id.toString();
 
     const { photos, totalCount } =
       await patternServices.getPhotosByPatternWithMasterAndWorkByPageWithSorting(
@@ -189,6 +189,13 @@ export const addPattern = async (
       throw HttpError(400, `Pattern with codename ${codename} already exists`);
     }
 
+    const existingPatternTitle =
+      await serviceHelpers.findOrCreatePatternTitle(title);
+
+    if (!existingPatternTitle) {
+      throw HttpError(404, 'Title not found or could not be created');
+    }
+
     const existingAuthor = await serviceHelpers.findOrCreateAuthor(author);
 
     if (!existingAuthor) {
@@ -228,7 +235,7 @@ export const addPattern = async (
       colors,
       solids,
       blends,
-      title,
+      title: existingPatternTitle._id,
       author: existingAuthor._id,
       origin,
       genre: existingGenre._id,
@@ -247,14 +254,18 @@ export const ratePattern = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { patternId } = req.params;
-  const { rating } = req.body;
-
   try {
+    const patternId = req.pattern?._id.toString();
+    if (!patternId) {
+      throw HttpError(404, 'Pattern not found in request');
+    }
+
     const userId = req.user?._id;
     if (!userId) {
       throw HttpError(401, 'User not authenticated');
     }
+
+    const { rating } = req.body;
 
     const updatedPattern = await addOrUpdateRating(patternId, userId, rating);
 
@@ -278,7 +289,11 @@ export const getLikesForPattern = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { patternId } = req.params;
+    const patternId = req.pattern?._id.toString();
+    if (!patternId) {
+      throw HttpError(404, 'Pattern not found in request');
+    }
+
     const likeCount = await countLikesForPattern(patternId);
     res.send({ likes: likeCount });
   } catch (error) {
@@ -292,9 +307,12 @@ export const toggleLikePattern = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { patternId } = req.params;
-    const userId = req.user?._id;
+    const patternId = req.pattern?._id.toString();
+    if (!patternId) {
+      throw HttpError(404, 'Pattern not found in request');
+    }
 
+    const userId = req.user?._id;
     if (!userId) {
       throw HttpError(401, 'User not authenticated');
     }

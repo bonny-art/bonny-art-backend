@@ -32,10 +32,19 @@ export type PatternDoc = {
   colors: number;
   solids: number;
   blends: number;
-  title: { [key in Language]: string };
-  author: { [key in Language]: string };
+  title: {
+    name: { [key in Language]: string };
+  };
+  author: {
+    name: { [key in Language]: string };
+  };
   origin: string;
-  genre: Genre[];
+  genre: {
+    name: { [key in Language]: string };
+  };
+  cycle: {
+    name: { [key in Language]: string };
+  };
   pictures: {
     main: {
       url: string;
@@ -74,10 +83,7 @@ export type PatternData = {
   colors: number;
   solids: number;
   blends: number;
-  title: {
-    uk: string;
-    en: string;
-  };
+  title: mongoose.Types.ObjectId;
   author: mongoose.Types.ObjectId;
   origin: 'painting' | 'illustration' | 'photo';
   genre: mongoose.Types.ObjectId;
