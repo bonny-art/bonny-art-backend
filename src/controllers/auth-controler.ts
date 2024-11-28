@@ -5,9 +5,12 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Request, Response } from 'express';
 import {
   createUser,
+  deleteLikesByUser,
+  deleteRatingsByUser,
   deleteUserById,
   getUserByProperty,
   getUserByUsernameIgnoreCase,
+  recalculateAverageRating,
   sanitizeUserName,
 } from '../services/auth-serviece.js';
 import { generateToken } from '../helpers/jwt-helper.js';
@@ -20,6 +23,7 @@ import {
 } from '../services/userService.js';
 import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
 import { sendEmail } from '../services/mailService.js';
+import { Pattern } from '../db/models/Pattern.js';
 
 const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
@@ -194,6 +198,17 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!deletedUser) {
     throw HttpError(404, 'User not found');
   }
+  // Найти все паттерны с оценками пользователя
+  const affectedPatterns = await Pattern.find({ 'rating.ratings.userId': _id });
+  await deleteRatingsByUser(_id);
+  // Пересчитать рейтинг для затронутых паттернов
+  for (const pattern of affectedPatterns) {
+    await recalculateAverageRating(pattern._id as string);
+  }
+
+  await deleteLikesByUser(_id);
+
+  // await recalculateRatingsForAffectedPatterns(_id);
 
   res.status(204).json();
 };
