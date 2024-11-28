@@ -207,7 +207,7 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
     await recalculateAverageRating(pattern._id as string);
   }
 
-  await deleteLikesByUser(_id);  
+  await deleteLikesByUser(_id);
 
   res.status(204).json();
 };
