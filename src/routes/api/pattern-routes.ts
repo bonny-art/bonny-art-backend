@@ -10,6 +10,8 @@ import authenticate from '../../middlewares/authenticate.js';
 
 export const patternRouter = express.Router({ mergeParams: true });
 
+// patternRouter.get('/', setLanguage, patternControllers.getAllPatterns);
+
 patternRouter.get(
   '/',
   setLanguage,
@@ -41,6 +43,7 @@ patternRouter.post(
 patternRouter.post(
   '/:patternId/rate',
   authenticate,
+  checkPatternExists,
   validateBody(addRatingSchema),
   patternControllers.ratePattern
 );
@@ -48,6 +51,7 @@ patternRouter.post(
 patternRouter.post(
   '/:patternId/like',
   authenticate,
+  checkPatternExists,
   patternControllers.toggleLikePattern
 );
 

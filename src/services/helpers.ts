@@ -1,8 +1,16 @@
 import HttpError from '../helpers/http-error.js';
 import { sanitizeName } from '../helpers/data-formaters.js';
+import * as patternTitleServices from '../services/pattern-title-services.js';
 import * as authorServices from '../services/author-services.js';
 import * as genreServices from '../services/genre-services.js';
 import * as cycleServices from '../services/cycle-services.js';
+
+type PatternTitleEntityData = {
+  name: {
+    uk: string;
+    en: string;
+  };
+};
 
 type AuthorEntityData = {
   name: {
@@ -35,6 +43,42 @@ type CycleEntityData = {
     uk: string;
     en: string;
   };
+};
+
+export const findOrCreatePatternTitle = async (
+  patternTitle: string | PatternTitleEntityData
+) => {
+  let existingPatternTitle;
+
+  if (typeof patternTitle === 'string') {
+    existingPatternTitle =
+      await patternTitleServices.getPatternTitleById(patternTitle);
+    if (!existingPatternTitle) {
+      throw HttpError(404, 'Title not found');
+    }
+  } else if (typeof patternTitle === 'object') {
+    existingPatternTitle =
+      (await patternTitleServices.getPatternTitleByName(
+        sanitizeName(patternTitle.name.uk)
+      )) ||
+      (await patternTitleServices.getPatternTitleByName(
+        sanitizeName(patternTitle.name.en)
+      ));
+
+    if (!existingPatternTitle) {
+      const newPatternTitleData = {
+        name: {
+          uk: patternTitle.name.uk,
+          en: patternTitle.name.en,
+        },
+      };
+
+      existingPatternTitle =
+        await patternTitleServices.createPatternTitle(newPatternTitleData);
+    }
+  }
+
+  return existingPatternTitle;
 };
 
 export const findOrCreateAuthor = async (author: string | AuthorEntityData) => {

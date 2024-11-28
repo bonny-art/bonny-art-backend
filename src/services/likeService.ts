@@ -30,7 +30,15 @@ export const getPaginatedLikedPatternsForUser = async (
   const likes = await Like.find({ userId })
     .skip((page - 1) * limit)
     .limit(limit)
-    .populate<{ patternId: PatternDoc }>('patternId');
+    .populate<{ patternId: PatternDoc }>({
+      path: 'patternId',
+      populate: [
+        { path: 'title', select: 'name' },
+        { path: 'author', select: 'name' },
+        { path: 'genre', select: 'name' },
+        { path: 'cycle', select: 'name' },
+      ],
+    });
 
   const totalLikes = await Like.countDocuments({ userId });
 
