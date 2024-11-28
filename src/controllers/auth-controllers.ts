@@ -201,14 +201,13 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   // Найти все паттерны с оценками пользователя
   const affectedPatterns = await Pattern.find({ 'rating.ratings.userId': _id });
   await deleteRatingsByUser(_id);
+
   // Пересчитать рейтинг для затронутых паттернов
   for (const pattern of affectedPatterns) {
     await recalculateAverageRating(pattern._id as string);
   }
 
   await deleteLikesByUser(_id);
-
-  // await recalculateRatingsForAffectedPatterns(_id);
 
   res.status(204).json();
 };
