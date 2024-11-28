@@ -5,7 +5,7 @@ import {
   updateUserSchema,
 } from '../../db/models/User.js';
 import validateBody from '../../middlewares/validateBody.js';
-import authController from '../../controllers/auth-controler.js';
+import authController from '../../controllers/auth-controllers.js';
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';
 import { setLanguage } from '../../middlewares/set-language.js';
