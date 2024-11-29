@@ -1,4 +1,4 @@
-import { Cycle } from '../db/models/Cycle.js';
+import { Cycle } from '../db/models/cycle.schema.js';
 
 export const getCycleById = async (cycleId: string) => {
   const cycle = await Cycle.findById(cycleId);

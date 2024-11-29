@@ -1,4 +1,4 @@
-import { Author } from '../db/models/Author.js';
+import { Author } from '../db/models/author.schema.js';
 
 export const getAuthorById = async (authorId: string) => {
   const author = await Author.findById(authorId);

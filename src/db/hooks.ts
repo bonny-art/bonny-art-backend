@@ -1,4 +1,4 @@
-import { MongoServerError } from '@/types/messages-type';
+import { MongoServerError } from '@/types/messages-types';
 import { NextFunction } from 'express';
 
 export const handleSaveError = (

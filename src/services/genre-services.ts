@@ -1,4 +1,4 @@
-import { Genre } from '../db/models/Genre.js';
+import { Genre } from '../db/models/genre.schema.js';
 
 export const getGenreById = async (genreId: string) => {
   const genre = await Genre.findById(genreId);

@@ -1,4 +1,4 @@
-import { IHttpError, MessageListT } from '../types/messages-type.js';
+import { IHttpError, MessageListT } from '../types/messages-types.js';
 
 const messageList: MessageListT = {
   '400': 'Bad Request',

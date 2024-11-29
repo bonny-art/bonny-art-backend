@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
-import { addAuthorSchema } from './Author.js';
-import { addGenreSchema } from './Genre.js';
-import { addCycleSchema } from './Cycle.js';
-import { addPatternTitleSchema } from './PatternTitle.js';
-import { PatternSchemaI } from '../../types/pattern-type.js';
+import { addAuthorSchema } from './author.schema.js';
+import { addGenreSchema } from './genre.schema.js';
+import { addCycleSchema } from './cycle.schema.js';
+import { addPatternTitleSchema } from './pattern-title.schema.js';
+import { PatternSchemaI } from '../../types/pattern-types.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
