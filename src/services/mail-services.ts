@@ -1,8 +1,8 @@
-import { sendMail } from '../services/sendMailServices.js';
+import { sendMail } from './send-mail-services.js';
 import {
   getPasswordRecoveryEmailContent,
   getEmailVerificationEmailContent,
-} from '../helpers/mailTemplates.js';
+} from '../helpers/mail-templates.js';
 
 type EmailType = 'verification' | 'passwordReset';
 

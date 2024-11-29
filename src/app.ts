@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import routes from './routes/index.js';
-import { IHttpError } from './types/messages-type.js';
+import { IHttpError } from './types/messages-types.js';
 
 const app: Express = express();
 

@@ -1,29 +1,28 @@
-import bcrypt from 'bcryptjs';
-import User from '../db/models/User.js';
-import HttpError from '../helpers/http-error.js';
-import ctrlWrapper from '../decorators/ctrlWrapper.js';
+// Вбудовані модулі
 import { Request, Response } from 'express';
-import {
-  createUser,
-  deleteLikesByUser,
-  deleteRatingsByUser,
-  deleteUserById,
-  getUserByProperty,
-  getUserByUsernameIgnoreCase,
-  recalculateAverageRating,
-  sanitizeUserName,
-} from '../services/auth-serviece.js';
+
+// Зовнішні залежності
+import bcrypt from 'bcryptjs';
+
+// Сервіси
+import * as authServices from '../services/auth-servieces.js';
+import * as patternServices from '../services/pattern-services.js';
+import * as userServices from '../services/user-services.js';
+import * as dataFormatters from '../helpers/data-formaters.js';
+import { sendEmail } from '../services/mail-services.js';
+
+// Моделі
+import User from '../db/models/user.schema.js';
+
+// Хелпери
+import HttpError from '../helpers/http-error.js';
+import ctrlWrapper from '../decorators/ctrl-wrapper.js';
 import { generateToken } from '../helpers/jwt-helper.js';
+import { hashPassword, generateCryptoToken } from '../helpers/auth-helpers.js';
+
+// Типи
 import { AuthenticatedRequest } from '../types/common-types.js';
 import { IUser } from '../types/user-types.js';
-import {
-  checkIfUserExists,
-  findUserByVerifyToken,
-  updateUserProperty,
-} from '../services/userService.js';
-import { hashPassword, generateCryptoToken } from '../helpers/authHelpers.js';
-import { sendEmail } from '../services/mailService.js';
-import { Pattern } from '../db/models/Pattern.js';
 
 const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
@@ -33,14 +32,14 @@ const signup = async (req: Request & { lang?: string }, res: Response) => {
   }
   const normalizedEmail = email.toLowerCase();
 
-  const sanitizedUserName = sanitizeUserName(userName, true); // true — если разрешены пробелы
+  const sanitizedUserName = dataFormatters.sanitizeName(userName, true); // true — если разрешены пробелы
 
-  await checkIfUserExists(normalizedEmail, sanitizedUserName);
+  await userServices.checkIfUserExists(normalizedEmail, sanitizedUserName);
 
   const hash = await hashPassword(password);
   const verifyToken = generateCryptoToken();
 
-  const newUser = await createUser({
+  const newUser = await authServices.createUser({
     email: normalizedEmail,
     password: hash,
     userName: sanitizedUserName,
@@ -61,7 +60,7 @@ const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const normalizedEmail = email.toLowerCase();
 
-  const user = await getUserByProperty({ email: normalizedEmail });
+  const user = await authServices.getUserByProperty({ email: normalizedEmail });
   if (!user) {
     throw HttpError(401, 'Email or password is wrong');
   }
@@ -125,8 +124,8 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   const updates: Partial<IUser> = {};
 
   if (userName) {
-    updates.userName = sanitizeUserName(userName, true);
-    const existingUserByName = await getUserByUsernameIgnoreCase(
+    updates.userName = dataFormatters.sanitizeName(userName, true);
+    const existingUserByName = await authServices.getUserByUsernameIgnoreCase(
       updates.userName
     );
     if (
@@ -139,7 +138,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 
   if (email) {
     const normalizedEmail = email.toLowerCase();
-    const existingUserByEmail = await getUserByProperty({
+    const existingUserByEmail = await authServices.getUserByProperty({
       email: normalizedEmail,
     });
     if (
@@ -169,7 +168,10 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
     }
   }
 
-  const updatedUser = await updateUserProperty(_id.toString(), updates);
+  const updatedUser = await userServices.updateUserProperty(
+    _id.toString(),
+    updates
+  );
 
   res.json({
     user: {
@@ -194,20 +196,10 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!isPasswordValid) {
     throw HttpError(401, 'Incorrect password');
   }
-  const deletedUser = await deleteUserById(_id);
-  if (!deletedUser) {
-    throw HttpError(404, 'User not found');
-  }
-  // Найти все паттерны с оценками пользователя
-  const affectedPatterns = await Pattern.find({ 'rating.ratings.userId': _id });
-  await deleteRatingsByUser(_id);
 
-  // Пересчитать рейтинг для затронутых паттернов
-  for (const pattern of affectedPatterns) {
-    await recalculateAverageRating(pattern._id as string);
-  }
+  await patternServices.deleteRatingsByUser(_id);
 
-  await deleteLikesByUser(_id);
+  await userServices.deleteLikesByUser(_id);
 
   res.status(204).json();
 };
@@ -215,8 +207,8 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
 const verificateUser = async (req: Request, res: Response) => {
   const { verifyToken } = req.params;
 
-  const user = await findUserByVerifyToken(verifyToken);
-  await updateUserProperty(user._id.toString(), {
+  const user = await userServices.findUserByVerifyToken(verifyToken);
+  await userServices.updateUserProperty(user._id.toString(), {
     verify: true,
     verifyToken: null,
   });
@@ -235,13 +227,13 @@ const requestPasswordReset = async (
   }
   const trimmedEmail = email.trim();
 
-  const user = await getUserByProperty({ email: trimmedEmail });
+  const user = await authServices.getUserByProperty({ email: trimmedEmail });
   if (!user) {
     throw HttpError(404, 'User not found');
   }
 
   const resetToken = generateCryptoToken();
-  await updateUserProperty(user._id.toString(), {
+  await userServices.updateUserProperty(user._id.toString(), {
     passwordRecoveryToken: resetToken,
   });
   await sendEmail(user.email, resetToken, 'passwordReset', lang);
@@ -252,15 +244,20 @@ const resetPassword = async (req: Request, res: Response) => {
   const { token } = req.params;
   const { newPassword } = req.body;
 
-  const user = await getUserByProperty({ passwordRecoveryToken: token });
+  const user = await authServices.getUserByProperty({
+    passwordRecoveryToken: token,
+  });
   if (!user) {
     throw HttpError(404, 'Invalid or expired token');
   }
   const hashedPassword = await hashPassword(newPassword);
-  const updatedUser = await updateUserProperty(user._id.toString(), {
-    password: hashedPassword,
-    passwordRecoveryToken: null,
-  });
+  const updatedUser = await userServices.updateUserProperty(
+    user._id.toString(),
+    {
+      password: hashedPassword,
+      passwordRecoveryToken: null,
+    }
+  );
 
   if (!updatedUser) {
     throw HttpError(404, 'User not found');

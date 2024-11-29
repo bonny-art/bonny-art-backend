@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { PatternDoc } from './patterns-type';
+import { PatternDoc } from './patterns-types';
 
 export type Language = 'uk' | 'en';
 

@@ -1,10 +1,10 @@
 import { Types } from 'mongoose';
-import { Pattern } from '../db/models/Pattern.js';
-import { Work } from '../db/models/Work.js';
-import { WorkPhoto } from '../db/models/WorkPhoto.js';
-import { Master } from '../db/models/Master.js';
+import { Pattern } from '../db/models/pattern.schema.js';
+import { Work } from '../db/models/work.schema.js';
+import { WorkPhoto } from '../db/models/work-photo.schema.js';
+import { Master } from '../db/models/master.schema.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
-import { PatternData, PatternDoc } from '../types/patterns-type.js';
+import { PatternData, PatternDoc } from '../types/patterns-types.js';
 import {
   Language,
   SortDirection,
@@ -229,4 +229,45 @@ export const addOrUpdateRating = async (
   );
 
   return updatedPattern;
+};
+
+export const deleteRatingsByUser = async (userId: string) => {
+  const result = await Pattern.updateMany(
+    { 'rating.ratings.userId': new Types.ObjectId(userId) },
+    [
+      {
+        $set: {
+          'rating.ratings': {
+            $filter: {
+              input: '$rating.ratings',
+              as: 'rating',
+              cond: { $ne: ['$$rating.userId', new Types.ObjectId(userId)] },
+            },
+          },
+        },
+      },
+      {
+        $set: {
+          'rating.averageRating': {
+            $cond: {
+              if: {
+                $gt: [
+                  {
+                    $size: '$rating.ratings',
+                  },
+                  0,
+                ],
+              },
+              then: {
+                $round: [{ $avg: '$rating.ratings.rating' }, 1],
+              },
+              else: 0,
+            },
+          },
+        },
+      },
+    ]
+  );
+
+  return result;
 };

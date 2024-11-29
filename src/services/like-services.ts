@@ -1,5 +1,5 @@
-import { PatternDoc } from '../types/patterns-type.js';
-import Like from '../db/models/Like.js';
+import { PatternDoc } from '../types/patterns-types.js';
+import Like from '../db/models/like.schema.js';
 
 export const countLikesForPattern = async (
   patternId: string

@@ -14,7 +14,7 @@ import {
   findLike,
   removeLike,
   addLike,
-} from '../services/likeService.js';
+} from '../services/like-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -274,7 +274,11 @@ export const ratePattern = async (
     }
 
     if (updatedPattern.rating) {
-      res.send({ averageRating: updatedPattern.rating.averageRating });
+      res.send({
+        userId: userId,
+        patternId: patternId,
+        averageRating: updatedPattern.rating.averageRating,
+      });
     } else {
       throw HttpError(404, 'Pattern rating not found');
     }

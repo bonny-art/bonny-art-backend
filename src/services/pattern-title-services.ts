@@ -1,4 +1,4 @@
-import { PatternTitle } from '../db/models/PatternTitle.js';
+import { PatternTitle } from '../db/models/pattern-title.schema.js';
 
 export const getPatternTitleById = async (patternTitleId: string) => {
   const patternTitle = await PatternTitle.findById(patternTitleId);

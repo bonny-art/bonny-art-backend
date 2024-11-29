@@ -1,7 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import HttpError from '../helpers/http-error.js';
-import User from '../db/models/User.js';
-import ctrlWrapper from '../decorators/ctrlWrapper.js';
+import User from '../db/models/user.schema.js';
+import ctrlWrapper from '../decorators/ctrl-wrapper.js';
 import { Response, NextFunction } from 'express';
 import 'dotenv/config';
 import { AuthenticatedRequest } from '../types/common-types.js';

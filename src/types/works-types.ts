@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongoose';
-import { Master } from './masters-type';
+import { Master } from './masters-types';
 
 export type WorkExtendedByMaster = {
   _id: ObjectId;

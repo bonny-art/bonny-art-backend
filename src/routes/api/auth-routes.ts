@@ -3,8 +3,8 @@ import {
   loginSchema,
   registerSchema,
   updateUserSchema,
-} from '../../db/models/User.js';
-import validateBody from '../../middlewares/validateBody.js';
+} from '../../db/models/user.schema.js';
+import validateBody from '../../middlewares/validate-body.js';
 import authController from '../../controllers/auth-controllers.js';
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';

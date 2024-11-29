@@ -1,7 +1,7 @@
 import { checkPatternExistsRequest } from '../types/common-types.js';
 import { Response, NextFunction } from 'express';
 import * as dataHandlers from '../helpers/data-handlers.js';
-import * as likesServices from '../services/likeService.js';
+import * as likesServices from '../services/like-services.js';
 import HttpError from '../helpers/http-error.js';
 
 export const getUserLikedPatterns = async (

@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
 import { checkPatternExistsRequest } from '../types/common-types.js';
-import { PatternDoc } from '../types/patterns-type.js';
+import { PatternDoc } from '../types/patterns-types.js';
 import HttpError from '../helpers/http-error.js';
 
 export const checkPatternExists = async (
