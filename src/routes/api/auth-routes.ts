@@ -42,6 +42,11 @@ authRouter.post(
 );
 authRouter.post('/reset-password/:token', authController.resetPassword);
 
-authRouter.post('/resend-verification', setLanguage,  validateBody(resendVerificationSchema), authController.resendVerificationEmail);
+authRouter.post(
+  '/resend-verification',
+  setLanguage,
+  validateBody(resendVerificationSchema),
+  authController.resendVerificationEmail
+);
 
 export default authRouter;

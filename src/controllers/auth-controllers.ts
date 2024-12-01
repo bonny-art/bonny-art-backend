@@ -266,8 +266,11 @@ const resetPassword = async (req: Request, res: Response) => {
   res.send({ message: 'Password has been reset successfully' });
 };
 
-const resendVerificationEmail = async (req: Request & { lang?: string }, res: Response) => {
-  const { email } = req.body; 
+const resendVerificationEmail = async (
+  req: Request & { lang?: string },
+  res: Response
+) => {
+  const { email } = req.body;
   const lang = req.lang;
 
   if (!email) {
@@ -307,5 +310,5 @@ export default {
   verificateUser: ctrlWrapper(verificateUser),
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
   resetPassword: ctrlWrapper(resetPassword),
-  resendVerificationEmail: ctrlWrapper(resendVerificationEmail)
+  resendVerificationEmail: ctrlWrapper(resendVerificationEmail),
 };
