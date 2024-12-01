@@ -266,6 +266,37 @@ const resetPassword = async (req: Request, res: Response) => {
   res.send({ message: 'Password has been reset successfully' });
 };
 
+const resendVerificationEmail = async (req: Request & { lang?: string }, res: Response) => {
+  const { email } = req.body; 
+  const lang = req.lang;
+
+  if (!email) {
+    throw HttpError(400, 'Email is required');
+  }
+  if (!lang) {
+    throw HttpError(404, 'Language was not set');
+  }
+
+  const normalizedEmail = email.toLowerCase();
+
+  const user = await authServices.getUserByProperty({ email: normalizedEmail });
+  if (!user) {
+    throw HttpError(404, 'User not found');
+  }
+
+  if (user.verify === true) {
+    throw HttpError(400, 'Email is already verified');
+  }
+
+  const verifyToken = generateCryptoToken();
+
+  await sendEmail(user.email, verifyToken, 'verification', lang);
+
+  res.status(200).json({
+    message: 'Verification email has been resent',
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
@@ -276,4 +307,5 @@ export default {
   verificateUser: ctrlWrapper(verificateUser),
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
   resetPassword: ctrlWrapper(resetPassword),
+  resendVerificationEmail: ctrlWrapper(resendVerificationEmail)
 };
