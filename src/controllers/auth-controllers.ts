@@ -291,8 +291,10 @@ const resendVerificationEmail = async (
     throw HttpError(400, 'Email is already verified');
   }
 
-  const verifyToken = generateCryptoToken();
-
+  const verifyToken = user.verifyToken;
+  if (!verifyToken) {
+    throw HttpError(500, 'Verification token is missing for the user');
+  }
   await sendEmail(user.email, verifyToken, 'verification', lang);
 
   res.status(200).json({
