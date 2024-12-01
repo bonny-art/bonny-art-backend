@@ -2,6 +2,7 @@ import {
   deleteUserSchema,
   loginSchema,
   registerSchema,
+  resendVerificationSchema,
   updateUserSchema,
 } from '../../db/models/user.schema.js';
 import validateBody from '../../middlewares/validate-body.js';
@@ -40,5 +41,12 @@ authRouter.post(
   authController.requestPasswordReset
 );
 authRouter.post('/reset-password/:token', authController.resetPassword);
+
+authRouter.post(
+  '/resend-verification',
+  setLanguage,
+  validateBody(resendVerificationSchema),
+  authController.resendVerificationEmail
+);
 
 export default authRouter;
