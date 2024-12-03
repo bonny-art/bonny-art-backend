@@ -51,7 +51,7 @@ export const addToCart = async (
   next: NextFunction
 ) => {
   try {
-    const { patternId } = req.body; 
+    const { patternId } = req.body;
     const userId = req.user?._id;
     if (!userId) {
       throw HttpError(401, 'Unauthorized: user ID is required');
@@ -66,10 +66,10 @@ export const addToCart = async (
       throw HttpError(404, 'User not found');
     }
     if (!user.cart) {
-      user.cart = []; 
+      user.cart = [];
     }
-    
-    if (user.cart.some(i => i.toString() === patternId)) {
+
+    if (user.cart.some((i) => i.toString() === patternId)) {
       throw HttpError(400, 'Pattern already in cart');
     }
 

@@ -44,7 +44,6 @@ export const deleteLikesByUser = async (userId: string): Promise<void> => {
   await Like.deleteMany({ userId });
 };
 
-
 export const findUserById = async (userId: string) => {
   const user = await User.findById(userId);
 

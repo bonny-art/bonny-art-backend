@@ -46,8 +46,8 @@ const userSchema = new Schema<IUser>(
     token: String,
     cart: [
       {
-        type: Schema.Types.ObjectId, 
-        ref: 'Pattern', 
+        type: Schema.Types.ObjectId,
+        ref: 'Pattern',
       },
     ],
   },
