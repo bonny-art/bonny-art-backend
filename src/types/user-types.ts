@@ -12,6 +12,7 @@ export interface IUser extends Document {
   verify?: boolean;
   verifyToken?: string | null;
   passwordRecoveryToken?: string | null;
+  cart?: Types.ObjectId[];
 }
 
 export interface UserQuery {
