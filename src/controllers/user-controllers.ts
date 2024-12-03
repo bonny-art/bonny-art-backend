@@ -1,7 +1,6 @@
 import { Response, NextFunction } from 'express';
 
 import * as likesServices from '../services/like-services.js';
-import * as usersServices from '../services/user-services.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
 import HttpError from '../helpers/http-error.js';
@@ -14,7 +13,7 @@ export const getUserLikedPatterns = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user?._id;
+    const userId = req.user?._id.toString();
     if (!userId) {
       throw new Error('User not authenticated');
     }
@@ -52,19 +51,15 @@ export const addToCart = async (
 ) => {
   try {
     const { patternId } = req.body;
-    const userId = req.user?._id;
-    if (!userId) {
-      throw HttpError(401, 'Unauthorized: user ID is required');
+    const user = req.user;
+    if (!user) {
+      throw new Error('User not authenticated');
     }
 
     if (!patternId) {
       throw HttpError(400, 'Pattern ID is required');
     }
 
-    const user = await usersServices.findUserById(userId);
-    if (!user) {
-      throw HttpError(404, 'User not found');
-    }
     if (!user.cart) {
       user.cart = [];
     }

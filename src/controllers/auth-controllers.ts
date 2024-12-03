@@ -197,9 +197,9 @@ const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
     throw HttpError(401, 'Incorrect password');
   }
 
-  await patternServices.deleteRatingsByUser(_id);
+  await patternServices.deleteRatingsByUser(_id.toString());
 
-  await userServices.deleteLikesByUser(_id);
+  await userServices.deleteLikesByUser(_id.toString());
 
   res.status(204).json();
 };

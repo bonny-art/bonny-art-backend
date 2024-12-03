@@ -14,31 +14,23 @@ const authenticate = async (
   next: NextFunction
 ) => {
   const { authorization } = req.headers;
-  if (!authorization || authorization === '') {
+
+  if (!authorization || !JWT_SECRET) {
     throw HttpError(401, 'Not authorized');
   }
-  if (!JWT_SECRET) {
-    throw HttpError(401, 'Not authorized');
-  }
+
   const [bearer, token] = authorization.split(' ');
-  if (!token) {
+  if (!token || bearer !== 'Bearer') {
     throw HttpError(401, 'Not authorized');
   }
-  if (bearer !== 'Bearer') {
-    throw HttpError(401, 'Not authorized');
-  }
+
   const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload | { id: string };
   const user = await User.findById(id);
+
   if (!user || !user.token || user.token !== token || user.verify === false) {
     throw HttpError(401, 'Not authorized');
   }
-  req.user = {
-    _id: user._id.toString(),
-    token: user.token,
-    email: user.email,
-    userName: user.userName,
-    password: user.password,
-  };
+  req.user = user;
   next();
 };
 

@@ -1,5 +1,8 @@
+import { Document } from 'mongoose';
+
 import { Request } from 'express';
 import { PatternDoc } from './patterns-types';
+import { IUser } from './user-types';
 
 export type Language = 'uk' | 'en';
 
@@ -16,17 +19,23 @@ export interface checkPatternExistsRequest extends setLanguageRequest {
     patternId: string;
   };
   pattern?: PatternDoc;
-  user?: {
-    _id: string;
-  };
+  user?: Document & IUser;
 }
 
+// export interface AuthenticatedRequest extends Request {
+//   user?: {
+//     _id: Schema.Types.ObjectId;
+//     userName: string;
+//     email: string;
+//     password: string;
+//     verify: boolean;
+//     verifyToken: string;
+//     passwordRecoveryToken: string;
+//     token: string;
+//     cart: Schema.Types.ObjectId[] | PatternData[];
+//   };
+// }
+
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    _id: string;
-    token: string;
-    email: string;
-    userName: string;
-    password: string;
-  };
+  user?: Document & IUser;
 }
