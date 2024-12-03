@@ -44,6 +44,12 @@ const userSchema = new Schema<IUser>(
       default: null,
     },
     token: String,
+    cart: [
+      {
+        type: Schema.Types.ObjectId, 
+        ref: 'Pattern', 
+      },
+    ],
   },
   { versionKey: false, timestamps: true }
 );

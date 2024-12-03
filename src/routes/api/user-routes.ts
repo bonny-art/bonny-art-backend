@@ -12,4 +12,11 @@ userRouter.get(
   userControllers.getUserLikedPatterns
 );
 
+userRouter.post(
+  '/cart',
+  authenticate, 
+  setLanguage, 
+  userControllers.addToCart 
+);
+
 export default userRouter;
