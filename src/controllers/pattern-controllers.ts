@@ -267,7 +267,11 @@ export const ratePattern = async (
 
     const { rating } = req.body;
 
-    const updatedPattern = await addOrUpdateRating(patternId, userId.toString(), rating);
+    const updatedPattern = await addOrUpdateRating(
+      patternId,
+      userId.toString(),
+      rating
+    );
 
     if (!updatedPattern) {
       throw HttpError(404, 'Pattern not found or not updated');
