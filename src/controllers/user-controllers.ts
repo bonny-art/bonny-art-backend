@@ -79,3 +79,41 @@ export const addToCart = async (
     next(error);
   }
 };
+
+export const removeFromCart = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { patternId } = req.body;
+    const user = req.user;
+
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    if (!patternId) {
+      throw HttpError(400, 'Pattern ID is required');
+    }
+
+    if (!user.cart || !user.cart.length) {
+      throw HttpError(400, 'Cart is empty');
+    }
+
+    const index = user.cart.findIndex((item) => item.toString() === patternId);
+    if (index === -1) {
+      throw HttpError(404, 'Pattern not found in cart');
+    }
+
+    user.cart.splice(index, 1);
+    await user.save();
+
+    res.status(200).json({
+      message: 'Pattern removed from cart',
+      cart: user.cart,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
