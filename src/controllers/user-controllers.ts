@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 
 import * as likesServices from '../services/like-services.js';
+import * as patternServices from '../services/pattern-services.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
 import HttpError from '../helpers/http-error.js';
@@ -44,7 +45,7 @@ export const getUserLikedPatterns = async (
   }
 };
 
-export const addToCart = async (
+export const addPatternToCart = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
@@ -58,6 +59,11 @@ export const addToCart = async (
 
     if (!patternId) {
       throw HttpError(400, 'Pattern ID is required');
+    }
+
+    const patternExists = await patternServices.getPatternById(patternId);
+    if (!patternExists) {
+      throw HttpError(404, 'Pattern does not exist');
     }
 
     if (!user.cart) {
@@ -80,7 +86,7 @@ export const addToCart = async (
   }
 };
 
-export const removeFromCart = async (
+export const removePatternFromCart = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction

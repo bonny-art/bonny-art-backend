@@ -50,7 +50,7 @@ export const getAllPatternsByPageAndFilter = async (
   return { patterns, totalCount };
 };
 
-export const getPatternById = async (
+export const getPatternByIdAndPopulate = async (
   patternId: string
 ): Promise<PatternDoc | null> => {
   const pattern = await Pattern.findById(patternId)
@@ -59,6 +59,12 @@ export const getPatternById = async (
     .populate('genre', 'name')
     .populate('cycle', 'name')
     .lean<PatternDoc>();
+
+  return pattern;
+};
+
+export const getPatternById = async (patternId: string) => {
+  const pattern = await Pattern.findById(patternId);
 
   return pattern;
 };
@@ -190,7 +196,7 @@ export const addOrUpdateRating = async (
   userId: string,
   rating: number
 ) => {
-  const pattern = await Pattern.findById(patternId);
+  const pattern = await getPatternById(patternId);
   if (!pattern) {
     throw new Error('Pattern not found');
   }

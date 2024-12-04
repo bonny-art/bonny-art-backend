@@ -12,7 +12,7 @@ export const checkPatternExists = async (
   try {
     const { patternId } = req.params;
 
-    const pattern = await patternServices.getPatternById(patternId);
+    const pattern = await patternServices.getPatternByIdAndPopulate(patternId);
 
     if (!pattern) {
       throw HttpError(404, 'Pattern not found');
