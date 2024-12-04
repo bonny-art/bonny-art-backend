@@ -185,12 +185,18 @@ export const getPatternByCodename = async (codename: string) => {
   return pattern;
 };
 
+export const findPatternById = async (patternId: string) => {
+  const pattern = await Pattern.findById(patternId);
+
+  return pattern;
+};
+
 export const addOrUpdateRating = async (
   patternId: string,
   userId: string,
   rating: number
 ) => {
-  const pattern = await Pattern.findById(patternId);
+  const pattern = await findPatternById(patternId);
   if (!pattern) {
     throw new Error('Pattern not found');
   }

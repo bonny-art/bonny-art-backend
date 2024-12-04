@@ -4,7 +4,6 @@ import * as authServices from './auth-servieces.js';
 // Моделі
 import User from '../db/models/user.schema.js';
 import Like from '../db/models/like.schema.js';
-import { Pattern } from '../db/models/pattern.schema.js';
 
 // Хелпери
 import HttpError from '../helpers/http-error.js';
@@ -49,10 +48,4 @@ export const findUserById = async (userId: string) => {
   const user = await User.findById(userId);
 
   return user;
-};
-
-export const getPatternById = async (patternId: string) => {
-  const pattern = await Pattern.findById(patternId);
-
-  return pattern;
 };
