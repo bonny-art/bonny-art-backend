@@ -14,4 +14,11 @@ userRouter.get(
 
 userRouter.post('/cart', authenticate, setLanguage, userControllers.addToCart);
 
+userRouter.delete(
+  '/cart',
+  authenticate,
+  setLanguage,
+  userControllers.removeFromCart
+);
+
 export default userRouter;

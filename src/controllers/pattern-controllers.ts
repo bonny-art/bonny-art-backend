@@ -267,7 +267,11 @@ export const ratePattern = async (
 
     const { rating } = req.body;
 
-    const updatedPattern = await addOrUpdateRating(patternId, userId, rating);
+    const updatedPattern = await addOrUpdateRating(
+      patternId,
+      userId.toString(),
+      rating
+    );
 
     if (!updatedPattern) {
       throw HttpError(404, 'Pattern not found or not updated');
@@ -321,14 +325,14 @@ export const toggleLikePattern = async (
       throw HttpError(401, 'User not authenticated');
     }
 
-    const existingLike = await findLike(patternId, userId);
+    const existingLike = await findLike(patternId, userId.toString());
 
     if (existingLike) {
       await removeLike(existingLike._id.toString());
 
       res.send({ message: 'Like removed' });
     } else {
-      await addLike(patternId, userId);
+      await addLike(patternId, userId.toString());
       res.send({ message: 'Like added' });
     }
   } catch (error) {
