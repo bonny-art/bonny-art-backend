@@ -12,13 +12,18 @@ userRouter.get(
   userControllers.getUserLikedPatterns
 );
 
-userRouter.post('/cart', authenticate, setLanguage, userControllers.addToCart);
+userRouter.post(
+  '/cart',
+  authenticate,
+  setLanguage,
+  userControllers.addPatternToCart
+);
 
 userRouter.delete(
   '/cart',
   authenticate,
   setLanguage,
-  userControllers.removeFromCart
+  userControllers.removePatternFromCart
 );
 
 export default userRouter;
