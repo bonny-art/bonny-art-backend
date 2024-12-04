@@ -61,7 +61,7 @@ export const addPatternToCart = async (
       throw HttpError(400, 'Pattern ID is required');
     }
 
-    const patternExists = await patternServices.findPatternById(patternId);
+    const patternExists = await patternServices.getPatternById(patternId);
     if (!patternExists) {
       throw HttpError(404, 'Pattern does not exist');
     }

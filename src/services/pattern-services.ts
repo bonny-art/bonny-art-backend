@@ -50,7 +50,7 @@ export const getAllPatternsByPageAndFilter = async (
   return { patterns, totalCount };
 };
 
-export const getPatternById = async (
+export const getPatternByIdAndPopulate = async (
   patternId: string
 ): Promise<PatternDoc | null> => {
   const pattern = await Pattern.findById(patternId)
@@ -185,7 +185,7 @@ export const getPatternByCodename = async (codename: string) => {
   return pattern;
 };
 
-export const findPatternById = async (patternId: string) => {
+export const getPatternById = async (patternId: string) => {
   const pattern = await Pattern.findById(patternId);
 
   return pattern;
@@ -196,7 +196,7 @@ export const addOrUpdateRating = async (
   userId: string,
   rating: number
 ) => {
-  const pattern = await findPatternById(patternId);
+  const pattern = await getPatternById(patternId);
   if (!pattern) {
     throw new Error('Pattern not found');
   }
