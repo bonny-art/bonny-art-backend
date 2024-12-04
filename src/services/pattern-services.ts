@@ -63,6 +63,12 @@ export const getPatternByIdAndPopulate = async (
   return pattern;
 };
 
+export const getPatternById = async (patternId: string) => {
+  const pattern = await Pattern.findById(patternId);
+
+  return pattern;
+};
+
 export const getPhotosByPatternWithMasterAndWork = async (
   patternId: string
 ) => {
@@ -185,11 +191,6 @@ export const getPatternByCodename = async (codename: string) => {
   return pattern;
 };
 
-export const getPatternById = async (patternId: string) => {
-  const pattern = await Pattern.findById(patternId);
-
-  return pattern;
-};
 
 export const addOrUpdateRating = async (
   patternId: string,
