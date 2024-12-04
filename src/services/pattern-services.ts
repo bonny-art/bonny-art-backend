@@ -191,7 +191,6 @@ export const getPatternByCodename = async (codename: string) => {
   return pattern;
 };
 
-
 export const addOrUpdateRating = async (
   patternId: string,
   userId: string,
