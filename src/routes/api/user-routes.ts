@@ -26,4 +26,11 @@ userRouter.delete(
   userControllers.removePatternFromCart
 );
 
+userRouter.post(
+  '/cart/checkout',
+  authenticate,
+  setLanguage,
+  userControllers.checkoutCart
+);
+
 export default userRouter;
