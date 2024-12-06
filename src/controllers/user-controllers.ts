@@ -123,3 +123,46 @@ export const removePatternFromCart = async (
     next(error);
   }
 };
+
+export const checkoutCart = async (
+  req: checkPatternExistsRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const user = req.user;
+    
+    if (!user) {
+      throw HttpError(401, 'User not authenticated');
+    }
+
+    if (!user.cart || !user.cart.length) {
+      throw HttpError(400, 'Cart is empty');
+    }
+
+    const missingPatterns: string[] = [];
+    for (const patternId of user.cart) {
+      const pattern = await patternServices.getPatternById(patternId.toString());
+      if (!pattern) {
+        missingPatterns.push(patternId.toString());
+      }
+    }
+
+    if (missingPatterns.length > 0) {
+      res.status(400).json({
+        message: 'Some patterns are missing from the inventory',
+        missingPatterns,
+      });
+      return;
+    }
+
+    user.cart = []; 
+    await user.save();
+
+    res.status(200).json({
+      message: 'Order placed successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
