@@ -140,6 +140,14 @@ export const checkoutCart = async (
       throw HttpError(400, 'Cart is empty');
     }
 
+    const { comment } = req.body;
+    if (comment) {
+      if (!user.comments) {
+        user.comments = [];
+      }
+      user.comments.push(comment); 
+    }
+
     const missingPatterns: string[] = [];
     for (const patternId of user.cart) {
       const pattern = await patternServices.getPatternById(

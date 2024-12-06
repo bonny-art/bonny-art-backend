@@ -50,6 +50,10 @@ const userSchema = new Schema<IUser>(
         ref: 'Pattern',
       },
     ],
+    comments: {
+      type: [String], 
+      default: [],
+    },
   },
   { versionKey: false, timestamps: true }
 );

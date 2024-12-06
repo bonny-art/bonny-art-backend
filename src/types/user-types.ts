@@ -13,6 +13,7 @@ export interface IUser extends Document {
   verifyToken?: string | null;
   passwordRecoveryToken?: string | null;
   cart?: Types.ObjectId[];
+  comments?: string[];
 }
 
 export interface UserQuery {
