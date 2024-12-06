@@ -145,7 +145,7 @@ export const checkoutCart = async (
       if (!user.comments) {
         user.comments = [];
       }
-      user.comments.push(comment); 
+      user.comments.push(comment);
     }
 
     const missingPatterns: string[] = [];
