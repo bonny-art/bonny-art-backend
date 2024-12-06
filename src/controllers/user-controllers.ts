@@ -131,7 +131,7 @@ export const checkoutCart = async (
 ): Promise<void> => {
   try {
     const user = req.user;
-    
+
     if (!user) {
       throw HttpError(401, 'User not authenticated');
     }
@@ -142,7 +142,9 @@ export const checkoutCart = async (
 
     const missingPatterns: string[] = [];
     for (const patternId of user.cart) {
-      const pattern = await patternServices.getPatternById(patternId.toString());
+      const pattern = await patternServices.getPatternById(
+        patternId.toString()
+      );
       if (!pattern) {
         missingPatterns.push(patternId.toString());
       }
@@ -156,7 +158,7 @@ export const checkoutCart = async (
       return;
     }
 
-    user.cart = []; 
+    user.cart = [];
     await user.save();
 
     res.status(200).json({
