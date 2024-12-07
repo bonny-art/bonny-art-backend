@@ -15,7 +15,11 @@ const orderSchema = new Schema(
       instagram: { type: String, default: null }, // Instagram (необязательно)
       facebook: { type: String, default: null }, // Facebook (необязательно)
     },
-    status: { type: String, default: 'created', enum: ['created', 'processing', 'completed'] }, // Статус заказа
+    status: {
+      type: String,
+      default: 'created',
+      enum: ['created', 'processing', 'completed'],
+    }, // Статус заказа
     notes: { type: String, default: '' }, // Примечания
   },
   { timestamps: true } // Дата создания и обновления
