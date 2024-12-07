@@ -27,7 +27,7 @@ userRouter.delete(
 );
 
 userRouter.post(
-  '/cart/checkout',
+  '/orders/checkout',
   authenticate,
   setLanguage,
   userControllers.checkoutCart

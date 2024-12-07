@@ -7,6 +7,8 @@ import * as dataHandlers from '../helpers/data-handlers.js';
 import HttpError from '../helpers/http-error.js';
 
 import { checkPatternExistsRequest } from '../types/common-types.js';
+import { Pattern } from '../db/models/pattern.schema.js';
+import { Order } from '../db/models/order.Schema.js';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -140,21 +142,21 @@ export const checkoutCart = async (
       throw HttpError(400, 'Cart is empty');
     }
 
-    const { comment } = req.body;
-    if (comment) {
-      if (!user.comments) {
-        user.comments = [];
-      }
-      user.comments.push(comment);
+    const { comment, contactInfo, items } = req.body;
+
+    // Проверка корректности данных
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      throw HttpError(400, 'Items array is required');
     }
 
     const missingPatterns: string[] = [];
-    for (const patternId of user.cart) {
-      const pattern = await patternServices.getPatternById(
-        patternId.toString()
-      );
+    const orderItems = [];
+    for (const { patternId, canvasCount } of items) {
+      const pattern = await Pattern.findById(patternId); // Проверка схемы в базе данных
       if (!pattern) {
-        missingPatterns.push(patternId.toString());
+        missingPatterns.push(patternId);
+      } else {
+        orderItems.push({ patternId, canvasCount });
       }
     }
 
@@ -165,12 +167,24 @@ export const checkoutCart = async (
       });
       return;
     }
+    // Создание заказа
+    const order = await Order.create({
+      user: user._id,
+      items: orderItems,
+      comment: comment || null,
+      contactInfo: {
+        phone: contactInfo?.phone || null,
+        instagram: contactInfo?.instagram || null,
+        facebook: contactInfo?.facebook || null,
+      },
+    });
 
     user.cart = [];
     await user.save();
 
-    res.status(200).json({
+    res.status(201).json({
       message: 'Order placed successfully',
+      order,
     });
   } catch (error) {
     next(error);
