@@ -152,7 +152,7 @@ export const checkoutCart = async (
     const missingPatterns: string[] = [];
     const orderItems = [];
     for (const { patternId, canvasCount } of items) {
-      const pattern = await Pattern.findById(patternId); // Проверка схемы в базе данных
+      const pattern = await Pattern.findById(patternId); 
       if (!pattern) {
         missingPatterns.push(patternId);
       } else {
@@ -167,7 +167,7 @@ export const checkoutCart = async (
       });
       return;
     }
-    // Создание заказа
+    
     const order = await Order.create({
       user: user._id,
       items: orderItems,
