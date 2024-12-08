@@ -152,7 +152,7 @@ export const checkoutCart = async (
     const missingPatterns: string[] = [];
     const orderItems = [];
     for (const { patternId, canvasCount } of items) {
-      const pattern = await Pattern.findById(patternId); 
+      const pattern = await Pattern.findById(patternId);
       if (!pattern) {
         missingPatterns.push(patternId);
       } else {
@@ -167,7 +167,7 @@ export const checkoutCart = async (
       });
       return;
     }
-    
+
     const order = await Order.create({
       user: user._id,
       items: orderItems,

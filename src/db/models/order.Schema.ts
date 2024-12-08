@@ -2,16 +2,16 @@ import { Schema, model, Types } from 'mongoose';
 
 const orderSchema = new Schema(
   {
-    user: { type: Types.ObjectId, ref: 'user', required: true }, 
+    user: { type: Types.ObjectId, ref: 'user', required: true },
     items: [
       {
-        patternId: { type: Types.ObjectId, ref: 'Pattern', required: true }, 
-        canvasCount: { type: Number, min: 14, max: 28, required: true }, 
+        patternId: { type: Types.ObjectId, ref: 'Pattern', required: true },
+        canvasCount: { type: Number, min: 14, max: 28, required: true },
       },
     ],
-    comment: { type: String, default: null }, 
+    comment: { type: String, default: null },
     contactInfo: {
-      phone: { type: String, default: null }, 
+      phone: { type: String, default: null },
       instagram: { type: String, default: null },
       facebook: { type: String, default: null },
     },
@@ -19,10 +19,10 @@ const orderSchema = new Schema(
       type: String,
       default: 'created',
       enum: ['created', 'processing', 'completed'],
-    }, 
-    notes: { type: String, default: '' }, 
+    },
+    notes: { type: String, default: '' },
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
 
 export const Order = model('Order', orderSchema);
