@@ -8,6 +8,8 @@ import * as dataHandlers from '../helpers/data-handlers.js';
 import HttpError from '../helpers/http-error.js';
 
 import { checkPatternExistsRequest } from '../types/common-types.js';
+import { Pattern } from '../db/models/pattern.schema.js';
+import { Order } from '../db/models/order.Schema.js';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -141,13 +143,21 @@ export const checkoutCart = async (
       throw HttpError(400, 'Cart is empty');
     }
 
+    const { comment, contactInfo, items } = req.body;
+
+    // Проверка корректности данных
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      throw HttpError(400, 'Items array is required');
+    }
+
     const missingPatterns: string[] = [];
-    for (const patternId of user.cart) {
-      const pattern = await patternServices.getPatternById(
-        patternId.toString()
-      );
+    const orderItems = [];
+    for (const { patternId, canvasCount } of items) {
+      const pattern = await Pattern.findById(patternId);
       if (!pattern) {
-        missingPatterns.push(patternId.toString());
+        missingPatterns.push(patternId);
+      } else {
+        orderItems.push({ patternId, canvasCount });
       }
     }
 
@@ -159,20 +169,25 @@ export const checkoutCart = async (
       return;
     }
 
-    // const orderDetails = `
-    //   Номер замовлення: ${newOrder._id}
-    //   Ім'я: ${newOrder.customerName}
-    //   Електронна пошта: ${newOrder.customerEmail}
-    //   ....
-    //   Товари: ${newOrder.items.map((item) => item.name).join(', ')}
-    //   Загальна сума: ${newOrder.totalPrice}
-    // `;
+    const order = await Order.create({
+      user: user._id,
+      items: orderItems,
+      comment: comment || null,
+      contactInfo: {
+        phone: contactInfo?.phone || null,
+        instagram: contactInfo?.instagram || null,
+        facebook: contactInfo?.facebook || null,
+      },
+    });
 
     const orderDetails = `
-      Номер замовлення: 1
-      Ім'я: aaa
-      Товари: bbb
-      Загальна сума: 65
+      Номер замовлення: ${order._id}
+      Ім'я: ${order.user}
+      
+      Товари:
+          ${order.items.map((item) => item._id).join('\n          ')}
+      
+      Загальна сума: ${order.items.length * 65}
     `;
 
     await telegramServices.sendOrderToTelegram(orderDetails);
@@ -180,8 +195,9 @@ export const checkoutCart = async (
     user.cart = [];
     await user.save();
 
-    res.status(200).json({
+    res.status(201).json({
       message: 'Order placed successfully',
+      order,
     });
   } catch (error) {
     next(error);
