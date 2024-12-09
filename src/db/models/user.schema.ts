@@ -44,10 +44,11 @@ const userSchema = new Schema<IUser>(
       default: null,
     },
     token: String,
-    cart: [
+     cart: [
       {
-        type: Schema.Types.ObjectId,
-        ref: 'Pattern',
+        patternId: { type: Schema.Types.ObjectId, ref: 'Pattern', required: true },
+        canvasCount: { type: Number, default: 18, min: 14, max: 28 },
+        _id: false,
       },
     ],
   },
