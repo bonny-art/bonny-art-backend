@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 
 import * as likesServices from '../services/like-services.js';
 import * as patternServices from '../services/pattern-services.js';
-// import * as telegramServices from '../services/telegram-service.js';
+import * as telegramServices from '../services/telegram-service.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
 import HttpError from '../helpers/http-error.js';
@@ -179,23 +179,18 @@ export const checkoutCart = async (
         facebook: contactInfo?.facebook || null,
       },
     });
-    // const orderDetails = `
-    //   Номер замовлення: ${newOrder._id}
-    //   Ім'я: ${newOrder.customerName}
-    //   Електронна пошта: ${newOrder.customerEmail}
-    //   ....
-    //   Товари: ${newOrder.items.map((item) => item.name).join(', ')}
-    //   Загальна сума: ${newOrder.totalPrice}
-    // `;
 
-    // const orderDetails = `
-    //   Номер замовлення: 1
-    //   Ім'я: aaa
-    //   Товари: bbb
-    //   Загальна сума: 65
-    // `;
+    const orderDetails = `
+      Номер замовлення: ${order._id}
+      Ім'я: ${order.user}
+      
+      Товари:
+          ${order.items.map((item) => item._id).join('\n          ')}
+      
+      Загальна сума: ${order.items.length * 65}
+    `;
 
-    // await telegramServices.sendOrderToTelegram(orderDetails);
+    await telegramServices.sendOrderToTelegram(orderDetails);
 
     user.cart = [];
     await user.save();
