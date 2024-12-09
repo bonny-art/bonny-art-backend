@@ -17,7 +17,7 @@ export interface IUser extends Document {
   verify?: boolean;
   verifyToken?: string | null;
   passwordRecoveryToken?: string | null;
-  cart: ICartItem[]; 
+  cart: ICartItem[];
 }
 
 export interface UserQuery {

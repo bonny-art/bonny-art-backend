@@ -54,7 +54,7 @@ export const addPatternToCart = async (
   next: NextFunction
 ) => {
   try {
-    const { patternId, canvasCount  } = req.body;
+    const { patternId, canvasCount } = req.body;
     const user = req.user;
     if (!user) {
       throw new Error('User not authenticated');
@@ -79,7 +79,7 @@ export const addPatternToCart = async (
 
     const canvasCountValue = canvasCount || 18;
 
-    user.cart.push({ patternId, canvasCount: canvasCountValue }); 
+    user.cart.push({ patternId, canvasCount: canvasCountValue });
     await user.save();
 
     res.status(200).json({

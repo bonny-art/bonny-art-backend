@@ -22,7 +22,7 @@ const orderSchema = new Schema(
     },
     notes: { type: String, default: '' },
   },
-  { versionKey: false,timestamps: true }
+  { versionKey: false, timestamps: true }
 );
 
 export const Order = model('Order', orderSchema);
