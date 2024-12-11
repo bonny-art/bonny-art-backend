@@ -54,7 +54,7 @@ export const addPatternToCart = async (
   next: NextFunction
 ) => {
   try {
-    const { patternId } = req.body;
+    const { patternId, canvasCount } = req.body;
     const user = req.user;
     if (!user) {
       throw new Error('User not authenticated');
@@ -73,11 +73,13 @@ export const addPatternToCart = async (
       user.cart = [];
     }
 
-    if (user.cart.some((i) => i.toString() === patternId)) {
+    if (user.cart.some((i) => i.patternId.toString() === patternId)) {
       throw HttpError(400, 'Pattern already in cart');
     }
 
-    user.cart.push(patternId);
+    const canvasCountValue = canvasCount || 18;
+
+    user.cart.push({ patternId, canvasCount: canvasCountValue });
     await user.save();
 
     res.status(200).json({
@@ -143,19 +145,14 @@ export const checkoutCart = async (
       throw HttpError(400, 'Cart is empty');
     }
 
-    const { comment, contactInfo, items } = req.body;
-
-    // Проверка корректности данных
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      throw HttpError(400, 'Items array is required');
-    }
+    const { comment, contactInfo } = req.body;
 
     const missingPatterns: string[] = [];
     const orderItems = [];
-    for (const { patternId, canvasCount } of items) {
+    for (const { patternId, canvasCount } of user.cart) {
       const pattern = await Pattern.findById(patternId);
       if (!pattern) {
-        missingPatterns.push(patternId);
+        missingPatterns.push(patternId.toString());
       } else {
         orderItems.push({ patternId, canvasCount });
       }

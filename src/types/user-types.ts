@@ -1,7 +1,12 @@
-import { Document, Types } from 'mongoose';
+import { Document, Types, ObjectId } from 'mongoose';
 
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 48;
+
+interface ICartItem {
+  patternId: ObjectId;
+  canvasCount: number;
+}
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -12,7 +17,7 @@ export interface IUser extends Document {
   verify?: boolean;
   verifyToken?: string | null;
   passwordRecoveryToken?: string | null;
-  cart?: Types.ObjectId[];
+  cart: ICartItem[];
 }
 
 export interface UserQuery {
