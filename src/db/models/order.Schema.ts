@@ -21,6 +21,7 @@ const orderSchema = new Schema(
       enum: ['created', 'processing', 'completed'],
     },
     notes: { type: String, default: '' },
+    orderNumber: { type: String, unique: true, required: true },
   },
   { versionKey: false, timestamps: true }
 );
