@@ -5,6 +5,8 @@ import * as patternServices from '../services/pattern-services.js';
 import * as telegramServices from '../services/telegram-service.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
+import * as orderNumber from '../helpers/order-number.js';
+
 import HttpError from '../helpers/http-error.js';
 
 import { checkPatternExistsRequest } from '../types/common-types.js';
@@ -166,10 +168,13 @@ export const checkoutCart = async (
       return;
     }
 
+    const newOrderNumber = await orderNumber.generateOrderNumber();
+
     const order = await Order.create({
       user: user._id,
       items: orderItems,
       comment: comment || null,
+      orderNumber: newOrderNumber,
       contactInfo: {
         phone: contactInfo?.phone || null,
         instagram: contactInfo?.instagram || null,
