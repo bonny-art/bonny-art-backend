@@ -1,4 +1,4 @@
-import {Order} from '../db/models/order.Schema.js';
+import { Order } from '../db/models/order.Schema.js';
 
 export const generateOrderNumber = async (): Promise<string> => {
   const lastOrder = await Order.findOne().sort({ createdAt: -1 });
