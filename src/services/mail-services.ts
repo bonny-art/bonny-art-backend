@@ -18,7 +18,7 @@ export const sendEmail = async (
   token: string | null,
   type: EmailType,
   language: string = 'uk',
-  additionalData?: NewMessageData 
+  additionalData?: NewMessageData
 ) => {
   let emailContent;
 
@@ -34,7 +34,7 @@ export const sendEmail = async (
     emailContent = getPasswordRecoveryEmailContent(token, language);
   } else if (type === 'newMessage' && additionalData) {
     emailContent = getNewMessageEmailContent(additionalData, language);
-  }  else {
+  } else {
     throw new Error('Invalid email type');
   }
 

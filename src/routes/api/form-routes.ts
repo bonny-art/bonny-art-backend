@@ -9,10 +9,10 @@ const formRouter = express.Router({ mergeParams: true });
 
 formRouter.post(
   '/',
-  authenticate, 
-  setLanguage, 
-  validateBody(formValidationSchema), 
-  formControllers.submitFormData 
+  authenticate,
+  setLanguage,
+  validateBody(formValidationSchema),
+  formControllers.submitFormData
 );
 
 export default formRouter;

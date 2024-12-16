@@ -10,6 +10,6 @@ const router = express.Router();
 router.use('/:language/auth', authRoutes);
 router.use('/:language/patterns', patternRouter);
 router.use('/:language/user', userRouter);
-router.use('/:language/form', formRouter); 
+router.use('/:language/form', formRouter);
 
 export default router;

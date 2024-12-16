@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import HttpError from "../helpers/http-error.js";
+import HttpError from '../helpers/http-error.js';
 import { checkSubmitFormDataRequest } from '../types/submit-form-data-types.js';
 import { FormData } from '../db/models/form.schema.js';
 import { sendEmail } from '../services/mail-services.js';
@@ -9,7 +9,7 @@ export const submitFormData = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-    try {
+  try {
     const { name, email, message, agreement } = req.body;
     const lang = req.lang;
     if (!lang) {
@@ -39,4 +39,3 @@ export const submitFormData = async (
     next(error);
   }
 };
-
