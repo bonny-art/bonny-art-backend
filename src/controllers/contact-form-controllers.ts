@@ -20,7 +20,12 @@ export const submitContactFormData = async (
       throw HttpError(404, 'Pattern not found in request');
     }
 
-    const newFormData = await contactFormServices.saveFormData({ name, email, message, agreement });
+    const newFormData = await contactFormServices.saveFormData({
+      name,
+      email,
+      message,
+      agreement,
+    });
 
     await sendEmail(email, null, 'newMessage', lang, {
       name,
@@ -29,7 +34,12 @@ export const submitContactFormData = async (
       agreement,
     });
 
-    await sendTelegramMessage('newMessage', lang, { name, email, message, agreement });
+    await sendTelegramMessage('newMessage', lang, {
+      name,
+      email,
+      message,
+      agreement,
+    });
 
     res.status(201).json({
       message: 'The form has been successfully submitted',

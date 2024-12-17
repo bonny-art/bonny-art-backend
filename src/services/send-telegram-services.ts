@@ -1,5 +1,5 @@
 import { getNewMessageTelegramContent } from '../helpers/telegram-templates.js';
-import { sendOrderToTelegram } from './telegram-service.js'; 
+import { sendOrderToTelegram } from './telegram-service.js';
 
 type TelegramMessageType = 'newMessage';
 type NewMessageData = {

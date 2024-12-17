@@ -23,7 +23,7 @@ const contactFormSchema = new mongoose.Schema(
     message: {
       type: String,
       required: true,
-      maxlength: 500, 
+      maxlength: 500,
     },
     agreement: { type: Boolean, required: true },
     status: { type: String, default: 'new' },
@@ -33,7 +33,6 @@ const contactFormSchema = new mongoose.Schema(
 );
 
 export const FormData = mongoose.model('FormData', contactFormSchema);
-
 
 export const contactFormValidationSchema = Joi.object({
   name: Joi.string().pattern(nameRegexp).min(2).required().messages({
