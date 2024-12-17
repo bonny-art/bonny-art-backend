@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Joi from 'joi';
 import { emailRegexp, nameRegexp } from '../../helpers/data-regexps.js';
 
-const formSchema = new mongoose.Schema(
+const contactFormSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -20,7 +20,11 @@ const formSchema = new mongoose.Schema(
       unique: true,
       required: [true, 'Email is required'],
     },
-    message: { type: String, required: true },
+    message: {
+      type: String,
+      required: true,
+      maxlength: 500, 
+    },
     agreement: { type: Boolean, required: true },
     status: { type: String, default: 'new' },
     createdAt: { type: Date, default: Date.now },
@@ -28,10 +32,10 @@ const formSchema = new mongoose.Schema(
   { versionKey: false, timestamps: true }
 );
 
-export const FormData = mongoose.model('FormData', formSchema);
+export const FormData = mongoose.model('FormData', contactFormSchema);
 
-// Схема для Joi валідації
-export const formValidationSchema = Joi.object({
+
+export const contactFormValidationSchema = Joi.object({
   name: Joi.string().pattern(nameRegexp).min(2).required().messages({
     'any.required': 'Missing required userName field',
     'string.pattern.base':
@@ -42,6 +46,6 @@ export const formValidationSchema = Joi.object({
     'string.pattern.base':
       'Email must be a valid email address (e.g., user@example.com)',
   }),
-  message: Joi.string().required(),
+  message: Joi.string().max(500).required(),
   agreement: Joi.boolean().required(),
 });

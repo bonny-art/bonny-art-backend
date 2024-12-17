@@ -6,7 +6,7 @@ export interface setLanguageRequest extends Request {
   lang?: Language;
 }
 
-export interface checkSubmitFormDataRequest extends setLanguageRequest {
+export interface checkSubmitContactFormDataRequest extends setLanguageRequest {
   body: {
     name: string;
     email: string;

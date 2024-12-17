@@ -5,11 +5,11 @@ import { patternRouter } from './api/pattern-routes.js';
 import userRouter from './api/user-routes.js';
 import formRouter from './api/form-routes.js';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.use('/:language/auth', authRoutes);
-router.use('/:language/patterns', patternRouter);
-router.use('/:language/user', userRouter);
-router.use('/:language/form', formRouter);
+router.use('/auth', authRoutes);
+router.use('/patterns', patternRouter);
+router.use('/user', userRouter);
+router.use('/form', formRouter);
 
 export default router;
