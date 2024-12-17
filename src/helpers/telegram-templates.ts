@@ -1,4 +1,4 @@
-export const getNewMessageTelegramContent = (
+export const getNewMessageTelegramContactForm = (
   data: { name: string; email: string; message: string; agreement: boolean },
   language: string = 'uk'
 ) => {

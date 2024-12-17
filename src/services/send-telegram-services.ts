@@ -1,4 +1,4 @@
-import { getNewMessageTelegramContent } from '../helpers/telegram-templates.js';
+import { getNewMessageTelegramContactForm } from '../helpers/telegram-templates.js';
 import { sendOrderToTelegram } from './telegram-service.js';
 
 type TelegramMessageType = 'newMessage';
@@ -17,7 +17,7 @@ export const sendTelegramMessage = async (
   let telegramMessage;
 
   if (type === 'newMessage') {
-    telegramMessage = getNewMessageTelegramContent(data, language);
+    telegramMessage = getNewMessageTelegramContactForm(data, language);
   } else {
     throw new Error('Invalid Telegram message type');
   }
