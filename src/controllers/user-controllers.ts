@@ -185,10 +185,10 @@ export const checkoutCart = async (
     // const orderDetails = `
     //   Номер замовлення: ${order._id}
     //   Ім'я: ${order.user}
-      
+
     //   Товари:
     //       ${order.items.map((item) => item._id).join('\n          ')}
-      
+
     //   Загальна сума: ${order.items.length * 65}
     // `;
 

@@ -4,13 +4,13 @@ import {
   getEmailVerificationEmailContent,
 } from '../helpers/mail-templates.js';
 
-type EmailType = 'verification' | 'passwordReset' ;
+type EmailType = 'verification' | 'passwordReset';
 
 export const sendEmail = async (
   to: string,
   token: string,
   type: EmailType,
-  language: string = 'uk',
+  language: string = 'uk'
 ) => {
   let emailContent;
 
@@ -24,7 +24,7 @@ export const sendEmail = async (
       throw new Error('Verification token is required');
     }
     emailContent = getPasswordRecoveryEmailContent(token, language);
-  }  else {
+  } else {
     throw new Error('Invalid email type');
   }
 

@@ -8,7 +8,9 @@ type NewMessageData = {
   agreement: boolean;
 };
 
-export const getNewMessageTelegramContactForm = (data: NewMessageData): string => {
+export const getNewMessageTelegramContactForm = (
+  data: NewMessageData
+): string => {
   const { name, email, message, agreement } = data;
 
   return `
@@ -46,7 +48,7 @@ export const sendMessageToTelegram = async (message: string) => {
 
 export const sendTelegramMessage = async (
   type: TelegramMessageType,
-  data: NewMessageData,
+  data: NewMessageData
 ): Promise<void> => {
   let telegramMessage: string;
 

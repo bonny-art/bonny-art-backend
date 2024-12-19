@@ -1,12 +1,11 @@
 import { Response, NextFunction } from 'express';
 
 import * as contactFormServices from '../services/form-services.js';
-import * as telergamServices  from '../services/telegram-service.js';
+import * as telergamServices from '../services/telegram-service.js';
 
 import HttpError from '../helpers/http-error.js';
 
 import { checkSubmitContactFormDataRequest } from '../types/form-types.js';
-
 
 export const submitContactFormData = async (
   req: checkSubmitContactFormDataRequest,
