@@ -1,12 +1,12 @@
 import { Response, NextFunction } from 'express';
 
-import * as contactFormServices from '../services/contact-form-services.js';
-import { sendEmail } from '../services/mail-services.js';
+import * as contactFormServices from '../services/form-services.js';
+import * as telergamServices  from '../services/telegram-service.js';
 
 import HttpError from '../helpers/http-error.js';
 
-import { checkSubmitContactFormDataRequest } from '../types/submit-contact-form-data-types.js';
-import { sendTelegramMessage } from '../services/send-telegram-services.js';
+import { checkSubmitContactFormDataRequest } from '../types/form-types.js';
+
 
 export const submitContactFormData = async (
   req: checkSubmitContactFormDataRequest,
@@ -27,14 +27,7 @@ export const submitContactFormData = async (
       agreement,
     });
 
-    await sendEmail(email, null, 'newMessage', lang, {
-      name,
-      email,
-      message,
-      agreement,
-    });
-
-    await sendTelegramMessage('newMessage', lang, {
+    await telergamServices.sendTelegramMessage('newMessage', {
       name,
       email,
       message,
