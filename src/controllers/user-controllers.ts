@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 
 import * as likesServices from '../services/like-services.js';
 import * as patternServices from '../services/pattern-services.js';
-// import * as telegramServices from '../services/telegram-service.js';
+import * as telegramServices from '../services/telegram-service.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
 import * as orderNumber from '../helpers/order-number.js';
@@ -12,6 +12,7 @@ import HttpError from '../helpers/http-error.js';
 import { checkPatternExistsRequest } from '../types/common-types.js';
 import { Pattern } from '../db/models/pattern.schema.js';
 import { Order } from '../db/models/order.Schema.js';
+import { Types } from 'mongoose';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -149,16 +150,23 @@ export const checkoutCart = async (
 
     const { comment, contactInfo } = req.body;
 
+    const validContactInfo = contactInfo || { phone: null, instagram: null, facebook: null };
+
     const missingPatterns: string[] = [];
-    const orderItems = [];
+    const orderItems: { patternId: Types.ObjectId; canvasCount: number }[] = [];
+    
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await Pattern.findById(patternId);
       if (!pattern) {
         missingPatterns.push(patternId.toString());
       } else {
-        orderItems.push({ patternId, canvasCount });
+      if (pattern._id instanceof Types.ObjectId) {
+        orderItems.push({ patternId: pattern._id, canvasCount });
+      } else {
+        missingPatterns.push(patternId.toString());
       }
-    }
+        }
+      }
 
     if (missingPatterns.length > 0) {
       res.status(400).json({
@@ -182,17 +190,12 @@ export const checkoutCart = async (
       },
     });
 
-    // const orderDetails = `
-    //   Номер замовлення: ${order._id}
-    //   Ім'я: ${order.user}
-
-    //   Товари:
-    //       ${order.items.map((item) => item._id).join('\n          ')}
-
-    //   Загальна сума: ${order.items.length * 65}
-    // `;
-
-    // await telegramServices.sendOrderToTelegram(orderDetails);
+    await telegramServices.sendTelegramMessage('newOrder', {
+      orderNumber: newOrderNumber,
+      user: user._id.toString(),
+      items: orderItems,
+      contactInfo: validContactInfo,
+    });
 
     user.cart = [];
     await user.save();

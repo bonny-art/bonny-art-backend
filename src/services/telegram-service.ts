@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { getNewMessageTelegramContactForm } from '../helpers/telegram-templates.js';
+import { getNewMessageTelegramContactForm, getNewOrderTelegramMessage } from '../helpers/telegram-templates.js';
 import {
   NewMessageData,
+  OrderData,
   TelegramMessageType,
 } from '../types/telegram-templates.js';
 
@@ -30,13 +31,16 @@ export const sendMessageToTelegram = async (message: string) => {
 
 export const sendTelegramMessage = async (
   type: TelegramMessageType,
-  data: NewMessageData
+  data: NewMessageData | OrderData
 ): Promise<void> => {
   let telegramMessage: string;
 
   switch (type) {
     case 'newMessage':
-      telegramMessage = getNewMessageTelegramContactForm(data);
+      telegramMessage = getNewMessageTelegramContactForm(data as NewMessageData);
+      break;
+    case 'newOrder':
+      telegramMessage = getNewOrderTelegramMessage(data as OrderData);
       break;
     default:
       throw new Error('Invalid Telegram message type');
