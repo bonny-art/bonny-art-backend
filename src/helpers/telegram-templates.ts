@@ -1,4 +1,4 @@
-import { NewMessageData } from "../types/telegram-templates.js";
+import { NewMessageData } from '../types/telegram-templates.js';
 
 export const getNewMessageTelegramContactForm = (
   data: NewMessageData

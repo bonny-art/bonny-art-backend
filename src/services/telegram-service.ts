@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { getNewMessageTelegramContactForm } from '../helpers/telegram-templates.js';
-import { NewMessageData, TelegramMessageType } from '../types/telegram-templates.js';
+import {
+  NewMessageData,
+  TelegramMessageType,
+} from '../types/telegram-templates.js';
 
 export const sendMessageToTelegram = async (message: string) => {
   const { TELEGRAM_TOKEN, TELEGRAM_CHAT_ID } = process.env;
