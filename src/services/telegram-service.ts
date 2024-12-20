@@ -1,27 +1,6 @@
 import axios from 'axios';
-
-type TelegramMessageType = 'newMessage';
-type NewMessageData = {
-  name: string;
-  email: string;
-  message: string;
-  agreement: boolean;
-};
-
-export const getNewMessageTelegramContactForm = (
-  data: NewMessageData
-): string => {
-  const { name, email, message, agreement } = data;
-
-  return `
-    📝 **Нове повідомлення з контактної форми**:
-    👤 Ім'я: ${name}
-    📧 Email: ${email}
-    💬 Повідомлення: ${message}
-    ✅ Згода на обробку даних: ${agreement ? 'Так' : 'Ні'}
-    ⏰ Дата: ${new Date().toLocaleString()}
-  `;
-};
+import { getNewMessageTelegramContactForm } from '../helpers/telegram-templates.js';
+import { NewMessageData, TelegramMessageType } from '../types/telegram-templates.js';
 
 export const sendMessageToTelegram = async (message: string) => {
   const { TELEGRAM_TOKEN, TELEGRAM_CHAT_ID } = process.env;
