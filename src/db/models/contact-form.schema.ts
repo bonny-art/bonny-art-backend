@@ -32,7 +32,7 @@ const contactFormSchema = new mongoose.Schema(
   { versionKey: false, timestamps: true }
 );
 
-export const FormData = mongoose.model('FormData', contactFormSchema);
+export const ContactForm = mongoose.model('ContactForm', contactFormSchema);
 
 export const contactFormValidationSchema = Joi.object({
   name: Joi.string().pattern(nameRegexp).min(2).required().messages({

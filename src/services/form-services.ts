@@ -1,4 +1,4 @@
-import { FormData } from '../db/models/contact-form.schema.js';
+import { ContactForm } from '../db/models/contact-form.schema.js';
 
 interface CreateFormDataParams {
   name: string;
@@ -10,7 +10,7 @@ interface CreateFormDataParams {
 export const saveFormData = async (data: CreateFormDataParams) => {
   const { name, email, message, agreement } = data;
 
-  const newFormData = await FormData.create({
+  const newFormData = await ContactForm.create({
     name,
     email,
     message,

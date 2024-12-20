@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 
 import * as likesServices from '../services/like-services.js';
 import * as patternServices from '../services/pattern-services.js';
-import * as telegramServices from '../services/telegram-service.js';
+// import * as telegramServices from '../services/telegram-service.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
 import * as orderNumber from '../helpers/order-number.js';
@@ -182,17 +182,17 @@ export const checkoutCart = async (
       },
     });
 
-    const orderDetails = `
-      Номер замовлення: ${order._id}
-      Ім'я: ${order.user}
-      
-      Товари:
-          ${order.items.map((item) => item._id).join('\n          ')}
-      
-      Загальна сума: ${order.items.length * 65}
-    `;
+    // const orderDetails = `
+    //   Номер замовлення: ${order._id}
+    //   Ім'я: ${order.user}
 
-    await telegramServices.sendOrderToTelegram(orderDetails);
+    //   Товари:
+    //       ${order.items.map((item) => item._id).join('\n          ')}
+
+    //   Загальна сума: ${order.items.length * 65}
+    // `;
+
+    // await telegramServices.sendOrderToTelegram(orderDetails);
 
     user.cart = [];
     await user.save();

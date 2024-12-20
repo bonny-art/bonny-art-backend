@@ -46,34 +46,3 @@ export const getPasswordRecoveryEmailContent = (
         text: `Hello,\n\nWe received a request to reset your password. Please use the following code to complete the process:\n\n${resetToken}\n\nCopy this code and paste it in the required field to reset your password.\n\nIf you did not request this, please ignore this email.\n\nThank you!`,
       };
 };
-
-export const getNewMessageEmailContent = (
-  data: { name: string; email: string; message: string; agreement: boolean },
-  language: string = 'uk'
-) => {
-  const { name, email, message, agreement } = data;
-
-  return language === 'uk'
-    ? {
-        subject: `Нове повідомлення від ${name}`,
-        html: `
-          <p><strong>Ім'я:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Повідомлення:</strong></p>
-          <p>${message}</p>
-          <p><strong>Згода:</strong> ${agreement ? 'Так' : 'Ні'}</p>
-        `,
-        text: `Ім'я: ${name}\nEmail: ${email}\nПовідомлення: ${message}\nЗгода: ${agreement ? 'Так' : 'Ні'}`,
-      }
-    : {
-        subject: `New message from ${name}`,
-        html: `
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <p>${message}</p>
-          <p><strong>Agreement:</strong> ${agreement ? 'Yes' : 'No'}</p>
-        `,
-        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}\nAgreement: ${agreement ? 'Yes' : 'No'}`,
-      };
-};

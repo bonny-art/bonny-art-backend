@@ -2,23 +2,15 @@ import { sendMail } from './send-mail-services.js';
 import {
   getPasswordRecoveryEmailContent,
   getEmailVerificationEmailContent,
-  getNewMessageEmailContent,
 } from '../helpers/mail-templates.js';
 
-type EmailType = 'verification' | 'passwordReset' | 'newMessage';
-type NewMessageData = {
-  name: string;
-  email: string;
-  message: string;
-  agreement: boolean;
-};
+type EmailType = 'verification' | 'passwordReset';
 
 export const sendEmail = async (
   to: string,
-  token: string | null,
+  token: string,
   type: EmailType,
-  language: string = 'uk',
-  additionalData?: NewMessageData
+  language: string = 'uk'
 ) => {
   let emailContent;
 
@@ -32,8 +24,6 @@ export const sendEmail = async (
       throw new Error('Verification token is required');
     }
     emailContent = getPasswordRecoveryEmailContent(token, language);
-  } else if (type === 'newMessage' && additionalData) {
-    emailContent = getNewMessageEmailContent(additionalData, language);
   } else {
     throw new Error('Invalid email type');
   }
