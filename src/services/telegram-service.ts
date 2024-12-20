@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { getNewMessageTelegramContactForm, getNewOrderTelegramMessage } from '../helpers/telegram-templates.js';
+import {
+  getNewMessageTelegramContactForm,
+  getNewOrderTelegramMessage,
+} from '../helpers/telegram-templates.js';
 import {
   NewMessageData,
   OrderData,
@@ -37,7 +40,9 @@ export const sendTelegramMessage = async (
 
   switch (type) {
     case 'newMessage':
-      telegramMessage = getNewMessageTelegramContactForm(data as NewMessageData);
+      telegramMessage = getNewMessageTelegramContactForm(
+        data as NewMessageData
+      );
       break;
     case 'newOrder':
       telegramMessage = getNewOrderTelegramMessage(data as OrderData);

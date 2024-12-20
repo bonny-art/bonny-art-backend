@@ -15,7 +15,6 @@ export const getNewMessageTelegramContactForm = (
   `;
 };
 
-
 /**
  * Формирует сообщение о новом заказе.
  */
@@ -23,7 +22,9 @@ export const getNewOrderTelegramMessage = (data: OrderData): string => {
   const { orderNumber, user, items, contactInfo } = data;
 
   const itemDetails = items
-    .map((item, index) => `${index + 1}. ${item.patternId} - ${item.canvasCount}`)
+    .map(
+      (item, index) => `${index + 1}. ${item.patternId} - ${item.canvasCount}`
+    )
     .join('\n');
 
   return `

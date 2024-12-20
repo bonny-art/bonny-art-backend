@@ -150,23 +150,27 @@ export const checkoutCart = async (
 
     const { comment, contactInfo } = req.body;
 
-    const validContactInfo = contactInfo || { phone: null, instagram: null, facebook: null };
+    const validContactInfo = contactInfo || {
+      phone: null,
+      instagram: null,
+      facebook: null,
+    };
 
     const missingPatterns: string[] = [];
     const orderItems: { patternId: Types.ObjectId; canvasCount: number }[] = [];
-    
+
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await Pattern.findById(patternId);
       if (!pattern) {
         missingPatterns.push(patternId.toString());
       } else {
-      if (pattern._id instanceof Types.ObjectId) {
-        orderItems.push({ patternId: pattern._id, canvasCount });
-      } else {
-        missingPatterns.push(patternId.toString());
-      }
+        if (pattern._id instanceof Types.ObjectId) {
+          orderItems.push({ patternId: pattern._id, canvasCount });
+        } else {
+          missingPatterns.push(patternId.toString());
         }
       }
+    }
 
     if (missingPatterns.length > 0) {
       res.status(400).json({

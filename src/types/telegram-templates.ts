@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
 export type TelegramMessageType = 'newMessage' | 'newOrder';
 export type NewMessageData = {
