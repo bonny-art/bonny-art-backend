@@ -15,9 +15,6 @@ export const getNewMessageTelegramContactForm = (
   `;
 };
 
-/**
- * Формирует сообщение о новом заказе.
- */
 export const getNewOrderTelegramMessage = (data: OrderData): string => {
   const { orderNumber, user, items, contactInfo } = data;
 

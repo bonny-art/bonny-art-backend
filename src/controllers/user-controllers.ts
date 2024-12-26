@@ -13,6 +13,7 @@ import { checkPatternExistsRequest } from '../types/common-types.js';
 import { Pattern } from '../db/models/pattern.schema.js';
 import { Order } from '../db/models/order.Schema.js';
 import { Types } from 'mongoose';
+import { getNewOrderTelegramMessage } from '../helpers/telegram-templates.js';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -193,13 +194,17 @@ export const checkoutCart = async (
         facebook: contactInfo?.facebook || null,
       },
     });
+    
 
-    await telegramServices.sendTelegramMessage('newOrder', {
+    const telegramMessage = getNewOrderTelegramMessage({
       orderNumber: newOrderNumber,
       user: user._id.toString(),
       items: orderItems,
       contactInfo: validContactInfo,
     });
+
+       await telegramServices.sendMessageToTelegram(telegramMessage);
+
 
     user.cart = [];
     await user.save();
