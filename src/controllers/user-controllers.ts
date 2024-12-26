@@ -194,7 +194,6 @@ export const checkoutCart = async (
         facebook: contactInfo?.facebook || null,
       },
     });
-    
 
     const telegramMessage = getNewOrderTelegramMessage({
       orderNumber: newOrderNumber,
@@ -203,8 +202,7 @@ export const checkoutCart = async (
       contactInfo: validContactInfo,
     });
 
-       await telegramServices.sendMessageToTelegram(telegramMessage);
-
+    await telegramServices.sendMessageToTelegram(telegramMessage);
 
     user.cart = [];
     await user.save();
