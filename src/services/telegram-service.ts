@@ -1,4 +1,4 @@
-import {sendMessageToTelegram} from '../telegram-api.js';
+import { sendMessageToTelegram } from '../telegram-api.js';
 import {
   ContactFormMessageBuilder,
   getNewOrderTelegramMessage,
@@ -18,9 +18,7 @@ export const sendTelegramMessage = async (
 
   switch (type) {
     case TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE:
-      telegramMessage = ContactFormMessageBuilder(
-        data as NewMessageData
-      );
+      telegramMessage = ContactFormMessageBuilder(data as NewMessageData);
       break;
     case TELEGRAM_MESSAGE_TYPES.NEW_ORDER:
       telegramMessage = getNewOrderTelegramMessage(data as OrderData);

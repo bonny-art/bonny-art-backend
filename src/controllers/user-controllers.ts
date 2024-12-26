@@ -194,14 +194,16 @@ export const orders = async (
         facebook: contactInfo?.facebook || null,
       },
     });
-    
 
-    await telegramServices.sendTelegramMessage(TELEGRAM_MESSAGE_TYPES.NEW_ORDER, {
-      orderNumber: newOrderNumber,
-      user: user._id.toString(),
-      items: orderItems,
-      contactInfo: validContactInfo,
-    });
+    await telegramServices.sendTelegramMessage(
+      TELEGRAM_MESSAGE_TYPES.NEW_ORDER,
+      {
+        orderNumber: newOrderNumber,
+        user: user._id.toString(),
+        items: orderItems,
+        contactInfo: validContactInfo,
+      }
+    );
 
     user.cart = [];
     await user.save();

@@ -1,8 +1,6 @@
 import { NewMessageData, OrderData } from '../types/telegram-templates.js';
 
-export const ContactFormMessageBuilder = (
-  data: NewMessageData
-): string => {
+export const ContactFormMessageBuilder = (data: NewMessageData): string => {
   const { name, email, message } = data;
 
   return `

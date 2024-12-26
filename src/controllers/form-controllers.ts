@@ -27,11 +27,14 @@ export const contactFormData = async (
       agreement,
     });
 
-    await telergamServices.sendTelegramMessage(TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE, {
-      name,
-      email,
-      message,
-    });
+    await telergamServices.sendTelegramMessage(
+      TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE,
+      {
+        name,
+        email,
+        message,
+      }
+    );
 
     res.status(201).json({
       message: 'The form has been successfully submitted',
