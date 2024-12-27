@@ -153,33 +153,37 @@ export const processOrder = async (
     const { comment, contactInfo } = req.body;
 
     const missingPatterns: string[] = [];
-    const orderItems: { patternId: Types.ObjectId;  codename: string;  name: string; canvasCount: number }[] = [];
-
+    const orderItems: {
+      patternId: Types.ObjectId;
+      codename: string;
+      name: string;
+      canvasCount: number;
+    }[] = [];
 
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await Pattern.findById(patternId);
-    
+
       if (!pattern) {
         missingPatterns.push(patternId.toString());
         continue;
       }
-    
+
       const titleDoc = await PatternTitle.findById(pattern.title).lean();
-    
+
       if (!titleDoc?.name?.uk) {
         missingPatterns.push(patternId.toString());
         continue;
       }
- 
+
       const patternIdAsObjectId = pattern._id as Types.ObjectId;
-    
+
       orderItems.push({
-        patternId: patternIdAsObjectId,        
+        patternId: patternIdAsObjectId,
         codename: pattern.codename,
         name: titleDoc.name.uk,
         canvasCount,
       });
-    }    
+    }
 
     if (missingPatterns.length > 0) {
       res.status(400).json({

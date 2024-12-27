@@ -26,10 +26,6 @@ userRouter.delete(
   userControllers.removePatternFromCart
 );
 
-userRouter.post(
-  '/orders/checkout',
-  authenticate,
-  userControllers.processOrder
-);
+userRouter.post('/orders/checkout', authenticate, userControllers.processOrder);
 
 export default userRouter;

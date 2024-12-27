@@ -17,20 +17,19 @@ export const orderMessageBuilder = (data: OrderData): string => {
 
   const itemDetails = items
     .map(
-      (item, index) => `${index + 1}. ${item.codename}  ${item.name} - ${item.canvasCount} count`
+      (item, index) =>
+        `${index + 1}. ${item.codename}  ${item.name} - ${item.canvasCount} count`
     )
     .join('\n');
 
-    const contactDetails = `
+  const contactDetails = `
     📞 Телефон: ${contactInfo.phone || 'Не вказано'}
     📸 Instagram: ${contactInfo.instagram || 'Не вказано'}
     📘 Facebook: ${contactInfo.facebook || 'Не вказано'}
     ✉️ Email: ${contactInfo.email || 'Не вказано'}
   `;
 
-    const commentSection = comment
-    ? `📝 Коментар: ${comment}`
-    : '';
+  const commentSection = comment ? `📝 Коментар: ${comment}` : '';
 
   return `
     🛒 **Нове замовлення**:
