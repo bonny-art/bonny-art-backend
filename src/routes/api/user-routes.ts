@@ -30,7 +30,7 @@ userRouter.post(
   '/orders/checkout',
   authenticate,
   setLanguage,
-  userControllers.orders
+  userControllers.processOrder
 );
 
 export default userRouter;

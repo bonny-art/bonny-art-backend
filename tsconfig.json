@@ -26,6 +26,6 @@
     "src/routes/index.js",
     "src/db/models/user.schema.ts",
     "src/middlewares/validate-body.ts"
-  ],
+, "src/telegram-api.ts"  ],
   "exclude": ["node_modules"]
 }

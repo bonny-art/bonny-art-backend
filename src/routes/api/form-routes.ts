@@ -12,7 +12,7 @@ formRouter.post(
   authenticate,
   setLanguage,
   validateBody(contactFormValidationSchema),
-  formControllers.contactFormData
+  formControllers.processContactForm
 );
 
 export default formRouter;
