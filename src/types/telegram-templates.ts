@@ -5,7 +5,6 @@ export type NewMessageData = {
   name: string;
   email: string;
   message: string;
-  agreement: boolean;
 };
 
 export interface OrderItem {

@@ -6,9 +6,9 @@ import * as telergamServices from '../services/telegram-service.js';
 import HttpError from '../helpers/http-error.js';
 
 import { checkSubmitContactFormDataRequest } from '../types/form-types.js';
-import { getNewMessageTelegramContactForm } from '../helpers/telegram-templates.js';
+import { TELEGRAM_MESSAGE_TYPES } from '../constants.js';
 
-export const submitContactFormData = async (
+export const contactFormData = async (
   req: checkSubmitContactFormDataRequest,
   res: Response,
   next: NextFunction
@@ -27,14 +27,14 @@ export const submitContactFormData = async (
       agreement,
     });
 
-    const telegramMessage = getNewMessageTelegramContactForm({
-      name,
-      email,
-      message,
-      agreement,
-    });
-
-    await telergamServices.sendMessageToTelegram(telegramMessage);
+    await telergamServices.sendTelegramMessage(
+      TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE,
+      {
+        name,
+        email,
+        message,
+      }
+    );
 
     res.status(201).json({
       message: 'The form has been successfully submitted',
