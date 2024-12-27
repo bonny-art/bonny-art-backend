@@ -1,4 +1,4 @@
-import { deliverToTelegram } from '../telegram-api.js';
+import { deliverToTelegram } from '../api/telegram-api.js';
 import {
   ContactFormMessageBuilder,
   OrderMessage,
