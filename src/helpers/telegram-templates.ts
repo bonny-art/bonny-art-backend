@@ -12,7 +12,7 @@ export const ContactFormMessageBuilder = (data: NewMessageData): string => {
   `;
 };
 
-export const getNewOrderTelegramMessage = (data: OrderData): string => {
+export const OrderMessage = (data: OrderData): string => {
   const { orderNumber, user, items, contactInfo } = data;
 
   const itemDetails = items

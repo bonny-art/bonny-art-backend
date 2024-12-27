@@ -8,7 +8,7 @@ import HttpError from '../helpers/http-error.js';
 import { checkSubmitContactFormDataRequest } from '../types/form-types.js';
 import { TELEGRAM_MESSAGE_TYPES } from '../constants.js';
 
-export const contactFormData = async (
+export const processContactForm = async (
   req: checkSubmitContactFormDataRequest,
   res: Response,
   next: NextFunction
@@ -27,7 +27,7 @@ export const contactFormData = async (
       agreement,
     });
 
-    await telergamServices.sendTelegramMessage(
+    await telergamServices.buildAndSendTelegramMessage(
       TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE,
       {
         name,

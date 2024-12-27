@@ -133,7 +133,7 @@ export const removePatternFromCart = async (
   }
 };
 
-export const orders = async (
+export const processOrder = async (
   req: checkPatternExistsRequest,
   res: Response,
   next: NextFunction
@@ -195,7 +195,7 @@ export const orders = async (
       },
     });
 
-    await telegramServices.sendTelegramMessage(
+    await telegramServices.buildAndSendTelegramMessage(
       TELEGRAM_MESSAGE_TYPES.NEW_ORDER,
       {
         orderNumber: newOrderNumber,

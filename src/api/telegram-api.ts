@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const sendMessageToTelegram = async (message: string) => {
+export const deliverToTelegram = async (message: string) => {
   const { TELEGRAM_TOKEN, TELEGRAM_CHAT_ID } = process.env;
   const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
 
