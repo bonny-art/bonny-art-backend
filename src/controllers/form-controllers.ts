@@ -15,9 +15,9 @@ export const processContactForm = async (
 ): Promise<void> => {
   try {
     const { name, email, message, agreement } = req.body;
-    const lang = req.lang;
-    if (!lang) {
-      throw HttpError(404, 'Pattern not found in request');
+
+    if (!agreement) {
+      throw HttpError(400, 'Agreement is required');
     }
 
     const newFormData = await contactFormServices.saveFormData({

@@ -29,7 +29,6 @@ userRouter.delete(
 userRouter.post(
   '/orders/checkout',
   authenticate,
-  setLanguage,
   userControllers.processOrder
 );
 
