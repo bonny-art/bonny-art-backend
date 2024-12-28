@@ -14,6 +14,7 @@ import { Pattern } from '../db/models/pattern.schema.js';
 import { Order } from '../db/models/order.Schema.js';
 import { Types } from 'mongoose';
 import { TELEGRAM_MESSAGE_TYPES } from '../constants.js';
+import { PatternTitle } from '../db/models/pattern-title.schema.js';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -151,26 +152,37 @@ export const processOrder = async (
 
     const { comment, contactInfo } = req.body;
 
-    const validContactInfo = contactInfo || {
-      phone: null,
-      instagram: null,
-      facebook: null,
-    };
-
     const missingPatterns: string[] = [];
-    const orderItems: { patternId: Types.ObjectId; canvasCount: number }[] = [];
+    const orderItems: {
+      patternId: Types.ObjectId;
+      codename: string;
+      name: string;
+      canvasCount: number;
+    }[] = [];
 
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await Pattern.findById(patternId);
+
       if (!pattern) {
         missingPatterns.push(patternId.toString());
-      } else {
-        if (pattern._id instanceof Types.ObjectId) {
-          orderItems.push({ patternId: pattern._id, canvasCount });
-        } else {
-          missingPatterns.push(patternId.toString());
-        }
+        continue;
       }
+
+      const titleDoc = await PatternTitle.findById(pattern.title).lean();
+
+      if (!titleDoc?.name?.uk) {
+        missingPatterns.push(patternId.toString());
+        continue;
+      }
+
+      const patternIdAsObjectId = pattern._id as Types.ObjectId;
+
+      orderItems.push({
+        patternId: patternIdAsObjectId,
+        codename: pattern.codename,
+        name: titleDoc.name.uk,
+        canvasCount,
+      });
     }
 
     if (missingPatterns.length > 0) {
@@ -201,7 +213,13 @@ export const processOrder = async (
         orderNumber: newOrderNumber,
         user: user._id.toString(),
         items: orderItems,
-        contactInfo: validContactInfo,
+        contactInfo: {
+          phone: contactInfo?.phone || null,
+          instagram: contactInfo?.instagram || null,
+          facebook: contactInfo?.facebook || null,
+          email: user.email || null,
+        },
+        comment,
       }
     );
 

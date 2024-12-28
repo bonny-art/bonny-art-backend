@@ -1,7 +1,7 @@
 import { deliverToTelegram } from '../api/telegram-api.js';
 import {
-  ContactFormMessageBuilder,
-  OrderMessage,
+  contactFormMessageBuilder,
+  orderMessageBuilder,
 } from '../helpers/telegram-templates.js';
 import {
   NewMessageData,
@@ -18,10 +18,10 @@ export const buildAndSendTelegramMessage = async (
 
   switch (type) {
     case TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE:
-      telegramMessage = ContactFormMessageBuilder(data as NewMessageData);
+      telegramMessage = contactFormMessageBuilder(data as NewMessageData);
       break;
     case TELEGRAM_MESSAGE_TYPES.NEW_ORDER:
-      telegramMessage = OrderMessage(data as OrderData);
+      telegramMessage = orderMessageBuilder(data as OrderData);
       break;
     default:
       throw new Error('Invalid Telegram message type');
