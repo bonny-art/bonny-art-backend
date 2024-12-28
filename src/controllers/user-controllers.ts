@@ -10,11 +10,10 @@ import * as orderNumber from '../helpers/order-number.js';
 import HttpError from '../helpers/http-error.js';
 
 import { checkPatternExistsRequest } from '../types/common-types.js';
-import { Pattern } from '../db/models/pattern.schema.js';
 import { Order } from '../db/models/order.Schema.js';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { TELEGRAM_MESSAGE_TYPES } from '../constants.js';
-import { PatternTitle } from '../db/models/pattern-title.schema.js';
+import { getPatternForOrder } from '../services/order-services.js';
 
 export const getUserLikedPatterns = async (
   req: checkPatternExistsRequest,
@@ -154,33 +153,24 @@ export const processOrder = async (
 
     const missingPatterns: string[] = [];
     const orderItems: {
-      patternId: Types.ObjectId;
+      patternId: mongoose.Schema.Types.ObjectId | Types.ObjectId;
       codename: string;
       name: string;
       canvasCount: number;
     }[] = [];
 
     for (const { patternId, canvasCount } of user.cart) {
-      const pattern = await Pattern.findById(patternId);
+      const pattern = await getPatternForOrder(patternId);
 
-      if (!pattern) {
+      if (!pattern || !pattern.title?.name?.uk) {
         missingPatterns.push(patternId.toString());
         continue;
       }
-
-      const titleDoc = await PatternTitle.findById(pattern.title).lean();
-
-      if (!titleDoc?.name?.uk) {
-        missingPatterns.push(patternId.toString());
-        continue;
-      }
-
-      const patternIdAsObjectId = pattern._id as Types.ObjectId;
 
       orderItems.push({
-        patternId: patternIdAsObjectId,
+        patternId: pattern._id,
         codename: pattern.codename,
-        name: titleDoc.name.uk,
+        name: pattern.title.name.uk, 
         canvasCount,
       });
     }

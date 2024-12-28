@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 export type TelegramMessageType = 'newMessage' | 'newOrder';
-export type NewMessageData = {
+export type ContactFormData = {
   name: string;
   email: string;
   message: string;
@@ -9,7 +9,7 @@ export type NewMessageData = {
 
 export interface OrderItem {
   name: string;
-  patternId: Types.ObjectId;
+  patternId: mongoose.Schema.Types.ObjectId | Types.ObjectId;
   codename: string;
   canvasCount: number;
 }
