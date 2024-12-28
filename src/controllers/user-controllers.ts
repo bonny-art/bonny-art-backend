@@ -170,7 +170,7 @@ export const processOrder = async (
       orderItems.push({
         patternId: pattern._id,
         codename: pattern.codename,
-        name: pattern.title.name.uk, 
+        name: pattern.title.name.uk,
         canvasCount,
       });
     }
