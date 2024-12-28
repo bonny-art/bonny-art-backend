@@ -4,7 +4,7 @@ import {
   orderMessageBuilder,
 } from '../helpers/telegram-templates.js';
 import {
-  NewMessageData,
+  ContactFormData,
   OrderData,
   TelegramMessageType,
 } from '../types/telegram-templates.js';
@@ -12,13 +12,13 @@ import { TELEGRAM_MESSAGE_TYPES } from '../constants.js';
 
 export const buildAndSendTelegramMessage = async (
   type: TelegramMessageType,
-  data: NewMessageData | OrderData
+  data: ContactFormData | OrderData
 ): Promise<void> => {
   let telegramMessage: string;
 
   switch (type) {
     case TELEGRAM_MESSAGE_TYPES.NEW_MESSAGE:
-      telegramMessage = contactFormMessageBuilder(data as NewMessageData);
+      telegramMessage = contactFormMessageBuilder(data as ContactFormData);
       break;
     case TELEGRAM_MESSAGE_TYPES.NEW_ORDER:
       telegramMessage = orderMessageBuilder(data as OrderData);
