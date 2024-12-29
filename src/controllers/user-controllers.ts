@@ -162,7 +162,7 @@ export const processOrder = async (
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await getPatternForOrder(patternId);
 
-      if (!pattern ) {
+      if (!pattern) {
         missingPatterns.push(patternId.toString());
         continue;
       }
