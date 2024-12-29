@@ -155,14 +155,14 @@ export const processOrder = async (
     const orderItems: {
       patternId: mongoose.Schema.Types.ObjectId | Types.ObjectId;
       codename: string;
-      name: string;
+      name?: string;
       canvasCount: number;
     }[] = [];
 
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await getPatternForOrder(patternId);
 
-      if (!pattern || !pattern.title?.name?.uk) {
+      if (!pattern ) {
         missingPatterns.push(patternId.toString());
         continue;
       }
@@ -170,7 +170,7 @@ export const processOrder = async (
       orderItems.push({
         patternId: pattern._id,
         codename: pattern.codename,
-        name: pattern.title.name.uk,
+        name: pattern.title?.name?.uk,
         canvasCount,
       });
     }
