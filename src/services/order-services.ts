@@ -1,7 +1,7 @@
 import mongoose, { Types } from 'mongoose';
 import { Pattern } from '../db/models/pattern.schema.js';
 import { PatternDoc } from '../types/patterns-types.js';
-import {Order} from '../db/models/order.Schema.js';
+import { Order } from '../db/models/order.Schema.js';
 import { CreateOrderParams } from '../types/order-types.js';
 
 export const createOrder = async ({
@@ -32,4 +32,3 @@ export const getPatternForOrder = async (
     .populate('title', 'name')
     .lean<PatternDoc>();
 };
-
