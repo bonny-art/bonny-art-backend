@@ -8,7 +8,7 @@ export type ContactFormData = {
 };
 
 export interface OrderItem {
-  name: string;
+  name?: string;
   patternId: mongoose.Schema.Types.ObjectId | Types.ObjectId;
   codename: string;
   canvasCount: number;

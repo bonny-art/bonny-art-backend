@@ -3,6 +3,7 @@ import { Response, NextFunction } from 'express';
 import * as likesServices from '../services/like-services.js';
 import * as patternServices from '../services/pattern-services.js';
 import * as telegramServices from '../services/telegram-service.js';
+import * as orderServices from '../services/order-services.js';
 
 import * as dataHandlers from '../helpers/data-handlers.js';
 import * as orderNumber from '../helpers/order-number.js';
@@ -10,7 +11,6 @@ import * as orderNumber from '../helpers/order-number.js';
 import HttpError from '../helpers/http-error.js';
 
 import { checkPatternExistsRequest } from '../types/common-types.js';
-import { Order } from '../db/models/order.Schema.js';
 import mongoose, { Types } from 'mongoose';
 import { TELEGRAM_MESSAGE_TYPES } from '../constants.js';
 import { getPatternForOrder } from '../services/order-services.js';
@@ -155,14 +155,14 @@ export const processOrder = async (
     const orderItems: {
       patternId: mongoose.Schema.Types.ObjectId | Types.ObjectId;
       codename: string;
-      name: string;
+      name?: string;
       canvasCount: number;
     }[] = [];
 
     for (const { patternId, canvasCount } of user.cart) {
       const pattern = await getPatternForOrder(patternId);
 
-      if (!pattern || !pattern.title?.name?.uk) {
+      if (!pattern) {
         missingPatterns.push(patternId.toString());
         continue;
       }
@@ -170,7 +170,7 @@ export const processOrder = async (
       orderItems.push({
         patternId: pattern._id,
         codename: pattern.codename,
-        name: pattern.title.name.uk,
+        name: pattern.title?.name?.uk,
         canvasCount,
       });
     }
@@ -185,16 +185,12 @@ export const processOrder = async (
 
     const newOrderNumber = await orderNumber.generateOrderNumber();
 
-    const order = await Order.create({
-      user: user._id,
-      items: orderItems,
-      comment: comment || null,
+    const order = await orderServices.createOrder({
+      userId: user._id,
+      orderItems,
+      comment,
       orderNumber: newOrderNumber,
-      contactInfo: {
-        phone: contactInfo?.phone || null,
-        instagram: contactInfo?.instagram || null,
-        facebook: contactInfo?.facebook || null,
-      },
+      contactInfo,
     });
 
     await telegramServices.buildAndSendTelegramMessage(
