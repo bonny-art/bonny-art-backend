@@ -108,6 +108,9 @@ export const updateUserSchema = Joi.object({
     'string.pattern.base':
       'Email must be a valid email address (e.g., user@example.com)',
   }),
+});
+
+export const changePasswordSchema = Joi.object({
   oldPassword: Joi.string().when('newPassword', {
     is: Joi.exist(),
     then: Joi.required(),
