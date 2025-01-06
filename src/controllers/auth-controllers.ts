@@ -119,7 +119,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 
   const { _id } = req.user;
-  const { userName, email, oldPassword, newPassword } = req.body;
+  const { userName, email } = req.body;
 
   const updates: Partial<IUser> = {};
 
@@ -150,24 +150,6 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
     updates.email = normalizedEmail;
   }
 
-  if (oldPassword || newPassword) {
-    const user = req.user;
-
-    if (oldPassword) {
-      const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-      if (!isPasswordValid) {
-        throw HttpError(401, 'Old password is incorrect');
-      }
-    } else {
-      throw HttpError(400, 'Old password is required to change the password');
-    }
-
-    if (newPassword) {
-      const hashPass = await hashPassword(newPassword);
-      updates.password = hashPass;
-    }
-  }
-
   const updatedUser = await userServices.updateUserProperty(
     _id.toString(),
     updates
@@ -180,6 +162,36 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
     },
   });
 };
+
+export const changePassword = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+
+    if (!req.user) {
+      throw HttpError(401, 'Not authorized');
+    }
+
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      throw HttpError(400, 'Old and new passwords are required');
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, req.user.password);
+    if (!isPasswordValid) {
+      throw HttpError(401, 'Old password is incorrect');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await userServices.updateUserProperty(req.user._id.toString(), {
+      password: hashedPassword,
+    });
+
+    res.json({ message: 'Password updated successfully' });
+};
+
 
 const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
@@ -310,6 +322,7 @@ export default {
   signout: ctrlWrapper(signout),
   getCurrent: ctrlWrapper(getCurrent),
   updateUser: ctrlWrapper(updateUser),
+  changePassword: ctrlWrapper(changePassword),
   deleteUser: ctrlWrapper(deleteUser),
   verificateUser: ctrlWrapper(verificateUser),
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
