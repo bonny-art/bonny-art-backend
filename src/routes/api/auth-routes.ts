@@ -7,7 +7,9 @@ import {
   updateUserSchema,
 } from '../../db/models/user.schema.js';
 import validateBody from '../../middlewares/validate-body.js';
-import authController, { changePassword } from '../../controllers/auth-controllers.js';
+import authController, {
+  changePassword,
+} from '../../controllers/auth-controllers.js';
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';
 import { setLanguage } from '../../middlewares/set-language.js';
@@ -36,9 +38,6 @@ authRouter.patch(
   validateBody(changePasswordSchema),
   changePassword
 );
-
-
-
 
 authRouter.delete(
   '/delete',

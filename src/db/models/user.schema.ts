@@ -110,8 +110,6 @@ export const updateUserSchema = Joi.object({
   }),
 });
 
-
-
 export const changePasswordSchema = Joi.object({
   oldPassword: Joi.string().when('newPassword', {
     is: Joi.exist(),
@@ -120,8 +118,6 @@ export const changePasswordSchema = Joi.object({
   }),
   newPassword: Joi.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
 });
-
-
 
 export const deleteUserSchema = Joi.object({
   password: Joi.string().required().messages({

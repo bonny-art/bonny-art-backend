@@ -167,31 +167,29 @@ export const changePassword = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
 
-    if (!req.user) {
-      throw HttpError(401, 'Not authorized');
-    }
+  const { oldPassword, newPassword } = req.body;
 
-    const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) {
+    throw HttpError(400, 'Old and new passwords are required');
+  }
 
-    if (!oldPassword || !newPassword) {
-      throw HttpError(400, 'Old and new passwords are required');
-    }
+  const isPasswordValid = await bcrypt.compare(oldPassword, req.user.password);
+  if (!isPasswordValid) {
+    throw HttpError(401, 'Old password is incorrect');
+  }
 
-    const isPasswordValid = await bcrypt.compare(oldPassword, req.user.password);
-    if (!isPasswordValid) {
-      throw HttpError(401, 'Old password is incorrect');
-    }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await userServices.updateUserProperty(req.user._id.toString(), {
+    password: hashedPassword,
+  });
 
-    await userServices.updateUserProperty(req.user._id.toString(), {
-      password: hashedPassword,
-    });
-
-    res.json({ message: 'Password updated successfully' });
+  res.json({ message: 'Password updated successfully' });
 };
-
 
 const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
