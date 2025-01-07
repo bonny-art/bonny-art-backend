@@ -64,4 +64,3 @@ export const getEmailChangeVerificationEmailContent = (
         text: `Please open this link in your browser: ${verificationLink}`,
       };
 };
-

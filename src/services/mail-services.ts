@@ -30,7 +30,7 @@ export const sendEmail = async (
       throw new Error('Verification token is required');
     }
     emailContent = getEmailChangeVerificationEmailContent(token, language);
-  }  else {
+  } else {
     throw new Error('Invalid email type');
   }
 

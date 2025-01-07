@@ -148,7 +148,10 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
-const changeEmail = async (req: AuthenticatedRequest & { lang?: string }, res: Response): Promise<void> => {
+const changeEmail = async (
+  req: AuthenticatedRequest & { lang?: string },
+  res: Response
+): Promise<void> => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
@@ -165,20 +168,32 @@ const changeEmail = async (req: AuthenticatedRequest & { lang?: string }, res: R
 
   const normalizedEmail = email.toLowerCase();
 
-  const existingUserByEmail = await authServices.getUserByProperty({ email: normalizedEmail });
-  if (existingUserByEmail && existingUserByEmail._id.toString() !== req.user._id.toString()) {
+  const existingUserByEmail = await authServices.getUserByProperty({
+    email: normalizedEmail,
+  });
+  if (
+    existingUserByEmail &&
+    existingUserByEmail._id.toString() !== req.user._id.toString()
+  ) {
     throw HttpError(409, 'Email already exists');
   }
-   
+
   const newVerificationToken = generateCryptoToken();
 
-  await sendEmail(normalizedEmail, newVerificationToken, 'emailChange', req.lang || 'en');
+  await sendEmail(
+    normalizedEmail,
+    newVerificationToken,
+    'emailChange',
+    req.lang || 'en'
+  );
   await userServices.updateUserProperty(req.user._id.toString(), {
     email: normalizedEmail,
     verify: false,
-    verifyToken: newVerificationToken, 
+    verifyToken: newVerificationToken,
   });
-  res.json({ message: 'Verification email sent. Please verify your new email address.' });
+  res.json({
+    message: 'Verification email sent. Please verify your new email address.',
+  });
 };
 
 const changePassword = async (

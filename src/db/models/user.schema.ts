@@ -119,12 +119,11 @@ export const changePasswordSchema = Joi.object({
   newPassword: Joi.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
 });
 
-
 export const changeEmailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).messages({
     'string.pattern.base':
       'Email must be a valid email address (e.g., user@example.com)',
-  })
+  }),
 });
 
 export const deleteUserSchema = Joi.object({
