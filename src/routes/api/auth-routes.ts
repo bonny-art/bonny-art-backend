@@ -1,4 +1,5 @@
 import {
+  changeEmailSchema,
   changePasswordSchema,
   deleteUserSchema,
   loginSchema,
@@ -7,9 +8,7 @@ import {
   updateUserSchema,
 } from '../../db/models/user.schema.js';
 import validateBody from '../../middlewares/validate-body.js';
-import authController, {
-  changePassword,
-} from '../../controllers/auth-controllers.js';
+import authController from '../../controllers/auth-controllers.js';
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';
 import { setLanguage } from '../../middlewares/set-language.js';
@@ -36,7 +35,14 @@ authRouter.patch(
   '/change-password',
   authenticate,
   validateBody(changePasswordSchema),
-  changePassword
+  authController.changePassword
+);
+authRouter.patch(
+  '/change-email',
+  authenticate,
+  setLanguage,
+  validateBody(changeEmailSchema),
+  authController.changeEmail
 );
 
 authRouter.delete(

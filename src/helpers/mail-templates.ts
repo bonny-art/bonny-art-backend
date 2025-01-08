@@ -46,3 +46,21 @@ export const getPasswordRecoveryEmailContent = (
         text: `Hello,\n\nWe received a request to reset your password. Please use the following code to complete the process:\n\n${resetToken}\n\nCopy this code and paste it in the required field to reset your password.\n\nIf you did not request this, please ignore this email.\n\nThank you!`,
       };
 };
+
+export const getEmailChangeVerificationEmailContent = (
+  verifyToken: string,
+  language: string = 'uk'
+) => {
+  const verificationLink = `http://localhost:8080/api/${language}/auth/verify/${verifyToken}`;
+  return language === 'uk'
+    ? {
+        subject: 'Підтвердження зміни електронної пошти',
+        html: `Натисніть <a href='${verificationLink}'>тут</a>, щоб підтвердити зміну вашої електронної пошти.`,
+        text: `Будь ласка, відкрийте це посилання у вашому браузері: ${verificationLink}`,
+      }
+    : {
+        subject: 'Email Change Verification',
+        html: `Please click <a href='${verificationLink}'>here</a> to verify your email change.`,
+        text: `Please open this link in your browser: ${verificationLink}`,
+      };
+};

@@ -119,7 +119,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 
   const { _id } = req.user;
-  const { userName, email } = req.body;
+  const { userName } = req.body;
 
   const updates: Partial<IUser> = {};
 
@@ -136,20 +136,6 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
     }
   }
 
-  if (email) {
-    const normalizedEmail = email.toLowerCase();
-    const existingUserByEmail = await authServices.getUserByProperty({
-      email: normalizedEmail,
-    });
-    if (
-      existingUserByEmail &&
-      existingUserByEmail._id.toString() !== _id.toString()
-    ) {
-      throw HttpError(409, 'Email already exists');
-    }
-    updates.email = normalizedEmail;
-  }
-
   const updatedUser = await userServices.updateUserProperty(
     _id.toString(),
     updates
@@ -157,13 +143,60 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 
   res.json({
     user: {
-      email: updatedUser?.email,
       userName: updatedUser?.userName,
     },
   });
 };
 
-export const changePassword = async (
+const changeEmail = async (
+  req: AuthenticatedRequest & { lang?: string },
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
+
+  const lang = req.lang;
+  if (!lang) {
+    throw HttpError(404, 'Language was not set');
+  }
+
+  const { email } = req.body;
+  if (!email) {
+    throw HttpError(400, 'Email is required');
+  }
+
+  const normalizedEmail = email.toLowerCase();
+
+  const existingUserByEmail = await authServices.getUserByProperty({
+    email: normalizedEmail,
+  });
+  if (
+    existingUserByEmail &&
+    existingUserByEmail._id.toString() !== req.user._id.toString()
+  ) {
+    throw HttpError(409, 'Email already exists');
+  }
+
+  const newVerificationToken = generateCryptoToken();
+
+  await sendEmail(
+    normalizedEmail,
+    newVerificationToken,
+    'emailChange',
+    req.lang || 'en'
+  );
+  await userServices.updateUserProperty(req.user._id.toString(), {
+    email: normalizedEmail,
+    verify: false,
+    verifyToken: newVerificationToken,
+  });
+  res.json({
+    message: 'Verification email sent. Please verify your new email address.',
+  });
+};
+
+const changePassword = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
@@ -321,6 +354,7 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   updateUser: ctrlWrapper(updateUser),
   changePassword: ctrlWrapper(changePassword),
+  changeEmail: ctrlWrapper(changeEmail),
   deleteUser: ctrlWrapper(deleteUser),
   verificateUser: ctrlWrapper(verificateUser),
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
