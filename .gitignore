@@ -18,3 +18,5 @@ swagger_old.json
 *.tsbuildinfo
 
 dist/
+
+yarn.lock
