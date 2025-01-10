@@ -28,7 +28,7 @@ authRouter.patch(
   '/update',
   authenticate,
   validateBody(updateUserSchema),
-  authController.updateUser
+  authController.updateUserData
 );
 
 authRouter.patch(

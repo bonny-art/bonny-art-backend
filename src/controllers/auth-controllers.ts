@@ -113,7 +113,7 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
-const updateUser = async (req: AuthenticatedRequest, res: Response) => {
+const updateUserData = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
@@ -352,7 +352,7 @@ export default {
   signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
   getCurrent: ctrlWrapper(getCurrent),
-  updateUser: ctrlWrapper(updateUser),
+  updateUserData: ctrlWrapper(updateUserData),
   changePassword: ctrlWrapper(changePassword),
   changeEmail: ctrlWrapper(changeEmail),
   deleteUser: ctrlWrapper(deleteUser),
