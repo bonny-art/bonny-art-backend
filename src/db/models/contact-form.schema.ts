@@ -11,13 +11,11 @@ const contactFormSchema = new mongoose.Schema(
         nameRegexp,
         'Name must contain only letters, spaces, hyphens, or apostrophes (e.g., John Doe)',
       ],
-      unique: true,
       required: [true, 'Name is required'],
     },
     email: {
       type: String,
       match: emailRegexp,
-      unique: true,
       required: [true, 'Email is required'],
     },
     message: {
