@@ -5,10 +5,11 @@ export const contactFormMessageBuilder = (data: ContactFormData): string => {
 
   return `
     📝 **Нове повідомлення з контактної форми**:
+    ⏰ Дата: ${new Date().toLocaleString()}
     👤 Ім'я: ${name}
     📧 Email: ${email}
+    
     💬 Повідомлення: ${message}
-    ⏰ Дата: ${new Date().toLocaleString()}
   `;
 };
 
@@ -33,13 +34,14 @@ export const orderMessageBuilder = (data: OrderData): string => {
 
   return `
     🛒 **Нове замовлення**:
+    ⏰ Дата: ${new Date().toLocaleString()}
     🆔 Номер замовлення: ${orderNumber}
     👤 Користувач: ${user}
+
     📦 Товари:
     ${itemDetails}
-    Загальна сума: ${items.length * 65} $
-    ${contactDetails}
-    ⏰ Дата: ${new Date().toLocaleString()}
+    💵 Загальна сума: ${items.length * 65} $
+    ${contactDetails}    
     ${commentSection}
   `;
 };
