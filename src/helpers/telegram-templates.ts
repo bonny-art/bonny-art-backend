@@ -46,4 +46,3 @@ export const orderMessageBuilder = (data: OrderData): string => {
     ${commentSection}
   `;
 };
-
