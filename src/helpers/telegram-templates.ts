@@ -7,7 +7,7 @@ export const contactFormMessageBuilder = (data: ContactFormData): string => {
     **Нове повідомлення з контактної форми**:
     ⏰ Дата:      ${new Date().toLocaleString()}
     👤 Ім'я:        ${name}
-    📧 Email:    ${email}
+    📧 Email:     ${email}
     
     💬 Повідомлення:
 ${message}
