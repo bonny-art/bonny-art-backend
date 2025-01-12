@@ -4,12 +4,13 @@ export const contactFormMessageBuilder = (data: ContactFormData): string => {
   const { name, email, message } = data;
 
   return `
-    📝 **Нове повідомлення з контактної форми**:
-    ⏰ Дата: ${new Date().toLocaleString()}
-    👤 Ім'я: ${name}
-    📧 Email: ${email}
+    **Нове повідомлення з контактної форми**:
+    ⏰ Дата:      ${new Date().toLocaleString()}
+    👤 Ім'я:        ${name}
+    📧 Email:     ${email}
     
-    💬 Повідомлення: ${message}
+    💬 Повідомлення:
+${message}
   `;
 };
 
