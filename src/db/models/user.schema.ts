@@ -26,6 +26,10 @@ const userSchema = new Schema<IUser>(
       unique: true,
       required: [true, 'Email is required'],
     },
+    avatarURL: {
+      type: String,
+      default: '',
+    },
     password: {
       type: String,
       minLength: PASSWORD_MIN_LENGTH,

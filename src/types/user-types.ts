@@ -12,6 +12,7 @@ export interface IUser extends Document {
   _id: Types.ObjectId;
   email: string;
   password: string;
+  avatarURL: string;
   userName: string;
   token?: string;
   verify?: boolean;
