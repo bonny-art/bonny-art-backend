@@ -25,23 +25,26 @@ import { AuthenticatedRequest } from '../types/common-types.js';
 import { IUser } from '../types/user-types.js';
 
 import cloudinary from '../services/cloudinary-config.js';
-import fs from "fs";
+import fs from 'fs';
 
-export const uploadAvatar = async (req: AuthenticatedRequest, res: Response) => {
+export const uploadAvatar = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
   const { _id } = req.user;
 
   if (!req.file) {
-    throw HttpError(400, "File not found, File extention not allow");
+    throw HttpError(400, 'File not found, File extention not allow');
   }
 
   const fileData = await cloudinary.uploader.upload(req.file.path, {
-    folder: "posters",
+    folder: 'posters',
     width: 400,
     height: 400,
-    crop: "fill",
+    crop: 'fill',
   });
 
   fs.unlink(req.file.path, (err) => {

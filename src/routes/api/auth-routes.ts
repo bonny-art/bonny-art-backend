@@ -70,7 +70,7 @@ authRouter.post(
 authRouter.post(
   '/upload-avatar',
   authenticate,
-  upload.single('avatarURL'), 
+  upload.single('avatarURL'),
   authController.uploadAvatar
 );
 

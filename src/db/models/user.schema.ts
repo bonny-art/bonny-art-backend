@@ -28,7 +28,7 @@ const userSchema = new Schema<IUser>(
     },
     avatarURL: {
       type: String,
-      default: "",
+      default: '',
     },
     password: {
       type: String,
