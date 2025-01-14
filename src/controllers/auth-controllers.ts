@@ -20,7 +20,6 @@ import ctrlWrapper from '../decorators/ctrl-wrapper.js';
 import { generateToken } from '../helpers/jwt-helper.js';
 import { hashPassword, generateCryptoToken } from '../helpers/auth-helpers.js';
 
-// Типи
 import { AuthenticatedRequest } from '../types/common-types.js';
 import { IUser } from '../types/user-types.js';
 
@@ -39,7 +38,6 @@ export const uploadAvatar = async (
   if (!req.file) {
     throw HttpError(400, 'File not found, File extention not allow');
   }
-
   const fileData = await cloudinary.uploader.upload(req.file.path, {
     folder: 'posters',
     width: 400,
