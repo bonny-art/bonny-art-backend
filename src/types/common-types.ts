@@ -24,4 +24,5 @@ export interface checkPatternExistsRequest extends setLanguageRequest {
 
 export interface AuthenticatedRequest extends Request {
   user?: Document & IUser;
+  file?: Express.Multer.File;
 }
