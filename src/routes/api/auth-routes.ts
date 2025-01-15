@@ -12,7 +12,7 @@ import authController from '../../controllers/auth-controllers.js';
 import express from 'express';
 import authenticate from '../../middlewares/authenticate.js';
 import { setLanguage } from '../../middlewares/set-language.js';
-import upload from '../../middlewares/upload.js';
+import { handleFileUpload } from '../../middlewares/upload-handler.js';
 
 const authRouter = express.Router({ mergeParams: true });
 
@@ -70,8 +70,7 @@ authRouter.post(
 authRouter.post(
   '/upload-avatar',
   authenticate,
-  upload.single('avatarURL'),
+  handleFileUpload('avatarURL'),
   authController.uploadAvatar
 );
-
 export default authRouter;

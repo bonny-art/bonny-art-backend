@@ -36,13 +36,14 @@ export const uploadAvatar = async (
   const { _id } = req.user;
 
   if (!req.file) {
-    throw HttpError(400, 'File not found, File extention not allow');
+    throw HttpError(400, 'File not found');
   }
   const fileData = await cloudinary.uploader.upload(req.file.path, {
-    folder: 'posters',
-    width: 400,
-    height: 400,
+    folder: 'bonny-art-site-avatars',
+    width: 200,
+    height: 200,
     crop: 'fill',
+    format: 'jpeg',
   });
 
   fs.unlink(req.file.path, (err) => {
