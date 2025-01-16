@@ -39,7 +39,9 @@ export const uploadAvatar = async (
     throw HttpError(400, 'File not found');
   }
   if (req.file.mimetype === 'image/gif') {
-    return res.status(400).json({ message: 'GIF format is not allowed for avatars.' });
+    return res
+      .status(400)
+      .json({ message: 'GIF format is not allowed for avatars.' });
   }
 
   const allowedMimeTypes = [
@@ -50,7 +52,6 @@ export const uploadAvatar = async (
     'image/avif',
   ];
   if (!allowedMimeTypes.includes(req.file.mimetype)) {
-    // Удаляем файл из temp
     fs.unlink(req.file.path, (err) => {
       if (err) {
         console.error(`Error deleting unsupported file: ${err}`);
@@ -62,14 +63,14 @@ export const uploadAvatar = async (
     });
   }
 
-  const fileData = await cloudinary.uploader.upload(req.file.path, { 
+  const fileData = await cloudinary.uploader.upload(req.file.path, {
     folder: 'bonny-art-site-avatars',
     width: 200,
     height: 200,
     crop: 'fill',
     format: 'jpeg',
     resource_type: 'image',
-    allowed_formats: ['jpg', 'png', 'webp', 'avif', 'gif', 'psd']
+    allowed_formats: ['jpg', 'png', 'webp', 'avif', 'gif', 'psd'],
   });
 
   fs.unlink(req.file.path, (err) => {

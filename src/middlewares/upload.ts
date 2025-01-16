@@ -20,7 +20,6 @@ const multerConfig = multer.diskStorage({
   },
 });
 
-
 // const fileFilter: multer.Options['fileFilter'] = (req, file, cb) => {
 //   if (!allowedMimeTypes.includes(file.mimetype)) {
 //     return cb(new Error('Only image files (JPEG, PNG, WebP, AVIF) are allowed.'));
