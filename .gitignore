@@ -7,6 +7,10 @@ node_modules/
 
 tmp/*
 !tmp/.gitkeep
+
+temp/*
+!temp/.gitkeep
+
 public/avatars/*
 !public/avatars/.gitkeep
 
