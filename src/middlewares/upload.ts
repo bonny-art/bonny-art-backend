@@ -22,6 +22,12 @@ const multerConfig = multer.diskStorage({
 
 // const fileFilter: multer.Options['fileFilter'] = (req, file, cb) => {
 //   if (!allowedMimeTypes.includes(file.mimetype)) {
+//     return cb(new Error('Only image files (JPEG, PNG, WebP, AVIF) are allowed.'));
+//   }
+//   cb(null, true);
+// };
+// const fileFilter: multer.Options['fileFilter'] = (req, file, cb) => {
+//   if (!allowedMimeTypes.includes(file.mimetype)) {
 //     const error = new Error('File type not allowed') as
 //       | multer.MulterError
 //       | any;
@@ -38,7 +44,7 @@ const limits = {
 const upload = multer({
   storage: multerConfig,
   limits,
-  // fileFilter,
+  // fileFilter
 });
 
 export default upload;
