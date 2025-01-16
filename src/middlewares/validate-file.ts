@@ -10,7 +10,11 @@ const allowedMimeTypes = [
   'image/avif',
 ];
 
-export const validateFile = (req: Request, res: Response, next: NextFunction) => {
+export const validateFile = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (!req.file) {
     return next(HttpError(400, 'File not found'));
   }
@@ -21,7 +25,12 @@ export const validateFile = (req: Request, res: Response, next: NextFunction) =>
         console.error(`Error deleting unsupported file: ${err}`);
       }
     });
-    return next(HttpError(400, 'Only image files (JPEG, PNG, PSD, WebP, AVIF) are allowed.'));
+    return next(
+      HttpError(
+        400,
+        'Only image files (JPEG, PNG, PSD, WebP, AVIF) are allowed.'
+      )
+    );
   }
   next();
 };
