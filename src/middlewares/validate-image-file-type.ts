@@ -10,7 +10,7 @@ const allowedMimeTypes = [
   'image/avif',
 ];
 
-export const validateFile = (
+export const validateImageFileType = (
   req: Request,
   res: Response,
   next: NextFunction
