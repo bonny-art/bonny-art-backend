@@ -30,7 +30,10 @@ export const fetchRandomPatterns = async (
     const randomPatterns = await patternServices.getRandomPatterns(3);
     console.log('Random Patterns:', randomPatterns);
 
-    const responsePatterns = dataHandlers.getAllPatternsDataByLanguage(randomPatterns, lang);
+    const responsePatterns = dataHandlers.getAllPatternsDataByLanguage(
+      randomPatterns,
+      lang
+    );
     console.log('Response Patterns:', responsePatterns);
 
     res.send({ patterns: responsePatterns });
@@ -55,7 +58,6 @@ export const fetchRandomPatterns = async (
 //     next(error);
 //   }
 // };
-
 
 export const getAllPatterns = async (
   req: setLanguageRequest,

@@ -115,10 +115,7 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
-const uploadAvatar = async (
-  req: AuthenticatedRequest,
-  res: Response
-) => {
+const uploadAvatar = async (req: AuthenticatedRequest, res: Response) => {
   if (!req.user) {
     throw HttpError(401, 'Not authorized');
   }
@@ -400,5 +397,4 @@ export default {
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
   resetPassword: ctrlWrapper(resetPassword),
   resendVerificationEmail: ctrlWrapper(resendVerificationEmail),
-  
 };
