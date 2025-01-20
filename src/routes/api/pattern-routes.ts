@@ -13,8 +13,6 @@ import authenticate from '../../middlewares/authenticate.js';
 
 export const patternRouter = express.Router({ mergeParams: true });
 
-// patternRouter.get('/', setLanguage, patternControllers.getAllPatterns);
-
 patternRouter.get(
   '/',
   setLanguage,
@@ -59,3 +57,6 @@ patternRouter.post(
 );
 
 patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
+
+
+patternRouter.get('/random/patterns', setLanguage, patternControllers.fetchRandomPatterns);

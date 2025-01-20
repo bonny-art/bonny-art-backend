@@ -43,11 +43,12 @@ export const getAllPatternsDataByLanguage = (
   patterns: PatternDoc[],
   language: Language
 ) => {
+
   return patterns.map((pattern) => {
     const translatedOrigin = originTranslations[pattern.origin]
       ? originTranslations[pattern.origin][language]
       : pattern.origin;
-
+      console.log('translatedOrigin:', translatedOrigin);
     return {
       id: pattern._id.toString(),
       title: pattern.title.name[language],

@@ -16,6 +16,47 @@ import {
   addLike,
 } from '../services/like-services.js';
 
+export const fetchRandomPatterns = async (
+  req: setLanguageRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const lang = req.lang;
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
+
+    const randomPatterns = await patternServices.getRandomPatterns(3);
+    console.log('Random Patterns:', randomPatterns);
+
+    const responsePatterns = dataHandlers.getAllPatternsDataByLanguage(randomPatterns, lang);
+    console.log('Response Patterns:', responsePatterns);
+
+    res.send({ patterns: responsePatterns });
+  } catch (error) {
+    console.error('Error in fetchRandomPatterns:', error);
+    next(error);
+  }
+};
+
+// export const fetchRandomPatterns = async (req: setLanguageRequest, res: Response, next: NextFunction): Promise<void> => {
+//   try {
+//     const lang = req.lang;
+//     if (!lang) {
+//       throw HttpError(404, 'Language was not set');
+//     }
+
+//     const randomPatterns = await patternServices.getRandomPatterns(3);
+//     const responsePatterns = dataHandlers.getAllPatternsDataByLanguage(randomPatterns, lang);
+
+//     res.send({ patterns: responsePatterns });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+
 export const getAllPatterns = async (
   req: setLanguageRequest,
   res: Response,

@@ -10,6 +10,8 @@ import {
   SortDirection,
   SortPhotosBy,
 } from '../types/common-types.js';
+import { Author } from '../db/models/author.schema.js';
+import { PatternTitle } from '../db/models/pattern-title.schema.js';
 
 export const getAllPatterns = async () => {
   const patterns: PatternDoc[] = await Pattern.find({});
@@ -276,4 +278,24 @@ export const deleteRatingsByUser = async (userId: string) => {
   );
 
   return result;
+};
+
+export const getRandomPatterns = async (count: number) => {
+  const patterns = await Pattern.aggregate([{ $sample: { size: count } }]);
+
+  // Выполнить populate вручную
+  const populatedPatterns = await Promise.all(
+    patterns.map(async (pattern) => {
+      const title = await PatternTitle.findById(pattern.title);
+      const author = await Author.findById(pattern.author);
+
+      return {
+        ...pattern,
+        title,
+        author,
+      };
+    })
+  );
+
+  return populatedPatterns;
 };
