@@ -26,43 +26,6 @@ import { IUser } from '../types/user-types.js';
 import cloudinary from '../services/cloudinary-config.js';
 import fs from 'fs';
 
-export const uploadAvatar = async (
-  req: AuthenticatedRequest,
-  res: Response
-) => {
-  if (!req.user) {
-    throw HttpError(401, 'Not authorized');
-  }
-  const { _id } = req.user;
-
-  if (!req.file) {
-    throw HttpError(400, 'File not found');
-  }
-
-  const fileData = await cloudinary.uploader.upload(req.file.path, {
-    folder: 'bonny-art-site-avatars',
-    width: 200,
-    height: 200,
-    crop: 'fill',
-    format: 'jpeg',
-    resource_type: 'image',
-    allowed_formats: ['jpg', 'png', 'webp', 'avif', 'gif', 'psd'],
-  });
-
-  fs.unlink(req.file.path, (err) => {
-    if (err) {
-      console.error(`Error deleting file: ${err}`);
-    }
-  });
-
-  const avatarURL = fileData.secure_url;
-  await User.findByIdAndUpdate(_id, { avatarURL });
-
-  res.json({
-    avatarURL,
-  });
-};
-
 const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
   const lang = req.lang;
@@ -149,6 +112,40 @@ const getCurrent = async (req: AuthenticatedRequest, res: Response) => {
       email,
       userName,
     },
+  });
+};
+
+const uploadAvatar = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    throw HttpError(401, 'Not authorized');
+  }
+  const { _id } = req.user;
+
+  if (!req.file) {
+    throw HttpError(400, 'File not found');
+  }
+
+  const fileData = await cloudinary.uploader.upload(req.file.path, {
+    folder: 'bonny-art-site-avatars',
+    width: 200,
+    height: 200,
+    crop: 'fill',
+    format: 'jpeg',
+    resource_type: 'image',
+    allowed_formats: ['jpg', 'png', 'webp', 'avif', 'gif', 'psd'],
+  });
+
+  fs.unlink(req.file.path, (err) => {
+    if (err) {
+      console.error(`Error deleting file: ${err}`);
+    }
+  });
+
+  const avatarURL = fileData.secure_url;
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({
+    avatarURL,
   });
 };
 
@@ -391,6 +388,7 @@ export default {
   signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
   getCurrent: ctrlWrapper(getCurrent),
+  uploadAvatar: ctrlWrapper(uploadAvatar),
   updateUserData: ctrlWrapper(updateUserData),
   changePassword: ctrlWrapper(changePassword),
   changeEmail: ctrlWrapper(changeEmail),
@@ -399,5 +397,4 @@ export default {
   requestPasswordReset: ctrlWrapper(requestPasswordReset),
   resetPassword: ctrlWrapper(resetPassword),
   resendVerificationEmail: ctrlWrapper(resendVerificationEmail),
-  uploadAvatar: ctrlWrapper(uploadAvatar),
 };
