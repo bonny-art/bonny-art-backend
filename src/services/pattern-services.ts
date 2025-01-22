@@ -318,7 +318,7 @@ export const getRandomPatterns = async (count: number, language: string) => {
     { $unwind: { path: '$title', preserveNullAndEmptyArrays: true } },
     {
       $project: {
-        _id: 1, 
+        _id: 1,
         title: { $ifNull: [`$title.name.${language}`, 'Untitled'] },
         mainPictureUrl: '$pictures.main.url',
       },
@@ -327,7 +327,6 @@ export const getRandomPatterns = async (count: number, language: string) => {
 
   return patterns;
 };
-
 
 // export const getRandomPatterns = async (count: number) => {
 //   const patterns = await Pattern.aggregate([{ $sample: { size: count } }]);

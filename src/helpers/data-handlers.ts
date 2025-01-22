@@ -68,12 +68,11 @@ export const getAllPatternsDataByLanguage = (
 //   language: Language
 // ) => {
 //   return patterns.map((pattern) => ({
-//     id: pattern._id.toString(), 
+//     id: pattern._id.toString(),
 //     title: pattern.title?.name[language] || 'Untitled',
-//     mainPictureUrl: pattern.pictures?.main || '', 
+//     mainPictureUrl: pattern.pictures?.main || '',
 //   }));
 // };
-
 
 export const getPhotosDataByLanguage = (
   photos: PhotoExtendedByWorkExtendedByMaster[],
