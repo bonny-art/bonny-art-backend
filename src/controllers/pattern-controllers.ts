@@ -123,14 +123,9 @@ export const fetchRandomPatterns = async (
       throw HttpError(404, 'Language was not set');
     }
 
-    const randomPatterns = await patternServices.getRandomPatterns(3);
+    const randomPatterns = await patternServices.getRandomPatterns(3, lang);
 
-    const responsePatterns = dataHandlers.getAllPatternsDataByLanguage(
-      randomPatterns,
-      lang
-    );
-
-    res.send({ patterns: responsePatterns });
+    res.send({ patterns: randomPatterns });
   } catch (error) {
     console.error('Error in fetchRandomPatterns:', error);
     next(error);
