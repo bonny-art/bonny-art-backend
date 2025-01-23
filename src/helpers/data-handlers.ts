@@ -63,17 +63,6 @@ export const getAllPatternsDataByLanguage = (
   });
 };
 
-// export const getPatternsDataByLanguage = (
-//   patterns: PatternDoc[],
-//   language: Language
-// ) => {
-//   return patterns.map((pattern) => ({
-//     id: pattern._id.toString(),
-//     title: pattern.title?.name[language] || 'Untitled',
-//     mainPictureUrl: pattern.pictures?.main || '',
-//   }));
-// };
-
 export const getPhotosDataByLanguage = (
   photos: PhotoExtendedByWorkExtendedByMaster[],
   language: Language
