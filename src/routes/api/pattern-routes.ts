@@ -28,6 +28,12 @@ patternRouter.get(
 );
 
 patternRouter.get(
+  '/random/patterns',
+  setLanguage,
+  patternControllers.fetchRandomPatterns
+);
+
+patternRouter.get(
   '/:patternId/photos',
   isValidId,
   setLanguage,
@@ -57,9 +63,3 @@ patternRouter.post(
 );
 
 patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
-
-patternRouter.get(
-  '/random/patterns',
-  setLanguage,
-  patternControllers.fetchRandomPatterns
-);
