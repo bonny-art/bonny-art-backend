@@ -25,7 +25,7 @@ export const getRandomWorks = async (count: number, language: string) => {
 
     {
       $lookup: {
-        from: 'works', 
+        from: 'works',
         localField: 'work',
         foreignField: '_id',
         as: 'work',
@@ -35,10 +35,10 @@ export const getRandomWorks = async (count: number, language: string) => {
 
     {
       $lookup: {
-        from: 'masters', 
+        from: 'masters',
         localField: 'work.master',
         foreignField: '_id',
-        as: 'master', 
+        as: 'master',
       },
     },
     { $unwind: { path: '$master', preserveNullAndEmptyArrays: true } },

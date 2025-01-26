@@ -63,4 +63,3 @@ patternRouter.post(
 );
 
 patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
-
