@@ -1,6 +1,6 @@
 import { WorkPhoto } from '../db/models/work-photo.schema.js';
 
-export const getRandomWorks = async (count: number, language: string) => {
+export const getRandomWorkPhotos = async (count: number, language: string) => {
   const works = await WorkPhoto.aggregate([
     { $sample: { size: count } },
     {

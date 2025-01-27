@@ -5,9 +5,9 @@ import * as worksControllers from '../../controllers/works-controllers.js';
 const worksRouter = express.Router({ mergeParams: true });
 
 worksRouter.get(
-  '/random/photos',
+  '/random/works-photos',
   setLanguage,
-  worksControllers.fetchRandomWorks
+  worksControllers.fetchRandomWorkPhotos
 );
 
 export default worksRouter;
