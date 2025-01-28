@@ -4,7 +4,7 @@ import HttpError from '../helpers/http-error.js';
 import { setLanguageRequest } from '../types/common-types.js';
 import * as workServices from '../services/works-services.js';
 
-export const fetchRandomWorks = async (
+export const fetchRandomWorkPhotos = async (
   req: setLanguageRequest,
   res: Response,
   next: NextFunction
@@ -15,7 +15,7 @@ export const fetchRandomWorks = async (
       throw HttpError(404, 'Language was not set');
     }
 
-    const randomWorks = await workServices.getRandomWorks(3, lang);
+    const randomWorks = await workServices.getRandomWorkPhotos(3, lang);
 
     res.send({ patterns: randomWorks });
   } catch (error) {
