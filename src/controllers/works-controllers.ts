@@ -4,7 +4,7 @@ import HttpError from '../helpers/http-error.js';
 import { setLanguageRequest } from '../types/common-types.js';
 import * as workServices from '../services/works-services.js';
 
-export const fetchRandomWorkPhotos = async (
+export const fetchRandomWorksPhotos = async (
   req: setLanguageRequest,
   res: Response,
   next: NextFunction
