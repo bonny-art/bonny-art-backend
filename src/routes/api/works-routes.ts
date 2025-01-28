@@ -7,7 +7,7 @@ const worksRouter = express.Router({ mergeParams: true });
 worksRouter.get(
   '/random/works-photos',
   setLanguage,
-  worksControllers.fetchRandomWorkPhotos
+  worksControllers.fetchRandomWorksPhotos
 );
 
 export default worksRouter;
