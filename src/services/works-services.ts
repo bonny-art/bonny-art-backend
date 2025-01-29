@@ -2,7 +2,7 @@ import { WorkPhoto } from '../db/models/work-photo.schema.js';
 
 export const getRandomWorkPhotos = async (count: number, language: string) => {
   const works = await WorkPhoto.aggregate([
-    { $sample: { size: 6  } }, 
+    { $sample: { size: 6 } },
     {
       $lookup: {
         from: 'patterns',
@@ -45,14 +45,14 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
 
     {
       $group: {
-        _id: '$pattern._id', 
-        workPhoto: { $first: '$$ROOT' }, 
+        _id: '$pattern._id',
+        workPhoto: { $first: '$$ROOT' },
       },
     },
 
-    { $replaceRoot: { newRoot: '$workPhoto' } }, 
+    { $replaceRoot: { newRoot: '$workPhoto' } },
 
-    { $limit: count }, 
+    { $limit: count },
 
     {
       $project: {
