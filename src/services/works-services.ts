@@ -2,7 +2,7 @@ import { WorkPhoto } from '../db/models/work-photo.schema.js';
 
 export const getRandomWorkPhotos = async (count: number, language: string) => {
   const works = await WorkPhoto.aggregate([
-    { $sample: { size: count } },
+    { $sample: { size: 6  } }, 
     {
       $lookup: {
         from: 'patterns',
@@ -44,13 +44,22 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
     { $unwind: { path: '$master', preserveNullAndEmptyArrays: true } },
 
     {
+      $group: {
+        _id: '$pattern._id', 
+        workPhoto: { $first: '$$ROOT' }, 
+      },
+    },
+
+    { $replaceRoot: { newRoot: '$workPhoto' } }, 
+
+    { $limit: count }, 
+
+    {
       $project: {
         _id: 1,
         imageUrl: 1,
         patternTitle: { $ifNull: [`$title.name.${language}`, 'Untitled'] },
-        masterName: {
-          $ifNull: [`$master.name.${language}`, 'Unknown'],
-        },
+        masterName: { $ifNull: [`$master.name.${language}`, 'Unknown'] },
       },
     },
   ]);
