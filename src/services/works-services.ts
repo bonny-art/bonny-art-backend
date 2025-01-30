@@ -2,8 +2,8 @@ import { WorkPhoto } from '../db/models/work-photo.schema.js';
 
 export const getRandomWorkPhotos = async (count: number, language: string) => {
   let works = [];
-  let attempts = 3; 
-  
+  let attempts = 3;
+
   while (works.length < count && attempts > 0) {
     works = await WorkPhoto.aggregate([
       { $sample: { size: 10 } }, // Увеличили выборку до 10
@@ -50,11 +50,11 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
       {
         $group: {
           _id: '$pattern._id',
-          workPhoto: { $first: '$$ROOT' }, 
+          workPhoto: { $first: '$$ROOT' },
         },
       },
 
-      { $replaceRoot: { newRoot: '$workPhoto' } }, 
+      { $replaceRoot: { newRoot: '$workPhoto' } },
 
       { $limit: count },
 
@@ -68,7 +68,7 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
       },
     ]);
 
-    attempts -= 1; 
+    attempts -= 1;
   }
 
   return works;
