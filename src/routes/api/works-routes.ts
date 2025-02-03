@@ -10,4 +10,10 @@ worksRouter.get(
   worksControllers.fetchRandomWorksPhotos
 );
 
+worksRouter.get(
+  '/random/reviews',
+  setLanguage,
+  worksControllers.fetchRandomReviews
+);
+
 export default worksRouter;
