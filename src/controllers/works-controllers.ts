@@ -23,3 +23,24 @@ export const fetchRandomWorksPhotos = async (
     next(error);
   }
 };
+
+
+export const fetchRandomReviews = async (
+  req: setLanguageRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const lang = req.lang;
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
+
+    const randomReviews = await workServices.getRandomReviews(3, lang);
+
+    res.send({ reviews: randomReviews });
+  } catch (error) {
+    console.error('Error in fetchRandomReviews:', error);
+    next(error);
+  }
+};
