@@ -85,7 +85,7 @@ export const getRandomReviews = async (count: number, language: string) => {
           [`review.${language}`]: { $exists: true, $ne: '' }, 
         },
       },
-      { $sample: { size: 10 } }, // Увеличили выборку до 10
+      { $sample: { size: 10 } }, // Выборка до 10
 
       {
         $lookup: {

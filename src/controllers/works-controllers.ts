@@ -24,7 +24,6 @@ export const fetchRandomWorksPhotos = async (
   }
 };
 
-
 export const fetchRandomReviews = async (
   req: setLanguageRequest,
   res: Response,
