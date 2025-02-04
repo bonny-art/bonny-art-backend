@@ -74,13 +74,17 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
   return works;
 };
 
-
 export const getRandomReviews = async (count: number, language: string) => {
   let reviews = [];
   let attempts = 3;
 
   while (reviews.length < count && attempts > 0) {
     reviews = await WorkPhoto.aggregate([
+      {
+        $match: {
+          [`review.${language}`]: { $exists: true, $ne: '' }, 
+        },
+      },
       { $sample: { size: 10 } }, // Увеличили выборку до 10
 
       {
@@ -104,10 +108,13 @@ export const getRandomReviews = async (count: number, language: string) => {
       { $unwind: { path: '$master', preserveNullAndEmptyArrays: true } },
 
       {
-        $match: {
-          [`review.${language}`]: { $exists: true, $ne: '' },
+        $group: {
+          _id: '$pattern._id',
+          reviewData: { $first: '$$ROOT' },
         },
       },
+
+      { $replaceRoot: { newRoot: '$reviewData' } },
 
       { $limit: count },
 
@@ -115,7 +122,9 @@ export const getRandomReviews = async (count: number, language: string) => {
         $project: {
           _id: 1,
           review: { $ifNull: [`$review.${language}`, 'No review available'] },
-          masterName: { $ifNull: [`$master.name.${language}`, 'Unknown master'] },
+          masterName: {
+            $ifNull: [`$master.name.${language}`, 'Unknown master'],
+          },
         },
       },
     ]);
