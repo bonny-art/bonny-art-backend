@@ -82,7 +82,7 @@ export const getRandomReviews = async (count: number, language: string) => {
     reviews = await WorkPhoto.aggregate([
       {
         $match: {
-          [`review.${language}`]: { $exists: true, $ne: '' }, 
+          [`review.${language}`]: { $exists: true, $ne: '' },
         },
       },
       { $sample: { size: 10 } }, // Выборка до 10
