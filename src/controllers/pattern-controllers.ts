@@ -15,6 +15,7 @@ import {
   removeLike,
   addLike,
 } from '../services/like-services.js';
+import { Pattern } from '../db/models/pattern.schema.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -359,3 +360,84 @@ export const toggleLikePattern = async (
     next(error);
   }
 };
+
+  export const addPatternSchema = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const {
+        codename,
+        patternNumber,
+        patternType,
+        width,
+        height,
+        maxSize,
+        colors,
+        solids,
+        blends,
+        title,
+        author,
+        origin,
+        genre,
+        cycle,
+        pictures,
+      } = req.body;
+  
+      if (!codename || !title || !author || !genre) {
+        throw HttpError(400, 'Some required fields are missing');
+      }
+  
+      const existingPattern = await Pattern.findOne({
+        codename,
+        patternNumber,
+        patternType,
+        width,
+        height,
+        maxSize,
+        colors,
+        solids,
+        blends,
+        title,
+        author,
+        origin,
+        genre,
+        cycle,
+      });
+  
+      if (existingPattern) {
+        throw HttpError(409, 'A pattern with the same attributes already exists');
+      }
+  
+      const newPattern = new Pattern({
+        codename,
+        patternNumber,
+        patternType,
+        width,
+        height,
+        maxSize,
+        colors,
+        solids,
+        blends,
+        title,
+        author,
+        origin,
+        genre,
+        cycle,
+        pictures: {
+          main: pictures.main,
+          pattern: pictures.pattern,
+        },
+      });
+  
+      await newPattern.save();
+  
+      res.status(201).json({
+        message: 'Pattern created successfully',
+        pattern: newPattern,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };  
