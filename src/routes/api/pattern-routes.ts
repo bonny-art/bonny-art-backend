@@ -67,5 +67,5 @@ patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
 patternRouter.post(
   '/add-pattern',
   validateBody(addPatternSchema),
-  patternControllers.addPatternSchema 
+  patternControllers.addPatternSchema
 );
