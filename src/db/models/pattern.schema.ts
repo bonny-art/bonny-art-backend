@@ -16,6 +16,7 @@ const patternSchema = new Schema<PatternSchemaI>(
     patternNumber: {
       type: String,
       required: true,
+      unique: true,
       match: [
         patternNumberRegex,
         'Number must be either 4 digits or 1 letter followed by 3 digits',
@@ -111,6 +112,35 @@ export const addPatternSchema = Joi.object({
   codename: Joi.string().required().messages({
     'string.base': 'Codename must be a string',
     'any.required': 'Codename is required',
+  }),
+  patternNumber: Joi.string().pattern(patternNumberRegex).required().messages({
+    'string.base': 'Pattern number must be a string',
+    'string.pattern.base':
+      'Pattern number must be in the correct format (e.g., 0646 or A123)',
+    'any.required': 'Pattern number is required',
+  }),
+  patternType: Joi.string().valid('S', 'B', 'T').required().messages({
+    'string.base': 'Pattern type must be a string',
+    'any.required': 'Pattern type is required',
+    'any.only': 'Pattern type must be one of "S", "B", or "T"',
+  }),
+  width: Joi.number().required().min(1).messages({
+    'number.base': 'Width must be a number',
+    'any.required': 'Width is required',
+    'number.min': 'Width must be greater than zero',
+  }),
+  height: Joi.number().required().min(1).messages({
+    'number.base': 'Height must be a number',
+    'any.required': 'Height is required',
+    'number.min': 'Height must be greater than zero',
+  }),
+  maxSize: Joi.number().required().messages({
+    'number.base': 'Max size must be a number',
+    'any.required': 'Max size is required',
+  }),
+  colors: Joi.number().required().messages({
+    'number.base': 'Colors must be a number',
+    'any.required': 'Colors are required',
   }),
   solids: Joi.number().required().messages({
     'number.base': 'Solids must be a number',
