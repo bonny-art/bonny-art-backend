@@ -7,28 +7,26 @@ import { addPatternTitleSchema } from './pattern-title.schema.js';
 import { PatternSchemaI } from '../../types/pattern-types.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
-const patternNumberRegex = /^(?:[A-Za-z]\d{3}|\d{4})$/;
-const validPatternTypes = ['S', 'B', 'T'];
 
 const patternSchema = new Schema<PatternSchemaI>(
   {
-    codename: { type: String, required: true },
+    codename: {
+      type: String,
+      required: true,
+      match: [
+        /^\d{4}-[A-Z]{1,3} \(\d+x\d+\)$/,
+        'Codename must follow the format: 0006-KB (550x416)',
+      ],
+    },
     patternNumber: {
       type: String,
       required: true,
       unique: true,
-      match: [
-        patternNumberRegex,
-        'Number must be either 4 digits or 1 letter followed by 3 digits',
-      ],
     },
     patternType: {
       type: String,
       required: true,
-      enum: {
-        values: validPatternTypes,
-        message: 'Pattern type must be either S, B, or T',
-      },
+      enum: ['S', 'B', 'T'],
     },
     width: {
       type: Number,
@@ -40,6 +38,7 @@ const patternSchema = new Schema<PatternSchemaI>(
       required: true,
       min: [1, 'Height must be greater than zero'],
     },
+
     maxSize: {
       type: Number,
       required: true,
@@ -109,31 +108,16 @@ const patternSchema = new Schema<PatternSchemaI>(
 );
 
 export const addPatternSchema = Joi.object({
-  codename: Joi.string().required().messages({
-    'string.base': 'Codename must be a string',
-    'any.required': 'Codename is required',
-  }),
-  patternNumber: Joi.string().pattern(patternNumberRegex).required().messages({
-    'string.base': 'Pattern number must be a string',
-    'string.pattern.base':
-      'Pattern number must be in the correct format (e.g., 0646 or A123)',
-    'any.required': 'Pattern number is required',
-  }),
-  patternType: Joi.string().valid('S', 'B', 'T').required().messages({
-    'string.base': 'Pattern type must be a string',
-    'any.required': 'Pattern type is required',
-    'any.only': 'Pattern type must be one of "S", "B", or "T"',
-  }),
-  width: Joi.number().required().min(1).messages({
-    'number.base': 'Width must be a number',
-    'any.required': 'Width is required',
-    'number.min': 'Width must be greater than zero',
-  }),
-  height: Joi.number().required().min(1).messages({
-    'number.base': 'Height must be a number',
-    'any.required': 'Height is required',
-    'number.min': 'Height must be greater than zero',
-  }),
+  codename: Joi.string()
+    .pattern(/^\d{4}-[A-Z]{1,3} \(\d+x\d+\)$/)
+    .required()
+    .messages({
+      'string.base': 'Codename must be a string',
+      'string.pattern.base':
+        'Codename must follow the format: 0006-KB (550x416)',
+      'any.required': 'Codename is required',
+    }),
+
   maxSize: Joi.number().required().messages({
     'number.base': 'Max size must be a number',
     'any.required': 'Max size is required',
