@@ -398,7 +398,6 @@ export const addPatternSchema = async (
 
     const maxSize = Math.max(width, height);
 
-
     const existingPattern = await Pattern.findOne({ codename });
 
     if (existingPattern) {
