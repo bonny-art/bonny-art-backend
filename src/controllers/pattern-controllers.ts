@@ -385,42 +385,24 @@ export const addPatternSchema = async (
       throw HttpError(400, 'Some required fields are missing');
     }
 
-    // Извлекаем данные из codename
     const codenameMatch = codename.match(
-      /^(\d{4})-([A-Z]{1,3}) \((\d+)x(\d+)\)$/
+      /^([A-Z]?\d{3}|\d{4})-([KIP][SBT]) \((\d+)x(\d+)\)$/
     );
     if (!codenameMatch) {
       throw HttpError(400, 'Codename format is invalid');
     }
 
     const patternNumber = codenameMatch[1];
-    const patternType = codenameMatch[2];
+    const patternType = codenameMatch[2][1];
     const width = parseInt(codenameMatch[3]);
     const height = parseInt(codenameMatch[4]);
 
-    // Проверяем, существует ли уже такой паттерн
-    const existingPattern = await Pattern.findOne({
-      codename,
-      patternNumber,
-      patternType,
-      width,
-      height,
-      maxSize,
-      colors,
-      solids,
-      blends,
-      title,
-      author,
-      origin,
-      genre,
-      cycle,
-    });
+    const existingPattern = await Pattern.findOne({ codename });
 
     if (existingPattern) {
-      throw HttpError(409, 'A pattern with the same attributes already exists');
+      throw HttpError(409, 'A pattern with the same codename already exists');
     }
 
-    // Создаём новый объект Pattern
     const newPattern = new Pattern({
       codename,
       patternNumber,
@@ -442,11 +424,10 @@ export const addPatternSchema = async (
       },
     });
 
-    // Сохраняем новый паттерн в базе
     await newPattern.save();
 
     res.status(201).json({
-      message: 'Pattern created successfully',
+      message: 'Pattern added successfully',
       pattern: newPattern,
     });
   } catch (error) {
