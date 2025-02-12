@@ -369,7 +369,6 @@ export const addPatternSchema = async (
   try {
     const {
       codename,
-      maxSize,
       colors,
       solids,
       blends,
@@ -396,6 +395,9 @@ export const addPatternSchema = async (
     const patternType = codenameMatch[2][1];
     const width = parseInt(codenameMatch[3]);
     const height = parseInt(codenameMatch[4]);
+
+    const maxSize = Math.max(width, height);
+
 
     const existingPattern = await Pattern.findOne({ codename });
 

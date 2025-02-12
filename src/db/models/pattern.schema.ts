@@ -116,11 +116,6 @@ export const addPatternSchema = Joi.object({
       'Codename must follow the format: A123-KB (550x416) or 0006-KB (550x416)',
     'any.required': 'Codename is required',
   }),
-
-  maxSize: Joi.number().required().messages({
-    'number.base': 'Max size must be a number',
-    'any.required': 'Max size is required',
-  }),
   colors: Joi.number().required().messages({
     'number.base': 'Colors must be a number',
     'any.required': 'Colors are required',
