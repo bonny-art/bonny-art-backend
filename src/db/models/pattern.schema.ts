@@ -7,6 +7,8 @@ import { addPatternTitleSchema } from './pattern-title.schema.js';
 import { PatternSchemaI } from '../../types/pattern-types.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+const codenameRegex =
+  /^[A-Z]?\d{3}-[KIP][SBT] \(\d+x\d+\)$|^\d{4}-[KIP][SBT] \(\d+x\d+\)$/;
 
 const patternSchema = new Schema<PatternSchemaI>(
   {
@@ -14,8 +16,8 @@ const patternSchema = new Schema<PatternSchemaI>(
       type: String,
       required: true,
       match: [
-        /^\d{4}-[A-Z]{1,3} \(\d+x\d+\)$/,
-        'Codename must follow the format: 0006-KB (550x416)',
+        codenameRegex,
+        'Codename must follow the format: A123-KB (550x416) or 0006-KB (550x416)',
       ],
     },
     patternNumber: {
@@ -108,19 +110,11 @@ const patternSchema = new Schema<PatternSchemaI>(
 );
 
 export const addPatternSchema = Joi.object({
-  codename: Joi.string()
-    .pattern(/^\d{4}-[A-Z]{1,3} \(\d+x\d+\)$/)
-    .required()
-    .messages({
-      'string.base': 'Codename must be a string',
-      'string.pattern.base':
-        'Codename must follow the format: 0006-KB (550x416)',
-      'any.required': 'Codename is required',
-    }),
-
-  maxSize: Joi.number().required().messages({
-    'number.base': 'Max size must be a number',
-    'any.required': 'Max size is required',
+  codename: Joi.string().pattern(codenameRegex).required().messages({
+    'string.base': 'Codename must be a string',
+    'string.pattern.base':
+      'Codename must follow the format: A123-KB (550x416) or 0006-KB (550x416)',
+    'any.required': 'Codename is required',
   }),
   colors: Joi.number().required().messages({
     'number.base': 'Colors must be a number',
