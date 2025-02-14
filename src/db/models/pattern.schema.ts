@@ -3,7 +3,6 @@ import Joi from 'joi';
 import { addAuthorSchema } from './author.schema.js';
 import { addGenreSchema } from './genre.schema.js';
 import { addCycleSchema } from './cycle.schema.js';
-import { addPatternTitleSchema } from './pattern-title.schema.js';
 import { PatternSchemaI } from '../../types/pattern-types.js';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
@@ -116,10 +115,6 @@ export const addPatternSchema = Joi.object({
       'Codename must follow the format: A123-KB (550x416) or 0006-KB (550x416)',
     'any.required': 'Codename is required',
   }),
-  colors: Joi.number().required().messages({
-    'number.base': 'Colors must be a number',
-    'any.required': 'Colors are required',
-  }),
   solids: Joi.number().required().messages({
     'number.base': 'Solids must be a number',
     'any.required': 'Solids are required',
@@ -128,14 +123,21 @@ export const addPatternSchema = Joi.object({
     'number.base': 'Blends must be a number',
     'any.required': 'Blends are required',
   }),
-  title: Joi.alternatives().try(
-    Joi.string().pattern(objectIdRegex).required().messages({
-      'string.base': 'Title must be a valid ObjectId',
-      'string.pattern.base': 'Title must be a valid ObjectId',
+  title: Joi.object({
+    uk: Joi.string().required().messages({
+      'string.base': 'Ukrainian title must be a string',
+      'any.required': 'Ukrainian title is required',
+    }),
+    en: Joi.string().required().messages({
+      'string.base': 'English title must be a string',
+      'any.required': 'English title is required',
+    }),
+  })
+    .required()
+    .messages({
+      'object.base': 'Title must be an object with uk and en properties',
       'any.required': 'Title is required',
     }),
-    addPatternTitleSchema
-  ),
   author: Joi.alternatives().try(
     Joi.string().pattern(objectIdRegex).required().messages({
       'string.base': 'Author must be a valid ObjectId',
