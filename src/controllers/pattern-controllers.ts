@@ -406,29 +406,28 @@ export const addPatternSchema = async (
     }
 
     let titleId;
-    let existingTitle = await PatternTitle.findOne({
+    const existingTitle = await PatternTitle.findOne({
       'name.uk': title.uk,
       'name.en': title.en,
     });
-    
+
     if (!existingTitle) {
       if (!title?.uk || !title?.en) {
         throw HttpError(400, 'Both Ukrainian and English titles are required');
       }
-    
+
       const newTitle = new PatternTitle({
         name: {
           uk: title.uk,
           en: title.en,
         },
       });
-    
+
       await newTitle.save();
       titleId = newTitle._id;
     } else {
       titleId = existingTitle._id;
     }
-    
 
     const newPattern = new Pattern({
       codename,

@@ -132,10 +132,12 @@ export const addPatternSchema = Joi.object({
       'string.base': 'English title must be a string',
       'any.required': 'English title is required',
     }),
-  }).required().messages({
-    'object.base': 'Title must be an object with uk and en properties',
-    'any.required': 'Title is required',
-  }),
+  })
+    .required()
+    .messages({
+      'object.base': 'Title must be an object with uk and en properties',
+      'any.required': 'Title is required',
+    }),
   author: Joi.alternatives().try(
     Joi.string().pattern(objectIdRegex).required().messages({
       'string.base': 'Author must be a valid ObjectId',
