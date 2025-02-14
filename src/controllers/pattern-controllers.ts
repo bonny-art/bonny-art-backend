@@ -16,6 +16,7 @@ import {
   addLike,
 } from '../services/like-services.js';
 import { Pattern } from '../db/models/pattern.schema.js';
+import { PatternTitle } from '../db/models/pattern-title.schema.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -369,7 +370,6 @@ export const addPatternSchema = async (
   try {
     const {
       codename,
-      colors,
       solids,
       blends,
       title,
@@ -397,12 +397,38 @@ export const addPatternSchema = async (
     const height = parseInt(codenameMatch[4]);
 
     const maxSize = Math.max(width, height);
+    const colors = solids + blends;
 
     const existingPattern = await Pattern.findOne({ codename });
 
     if (existingPattern) {
       throw HttpError(409, 'A pattern with the same codename already exists');
     }
+
+    let titleId;
+    let existingTitle = await PatternTitle.findOne({
+      'name.uk': title.uk,
+      'name.en': title.en,
+    });
+    
+    if (!existingTitle) {
+      if (!title?.uk || !title?.en) {
+        throw HttpError(400, 'Both Ukrainian and English titles are required');
+      }
+    
+      const newTitle = new PatternTitle({
+        name: {
+          uk: title.uk,
+          en: title.en,
+        },
+      });
+    
+      await newTitle.save();
+      titleId = newTitle._id;
+    } else {
+      titleId = existingTitle._id;
+    }
+    
 
     const newPattern = new Pattern({
       codename,
@@ -414,7 +440,7 @@ export const addPatternSchema = async (
       colors,
       solids,
       blends,
-      title,
+      title: titleId,
       author,
       origin,
       genre,
