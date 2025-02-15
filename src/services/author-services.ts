@@ -1,5 +1,10 @@
 import { Author } from '../db/models/author.schema.js';
 
+interface AuthorName {
+  uk: string;
+  en: string;
+}
+
 export const getAuthorById = async (authorId: string) => {
   const author = await Author.findById(authorId);
 
@@ -27,4 +32,20 @@ export const createAuthor = async (authorData: {
   const newAuthor = new Author(authorData);
   await newAuthor.save();
   return newAuthor;
+};
+
+export const findOrCreateAuthor = async (author: AuthorName) => {
+  const existingAuthor = await Author.findOne({
+    name: author,
+  });
+
+  if (existingAuthor) {
+    return existingAuthor._id;
+  }
+
+  const newAuthor = await new Author({
+    name: author,
+  }).save();
+
+  return newAuthor._id;
 };

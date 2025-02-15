@@ -1,6 +1,5 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
-import { addAuthorSchema } from './author.schema.js';
 import { addGenreSchema } from './genre.schema.js';
 import { addCycleSchema } from './cycle.schema.js';
 import { PatternSchemaI } from '../../types/pattern-types.js';
@@ -144,8 +143,23 @@ export const addPatternSchema = Joi.object({
       'string.pattern.base': 'Author must be a valid ObjectId',
       'any.required': 'Author is required',
     }),
-    addAuthorSchema
+    Joi.object({
+      uk: Joi.string().required().messages({
+        'string.base': 'Ukrainian author name must be a string',
+        'any.required': 'Ukrainian author name is required',
+      }),
+      en: Joi.string().required().messages({
+        'string.base': 'English author name must be a string',
+        'any.required': 'English author name is required',
+      }),
+    })
+      .required()
+      .messages({
+        'object.base': 'Author must be an object with uk and en properties',
+        'any.required': 'Author is required',
+      })
   ),
+
   origin: Joi.string()
     .valid('painting', 'illustration', 'photo')
     .required()
