@@ -16,7 +16,8 @@ import {
   addLike,
 } from '../services/like-services.js';
 import { Pattern } from '../db/models/pattern.schema.js';
-import { PatternTitle } from '../db/models/pattern-title.schema.js';
+import { findOrCreateTitle } from '../services/pattern-title-services.js';
+import { findOrCreateAuthor } from '../services/author-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -405,29 +406,8 @@ export const addPatternSchema = async (
       throw HttpError(409, 'A pattern with the same codename already exists');
     }
 
-    let titleId;
-    const existingTitle = await PatternTitle.findOne({
-      'name.uk': title.uk,
-      'name.en': title.en,
-    });
-
-    if (!existingTitle) {
-      if (!title?.uk || !title?.en) {
-        throw HttpError(400, 'Both Ukrainian and English titles are required');
-      }
-
-      const newTitle = new PatternTitle({
-        name: {
-          uk: title.uk,
-          en: title.en,
-        },
-      });
-
-      await newTitle.save();
-      titleId = newTitle._id;
-    } else {
-      titleId = existingTitle._id;
-    }
+    const titleId = await findOrCreateTitle(title);
+    const authorId = await findOrCreateAuthor(author);
 
     const newPattern = new Pattern({
       codename,
@@ -440,7 +420,7 @@ export const addPatternSchema = async (
       solids,
       blends,
       title: titleId,
-      author,
+      author: authorId,
       origin,
       genre,
       cycle,
