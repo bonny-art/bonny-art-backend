@@ -136,22 +136,22 @@ export const addPatternSchema = Joi.object({
       'object.base': 'Title must be an object with uk and en properties',
       'any.required': 'Title is required',
     }),
-    author: Joi.object({
-      uk: Joi.string().required().messages({
-        'string.base': 'Ukrainian author name must be a string',
-        'any.required': 'Ukrainian author name is required',
-      }),
-      en: Joi.string().required().messages({
-        'string.base': 'English author name must be a string',
-        'any.required': 'English author name is required',
-      }),
-    })
-      .required()
-      .messages({
-        'object.base': 'Author must be an object with uk and en properties',
-        'any.required': 'Author is required',
-      }),
-    
+  author: Joi.object({
+    uk: Joi.string().required().messages({
+      'string.base': 'Ukrainian author name must be a string',
+      'any.required': 'Ukrainian author name is required',
+    }),
+    en: Joi.string().required().messages({
+      'string.base': 'English author name must be a string',
+      'any.required': 'English author name is required',
+    }),
+  })
+    .required()
+    .messages({
+      'object.base': 'Author must be an object with uk and en properties',
+      'any.required': 'Author is required',
+    }),
+
   origin: Joi.string()
     .valid('painting', 'illustration', 'photo')
     .required()
@@ -160,22 +160,22 @@ export const addPatternSchema = Joi.object({
       'any.only': 'Origin must be either painting, illustration, or photo',
       'any.required': 'Origin is required',
     }),
-    genre: Joi.object({
-      uk: Joi.string().required().messages({
-        'string.base': 'Ukrainian genre must be a string',
-        'any.required': 'Ukrainian genre is required',
-      }),
-      en: Joi.string().required().messages({
-        'string.base': 'English genre must be a string',
-        'any.required': 'English genre is required',
-      }),
-    })
-      .required()
-      .messages({
-        'object.base': 'Genre must be an object with uk and en properties',
-        'any.required': 'Genre is required',
-      }),
-    
+  genre: Joi.object({
+    uk: Joi.string().required().messages({
+      'string.base': 'Ukrainian genre must be a string',
+      'any.required': 'Ukrainian genre is required',
+    }),
+    en: Joi.string().required().messages({
+      'string.base': 'English genre must be a string',
+      'any.required': 'English genre is required',
+    }),
+  })
+    .required()
+    .messages({
+      'object.base': 'Genre must be an object with uk and en properties',
+      'any.required': 'Genre is required',
+    }),
+
   cycle: Joi.alternatives().try(
     Joi.string().pattern(objectIdRegex).optional().messages({
       'string.base': 'Cycle must be a valid ObjectId',
