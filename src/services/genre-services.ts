@@ -28,3 +28,19 @@ export const createGenre = async (genreData: {
   await newGenre.save();
   return newGenre;
 };
+
+export const findOrCreateGenre = async (genre: { uk: string; en: string }) => {
+  const existingGenre = await Genre.findOne({
+    name: genre,
+  });
+
+  if (existingGenre) {
+    return existingGenre._id;
+  }
+
+  const newGenre = await new Genre({
+    name: genre,
+  }).save();
+
+  return newGenre._id;
+};

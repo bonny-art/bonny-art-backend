@@ -32,8 +32,7 @@ export const createPatternTitle = async (patternTitleData: {
 
 export const findOrCreateTitle = async (title: Title) => {
   const existingTitle = await PatternTitle.findOne({
-    'name.uk': title.uk,
-    'name.en': title.en,
+    name: title,
   });
 
   if (existingTitle) {
@@ -41,10 +40,7 @@ export const findOrCreateTitle = async (title: Title) => {
   }
 
   const newTitle = await new PatternTitle({
-    name: {
-      uk: title.uk,
-      en: title.en,
-    },
+    name: title,
   }).save();
 
   return newTitle._id;

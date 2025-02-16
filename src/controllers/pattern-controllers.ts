@@ -18,6 +18,7 @@ import {
 import { Pattern } from '../db/models/pattern.schema.js';
 import { findOrCreateTitle } from '../services/pattern-title-services.js';
 import { findOrCreateAuthor } from '../services/author-services.js';
+import { findOrCreateGenre } from '../services/genre-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -408,6 +409,7 @@ export const addPatternSchema = async (
 
     const titleId = await findOrCreateTitle(title);
     const authorId = await findOrCreateAuthor(author);
+    const genreId = await findOrCreateGenre(genre);
 
     const newPattern = new Pattern({
       codename,
@@ -422,7 +424,7 @@ export const addPatternSchema = async (
       title: titleId,
       author: authorId,
       origin,
-      genre,
+      genre: genreId,
       cycle,
       pictures: {
         main: pictures.main,
