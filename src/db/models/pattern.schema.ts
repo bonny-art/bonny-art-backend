@@ -1,9 +1,7 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
-import { addCycleSchema } from './cycle.schema.js';
 import { PatternSchemaI } from '../../types/pattern-types.js';
 
-const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 const codenameRegex =
   /^[A-Z]?\d{3}-[KIP][SBT] \(\d+x\d+\)$|^\d{4}-[KIP][SBT] \(\d+x\d+\)$/;
 
@@ -151,7 +149,6 @@ export const addPatternSchema = Joi.object({
       'object.base': 'Author must be an object with uk and en properties',
       'any.required': 'Author is required',
     }),
-
   origin: Joi.string()
     .valid('painting', 'illustration', 'photo')
     .required()
@@ -175,14 +172,21 @@ export const addPatternSchema = Joi.object({
       'object.base': 'Genre must be an object with uk and en properties',
       'any.required': 'Genre is required',
     }),
-
-  cycle: Joi.alternatives().try(
-    Joi.string().pattern(objectIdRegex).optional().messages({
-      'string.base': 'Cycle must be a valid ObjectId',
-      'string.pattern.base': 'Cycle must be a valid ObjectId',
+  cycle: Joi.object({
+    uk: Joi.string().required().messages({
+      'string.base': 'Ukrainian cycle name must be a string',
+      'any.required': 'Ukrainian cycle name is required',
     }),
-    addCycleSchema
-  ),
+    en: Joi.string().required().messages({
+      'string.base': 'English cycle name must be a string',
+      'any.required': 'English cycle name is required',
+    }),
+  })
+    .required()
+    .messages({
+      'object.base': 'Cycle must be an object with uk and en properties',
+      'any.required': 'Cycle is required',
+    }),
   pictures: Joi.object({
     main: Joi.object({
       url: Joi.string().required().messages({

@@ -28,3 +28,19 @@ export const createCycle = async (cycleData: {
   await newCycle.save();
   return newCycle;
 };
+
+export const getOrCreateCycle = async (cycleData: {
+  uk: string;
+  en: string;
+}) => {
+  let cycle = await Cycle.findOne({ name: cycleData });
+
+  if (!cycle) {
+    cycle = new Cycle({
+      name: cycleData,
+    });
+    await cycle.save();
+  }
+
+  return cycle._id;
+};
