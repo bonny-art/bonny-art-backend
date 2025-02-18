@@ -383,7 +383,16 @@ export const addPatternSchema = async (
       pictures,
     } = req.body;
 
-    if (!codename || !title || !author || !genre || !solids || !blends || !origin || !pictures?.main?.url) {
+    if (
+      !codename ||
+      !title ||
+      !author ||
+      !genre ||
+      !solids ||
+      !blends ||
+      !origin ||
+      !pictures?.main?.url
+    ) {
       throw HttpError(400, 'Some required fields are missing');
     }
 
@@ -402,7 +411,8 @@ export const addPatternSchema = async (
     const maxSize = Math.max(width, height);
     const colors = solids + blends;
 
-    const existingPattern = await patternServices.getPatternByCodename(codename);
+    const existingPattern =
+      await patternServices.getPatternByCodename(codename);
 
     if (existingPattern) {
       throw HttpError(409, 'A pattern with the same codename already exists');
