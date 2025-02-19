@@ -31,9 +31,7 @@ export const createPatternTitle = async (patternTitleData: {
 };
 
 export const findOrCreateTitle = async (title: Title) => {
-  const existingTitle = await PatternTitle.findOne({
-    name: title,
-  });
+  const existingTitle = await PatternTitle.findOne({ "name.en": title.en });
 
   if (existingTitle) {
     return existingTitle._id;

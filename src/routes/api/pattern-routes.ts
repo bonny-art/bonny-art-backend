@@ -42,12 +42,6 @@ patternRouter.get(
 );
 
 patternRouter.post(
-  '/',
-  validateBody(addPatternSchema),
-  patternControllers.addPattern
-);
-
-patternRouter.post(
   '/:patternId/rate',
   authenticate,
   checkPatternExists,
@@ -67,5 +61,5 @@ patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
 patternRouter.post(
   '/add-pattern',
   validateBody(addPatternSchema),
-  patternControllers.addPatternSchema
+  patternControllers.addPattern
 );

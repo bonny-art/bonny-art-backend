@@ -30,9 +30,7 @@ export const createGenre = async (genreData: {
 };
 
 export const findOrCreateGenre = async (genre: { uk: string; en: string }) => {
-  const existingGenre = await Genre.findOne({
-    name: genre,
-  });
+  const existingGenre = await Genre.findOne({ "name.en": genre.en });
 
   if (existingGenre) {
     return existingGenre._id;
