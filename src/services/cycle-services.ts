@@ -29,11 +29,11 @@ export const createCycle = async (cycleData: {
   return newCycle;
 };
 
-export const getOrCreateCycle = async (cycleData: {
+export const findOrCreateCycle = async (cycleData: {
   uk: string;
   en: string;
 }) => {
-  let cycle = await Cycle.findOne({ name: cycleData });
+  let cycle = await Cycle.findOne({ 'name.en': cycleData.en });
 
   if (!cycle) {
     cycle = new Cycle({

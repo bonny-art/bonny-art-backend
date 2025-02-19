@@ -173,7 +173,7 @@ export const addPatternSchema = Joi.object({
       'any.required': 'Genre is required',
     }),
   cycle: Joi.object({
-    uk: Joi.string().required().messages({
+    uk: Joi.string().messages({
       'string.base': 'Ukrainian cycle name must be a string',
       'any.required': 'Ukrainian cycle name is required',
     }),

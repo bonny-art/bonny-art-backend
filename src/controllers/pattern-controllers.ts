@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import * as patternServices from '../services/pattern-services.js';
-import * as serviceHelpers from '../services/helpers.js';
 import * as dataHandlers from '../helpers/data-handlers.js';
 import {
   checkPatternExistsRequest,
@@ -19,7 +18,7 @@ import { Pattern } from '../db/models/pattern.schema.js';
 import { findOrCreateTitle } from '../services/pattern-title-services.js';
 import { findOrCreateAuthor } from '../services/author-services.js';
 import { findOrCreateGenre } from '../services/genre-services.js';
-import { getOrCreateCycle } from '../services/cycle-services.js';
+import { findOrCreateCycle } from '../services/cycle-services.js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -190,90 +189,6 @@ export const getPhotosByPattern = async (
   }
 };
 
-export const addPattern = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const {
-      codename,
-      solids,
-      blends,
-      title,
-      author,
-      origin,
-      genre,
-      cycle,
-      pictures,
-    } = req.body;
-
-    const patternExists = await patternServices.getPatternByCodename(codename);
-
-    if (patternExists) {
-      throw HttpError(400, `Pattern with codename ${codename} already exists`);
-    }
-
-    const existingPatternTitle =
-      await serviceHelpers.findOrCreatePatternTitle(title);
-
-    if (!existingPatternTitle) {
-      throw HttpError(404, 'Title not found or could not be created');
-    }
-
-    const existingAuthor = await serviceHelpers.findOrCreateAuthor(author);
-
-    if (!existingAuthor) {
-      throw HttpError(404, 'Author not found or could not be created');
-    }
-
-    const existingGenre = await serviceHelpers.findOrCreateGenre(genre);
-
-    if (!existingGenre) {
-      throw HttpError(404, 'Genre not found or could not be created');
-    }
-
-    const existingCycle = cycle
-      ? await serviceHelpers.findOrCreateCycle(cycle)
-      : undefined;
-
-    const patternNumber = codename.substring(0, 4);
-    const patternType = codename.charAt(6);
-    const dimensions = codename.match(/\((\d+)x(\d+)\)/);
-
-    if (!dimensions || !patternType || !patternNumber) {
-      throw HttpError(400, 'Invalid codename format');
-    }
-
-    const width = parseInt(dimensions[1], 10);
-    const height = parseInt(dimensions[2], 10);
-    const maxSize = Math.max(width, height);
-    const colors = solids + blends;
-
-    const newPattern = await patternServices.createPattern({
-      codename,
-      patternNumber,
-      patternType,
-      width,
-      height,
-      maxSize,
-      colors,
-      solids,
-      blends,
-      title: existingPatternTitle._id,
-      author: existingAuthor._id,
-      origin,
-      genre: existingGenre._id,
-      cycle: existingCycle?._id || undefined,
-      pictures,
-    });
-
-    res.status(201).send({ pattern: newPattern });
-  } catch (error) {
-    next(error);
-  }
-};
-
 export const ratePattern = async (
   req: checkPatternExistsRequest,
   res: Response,
@@ -365,7 +280,7 @@ export const toggleLikePattern = async (
   }
 };
 
-export const addPatternSchema = async (
+export const addPattern = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -391,7 +306,9 @@ export const addPatternSchema = async (
       !solids ||
       !blends ||
       !origin ||
-      !pictures?.main?.url
+      !pictures?.main?.url ||
+      !pictures?.pattern?.url?.uk ||
+      !pictures?.pattern?.url?.en
     ) {
       throw HttpError(400, 'Some required fields are missing');
     }
@@ -421,7 +338,7 @@ export const addPatternSchema = async (
     const titleId = await findOrCreateTitle(title);
     const authorId = await findOrCreateAuthor(author);
     const genreId = await findOrCreateGenre(genre);
-    const cycleId = await getOrCreateCycle(cycle);
+    const cycleId = await findOrCreateCycle(cycle);
 
     const newPattern = new Pattern({
       codename,
