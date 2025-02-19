@@ -33,7 +33,7 @@ export const findOrCreateCycle = async (cycleData: {
   uk: string;
   en: string;
 }) => {
-  let cycle = await Cycle.findOne({ "name.en": cycleData.en });
+  let cycle = await Cycle.findOne({ 'name.en': cycleData.en });
 
   if (!cycle) {
     cycle = new Cycle({

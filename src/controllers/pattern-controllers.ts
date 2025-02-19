@@ -307,8 +307,8 @@ export const addPattern = async (
       !blends ||
       !origin ||
       !pictures?.main?.url ||
-      !pictures?.pattern?.url?.uk || 
-      !pictures?.pattern?.url?.en    
+      !pictures?.pattern?.url?.uk ||
+      !pictures?.pattern?.url?.en
     ) {
       throw HttpError(400, 'Some required fields are missing');
     }

@@ -35,7 +35,7 @@ export const createAuthor = async (authorData: {
 };
 
 export const findOrCreateAuthor = async (author: AuthorName) => {
-  const existingAuthor = await Author.findOne({ "name.en": author.en });
+  const existingAuthor = await Author.findOne({ 'name.en': author.en });
 
   if (existingAuthor) {
     return existingAuthor._id;
