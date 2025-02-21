@@ -1,3 +1,4 @@
+import HttpError from '../helpers/http-error.js';
 import { Cycle } from '../db/models/cycle.schema.js';
 
 export const getCycleById = async (cycleId: string) => {
@@ -33,14 +34,24 @@ export const findOrCreateCycle = async (cycleData: {
   uk: string;
   en: string;
 }) => {
-  let cycle = await Cycle.findOne({ 'name.en': cycleData.en });
-
-  if (!cycle) {
-    cycle = new Cycle({
-      name: cycleData,
-    });
-    await cycle.save();
+  if (!cycleData || !cycleData.uk || !cycleData.en) {
+    throw HttpError(400, 'Cycle data is missing or invalid');
   }
 
-  return cycle._id;
+  const existingCycle = await Cycle.findOne({ 'name.en': cycleData.en });
+
+  if (existingCycle) {
+    if (existingCycle.name && existingCycle.name.uk !== cycleData.uk) {
+      throw HttpError(
+        400,
+        'Mismatch in Ukrainian cycle name. Please verify the spelling.'
+      );
+    }
+    return existingCycle._id;
+  }
+
+  const newCycle = new Cycle({ name: cycleData });
+  await newCycle.save();
+
+  return newCycle._id;
 };

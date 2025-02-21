@@ -1,3 +1,4 @@
+import HttpError from '../helpers/http-error.js';
 import { Author } from '../db/models/author.schema.js';
 
 interface AuthorName {
@@ -35,15 +36,24 @@ export const createAuthor = async (authorData: {
 };
 
 export const findOrCreateAuthor = async (author: AuthorName) => {
+  if (!author || !author.uk || !author.en) {
+    throw HttpError(400, 'Author data is missing or invalid');
+  }
+
   const existingAuthor = await Author.findOne({ 'name.en': author.en });
 
   if (existingAuthor) {
+    if (existingAuthor.name && existingAuthor.name.uk !== author.uk) {
+      throw HttpError(
+        400,
+        'Mismatch in Ukrainian author name. Please verify the spelling.'
+      );
+    }
     return existingAuthor._id;
   }
 
-  const newAuthor = await new Author({
-    name: author,
-  }).save();
+  const newAuthor = new Author({ name: author });
+  await newAuthor.save();
 
   return newAuthor._id;
 };
