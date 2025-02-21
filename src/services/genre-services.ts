@@ -39,7 +39,10 @@ export const findOrCreateGenre = async (genre: { uk: string; en: string }) => {
 
   if (existingGenre) {
     if (existingGenre.name && existingGenre.name.uk !== genre.uk) {
-      throw HttpError(400, "Mismatch in Ukrainian genre name. Please verify the spelling.");
+      throw HttpError(
+        400,
+        'Mismatch in Ukrainian genre name. Please verify the spelling.'
+      );
     }
     return existingGenre._id;
   }
@@ -49,4 +52,3 @@ export const findOrCreateGenre = async (genre: { uk: string; en: string }) => {
 
   return newGenre._id;
 };
-

@@ -44,7 +44,10 @@ export const findOrCreateAuthor = async (author: AuthorName) => {
 
   if (existingAuthor) {
     if (existingAuthor.name && existingAuthor.name.uk !== author.uk) {
-      throw HttpError(400, "Mismatch in Ukrainian author name. Please verify the spelling.");
+      throw HttpError(
+        400,
+        'Mismatch in Ukrainian author name. Please verify the spelling.'
+      );
     }
     return existingAuthor._id;
   }

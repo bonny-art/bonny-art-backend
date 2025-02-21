@@ -40,7 +40,10 @@ export const findOrCreateTitle = async (title: Title) => {
 
   if (existingTitle) {
     if (existingTitle.name && existingTitle.name.uk !== title.uk) {
-      throw HttpError(400, "Mismatch in Ukrainian title. Please verify the spelling.");
+      throw HttpError(
+        400,
+        'Mismatch in Ukrainian title. Please verify the spelling.'
+      );
     }
     return existingTitle._id;
   }

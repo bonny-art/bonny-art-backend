@@ -30,7 +30,10 @@ export const createCycle = async (cycleData: {
   return newCycle;
 };
 
-export const findOrCreateCycle = async (cycleData: { uk: string; en: string }) => {
+export const findOrCreateCycle = async (cycleData: {
+  uk: string;
+  en: string;
+}) => {
   if (!cycleData || !cycleData.uk || !cycleData.en) {
     throw HttpError(400, 'Cycle data is missing or invalid');
   }
@@ -39,7 +42,10 @@ export const findOrCreateCycle = async (cycleData: { uk: string; en: string }) =
 
   if (existingCycle) {
     if (existingCycle.name && existingCycle.name.uk !== cycleData.uk) {
-      throw HttpError(400, "Mismatch in Ukrainian cycle name. Please verify the spelling.");
+      throw HttpError(
+        400,
+        'Mismatch in Ukrainian cycle name. Please verify the spelling.'
+      );
     }
     return existingCycle._id;
   }
