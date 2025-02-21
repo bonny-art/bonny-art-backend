@@ -1,3 +1,4 @@
+import HttpError from '../helpers/http-error.js';
 import { PatternTitle } from '../db/models/pattern-title.schema.js';
 
 interface Title {
@@ -31,15 +32,21 @@ export const createPatternTitle = async (patternTitleData: {
 };
 
 export const findOrCreateTitle = async (title: Title) => {
+  if (!title || !title.uk || !title.en) {
+    throw HttpError(400, 'Title data is missing or invalid');
+  }
+
   const existingTitle = await PatternTitle.findOne({ 'name.en': title.en });
 
   if (existingTitle) {
+    if (existingTitle.name && existingTitle.name.uk !== title.uk) {
+      throw HttpError(400, "Mismatch in Ukrainian title. Please verify the spelling.");
+    }
     return existingTitle._id;
   }
 
-  const newTitle = await new PatternTitle({
-    name: title,
-  }).save();
+  const newTitle = new PatternTitle({ name: title });
+  await newTitle.save();
 
   return newTitle._id;
 };
