@@ -41,18 +41,18 @@ const patternSchema = new Schema<PatternSchemaI>(
       required: true,
     },
     colors: { type: Number, required: true },
-    solids: { 
-      type: Number, 
-      required: true, 
-      min: [1, 'Solids must be at least 1'], 
-      max: [300, 'Solids cannot be more than 300'] 
+    solids: {
+      type: Number,
+      required: true,
+      min: [1, 'Solids must be at least 1'],
+      max: [300, 'Solids cannot be more than 300'],
     },
-    
-    blends: { 
-      type: Number, 
-      required: true, 
-      min: [0, 'Blends must be at least 0'], 
-      max: [300, 'Blends cannot be more than 300'] 
+
+    blends: {
+      type: Number,
+      required: true,
+      min: [0, 'Blends must be at least 0'],
+      max: [300, 'Blends cannot be more than 300'],
     },
     title: {
       type: Schema.Types.ObjectId,
@@ -196,11 +196,10 @@ export const addPatternSchema = Joi.object({
       'string.base': 'English cycle name must be a string',
       'any.required': 'English cycle name is required',
     }),
-  })
-    .messages({
-      'object.base': 'Cycle must be an object with uk and en properties',
-      'any.required': 'Cycle is required',
-    }),
+  }).messages({
+    'object.base': 'Cycle must be an object with uk and en properties',
+    'any.required': 'Cycle is required',
+  }),
   pictures: Joi.object({
     main: Joi.object({
       url: Joi.string().required().messages({
