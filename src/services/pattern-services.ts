@@ -4,12 +4,17 @@ import { Work } from '../db/models/work.schema.js';
 import { WorkPhoto } from '../db/models/work-photo.schema.js';
 import { Master } from '../db/models/master.schema.js';
 import { PhotoExtendedByWorkExtendedByMaster } from '../types/work-photos-types.js';
-import { PatternData, PatternDoc } from '../types/patterns-types.js';
+import {
+  PatternAgregatedDocument,
+  PatternData,
+  PatternDoc,
+} from '../types/patterns-types.js';
 import {
   Language,
   SortDirection,
   SortPhotosBy,
 } from '../types/common-types.js';
+import { transformPatternsFormat } from '../helpers/pattern-format-transformers.js';
 
 export const getAllPatterns = async () => {
   const patterns: PatternDoc[] = await Pattern.find({});
@@ -36,16 +41,125 @@ export const getAllPatternsByPage = async (page: number, limit: number) => {
 
 export const getAllPatternsByPageAndFilter = async (
   page: number,
-  limit: number
+  limit: number,
+  filters: {
+    sizeMin: number | null;
+    sizeMax: number | null;
+    colorsMin: number | null;
+    colorsMax: number | null;
+    cycles: string[];
+    genres: string[];
+    authors: string[];
+    patternTitles: string[];
+    origins: string[];
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+  },
+  lang: string
 ) => {
   const skip = (page - 1) * limit;
 
-  const patterns: PatternDoc[] = await Pattern.find({})
-    .skip(skip)
-    .limit(limit)
-    .lean<PatternDoc[]>();
+  const query: Record<string, unknown> = {};
 
-  const totalCount = await Pattern.countDocuments();
+  // Фільтр за maxSize
+  if (filters.sizeMin !== null || filters.sizeMax !== null) {
+    query.maxSize = {};
+    if (filters.sizeMin !== null)
+      (query.maxSize as Record<string, number>)['$gt'] = filters.sizeMin;
+    if (filters.sizeMax !== null)
+      (query.maxSize as Record<string, number>)['$lte'] = filters.sizeMax;
+  }
+
+  // Фільтр за colors
+  if (filters.colorsMin !== null || filters.colorsMax !== null) {
+    query.colors = {};
+    if (filters.colorsMin !== null)
+      (query.colors as Record<string, number>)['$gt'] = filters.colorsMin;
+    if (filters.colorsMax !== null)
+      (query.colors as Record<string, number>)['$lte'] = filters.colorsMax;
+  }
+
+  // Фільтр за cycles
+  if (filters.cycles.length > 0) query.cycle = { $in: filters.cycles };
+
+  // Фільтр за genres
+  if (filters.genres.length > 0) query.genre = { $in: filters.genres };
+
+  // Фільтр за authors
+  if (filters.authors.length > 0) query.author = { $in: filters.authors };
+
+  // Фільтр за patternTitles
+  if (filters.patternTitles.length > 0)
+    query.title = { $in: filters.patternTitles };
+
+  // Фільтр за origins
+  if (filters.origins.length > 0) query.origin = { $in: filters.origins };
+
+  // Визначення сортування
+  let sortField: string = 'codename';
+  if (filters.sortBy === 'rating') {
+    sortField = 'rating.averageRating';
+  } else if (filters.sortBy === 'title') {
+    sortField = `$title.name.${lang}`;
+  }
+
+  const agregatedPatterns: PatternAgregatedDocument[] = await Pattern.aggregate(
+    [
+      { $match: query },
+      {
+        $lookup: {
+          from: 'pattern_titles',
+          localField: 'title',
+          foreignField: '_id',
+          as: 'titleData',
+        },
+      },
+      { $unwind: '$titleData' },
+      {
+        $lookup: {
+          from: 'authors',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'authorData',
+        },
+      },
+      { $unwind: '$authorData' },
+      {
+        $lookup: {
+          from: 'genres',
+          localField: 'genre',
+          foreignField: '_id',
+          as: 'genreData',
+        },
+      },
+      { $unwind: '$genreData' },
+      {
+        $lookup: {
+          from: 'cycles',
+          localField: 'cycle',
+          foreignField: '_id',
+          as: 'cycleData',
+        },
+      },
+      { $unwind: { path: '$cycleData', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          sortField:
+            filters.sortBy === 'title'
+              ? `$titleData.name.${lang}`
+              : `$${sortField}`,
+        },
+      },
+      { $sort: { sortField: filters.sortOrder === 'asc' ? 1 : -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]
+  );
+
+  const patterns = transformPatternsFormat(agregatedPatterns);
+  console.log(JSON.stringify(patterns, null, 2));
+
+  const totalCount = await Pattern.countDocuments(query);
 
   return { patterns, totalCount };
 };

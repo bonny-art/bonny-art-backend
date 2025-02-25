@@ -89,6 +89,111 @@ export const getAllPatternsWithPagination = async (
   }
 };
 
+export const getAllPatternsWithPaginationAndFilters = async (
+  req: setLanguageRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const lang = req.lang;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 3;
+
+    const {
+      sizeMin,
+      sizeMax,
+      colorsMin,
+      colorsMax,
+      cycles,
+      genres,
+      authors,
+      patternTitles,
+      origins,
+      sortBy,
+      sortOrder,
+    } = req.query;
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
+
+    // 🔹 Дозволені значення для origins
+    const allowedOrigins = ['painting', 'illustration', 'photo'];
+
+    // 🔹 Дозволені значення для сортування
+    const allowedSortBy = ['codename', 'title', 'rating'];
+    const allowedSortOrder = ['asc', 'desc'];
+
+    // ✅ **Перевірка origins**
+    let originsArray: string[] = [];
+    if (typeof origins === 'string') {
+      originsArray = origins.split(',');
+      if (!originsArray.every((origin) => allowedOrigins.includes(origin))) {
+        throw HttpError(
+          400,
+          'Invalid origin value. Allowed values: painting, illustration, photo'
+        );
+      }
+    }
+
+    // ✅ **Перевірка sortBy**
+    const sortByValue =
+      typeof sortBy === 'string' && allowedSortBy.includes(sortBy)
+        ? sortBy
+        : 'codename';
+
+    // ✅ **Перевірка sortOrder**
+    const sortOrderValue =
+      typeof sortOrder === 'string' && allowedSortOrder.includes(sortOrder)
+        ? sortOrder
+        : 'asc';
+
+    // ✅ **Формування об'єкта фільтрів**
+    const filters = {
+      sizeMin: sizeMin ? Number(sizeMin) : null,
+      sizeMax: sizeMax ? Number(sizeMax) : null,
+      colorsMin: colorsMin ? Number(colorsMin) : null,
+      colorsMax: colorsMax ? Number(colorsMax) : null,
+      cycles: typeof cycles === 'string' ? cycles.split(',') : [],
+      genres: typeof genres === 'string' ? genres.split(',') : [],
+      authors: typeof authors === 'string' ? authors.split(',') : [],
+      patternTitles:
+        typeof patternTitles === 'string' ? patternTitles.split(',') : [],
+      origins: originsArray,
+      sortBy: sortByValue, //TODO: Don`t work (title)
+      sortOrder: sortOrderValue as 'asc' | 'desc',
+    };
+
+    const { patterns, totalCount } =
+      await patternServices.getAllPatternsByPageAndFilter(
+        page,
+        limit,
+        filters,
+        lang
+      );
+
+    const patternsData = dataHandlers.getAllPatternsDataByLanguage(
+      patterns,
+      lang
+    );
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasMore = page < totalPages;
+
+    res.send({
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+        hasMore,
+      },
+      patternsData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getPatternData = async (
   req: checkPatternExistsRequest,
   res: Response,

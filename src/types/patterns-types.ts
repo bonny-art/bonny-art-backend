@@ -55,6 +55,48 @@ export type PatternDoc = {
   };
 };
 
+export interface PatternAgregatedDocument {
+  _id: ObjectId;
+  codename: string;
+  patternNumber: string;
+  patternType: 'S' | 'B' | 'T';
+  width: number;
+  height: number;
+  maxSize: number;
+  colors: number;
+  solids: number;
+  blends: number;
+  titleData: {
+    _id: ObjectId;
+    name: { [key in Language]: string };
+  };
+  authorData: {
+    _id: ObjectId;
+    name: { [key in Language]: string };
+  };
+  origin: string;
+  genreData: {
+    _id: ObjectId;
+    name: { [key in Language]: string };
+  };
+  cycleData: {
+    _id: ObjectId;
+    name: { [key in Language]: string };
+  };
+  rating: {
+    averageRating: number;
+    ratings: number[];
+  };
+  pictures: {
+    main: {
+      url: string;
+    };
+    pattern: {
+      url: { [key in Language]: string };
+    };
+  };
+}
+
 export type FormattedPattern = {
   id: ObjectId;
   title: string;

@@ -20,6 +20,12 @@ patternRouter.get(
 );
 
 patternRouter.get(
+  '/with-filters',
+  setLanguage,
+  patternControllers.getAllPatternsWithPaginationAndFilters
+);
+
+patternRouter.get(
   '/:patternId',
   isValidId,
   setLanguage,
