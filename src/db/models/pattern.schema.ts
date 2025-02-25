@@ -10,6 +10,7 @@ const patternSchema = new Schema<PatternSchemaI>(
     codename: {
       type: String,
       required: true,
+      unique: true,
       match: [
         codenameRegex,
         'Codename must follow the format: A123-KB (550x416) or 0006-KB (550x416)',
@@ -18,7 +19,6 @@ const patternSchema = new Schema<PatternSchemaI>(
     patternNumber: {
       type: String,
       required: true,
-      unique: true,
     },
     patternType: {
       type: String,
@@ -41,8 +41,19 @@ const patternSchema = new Schema<PatternSchemaI>(
       required: true,
     },
     colors: { type: Number, required: true },
-    solids: { type: Number, required: true },
-    blends: { type: Number, required: true },
+    solids: {
+      type: Number,
+      required: true,
+      min: [1, 'Solids must be at least 1'],
+      max: [300, 'Solids cannot be more than 300'],
+    },
+
+    blends: {
+      type: Number,
+      required: true,
+      min: [0, 'Blends must be at least 0'],
+      max: [300, 'Blends cannot be more than 300'],
+    },
     title: {
       type: Schema.Types.ObjectId,
       ref: 'PatternTitle',
@@ -111,12 +122,16 @@ export const addPatternSchema = Joi.object({
       'Codename must follow the format: A123-KB (550x416) or 0006-KB (550x416)',
     'any.required': 'Codename is required',
   }),
-  solids: Joi.number().required().messages({
+  solids: Joi.number().min(1).max(300).required().messages({
     'number.base': 'Solids must be a number',
+    'number.min': 'Solids must be at least 1',
+    'number.max': 'Solids cannot be more than 300',
     'any.required': 'Solids are required',
   }),
-  blends: Joi.number().required().messages({
+  blends: Joi.number().min(0).max(300).required().messages({
     'number.base': 'Blends must be a number',
+    'number.min': 'Blends must be at least 0',
+    'number.max': 'Blends cannot be more than 300',
     'any.required': 'Blends are required',
   }),
   title: Joi.object({
@@ -181,12 +196,10 @@ export const addPatternSchema = Joi.object({
       'string.base': 'English cycle name must be a string',
       'any.required': 'English cycle name is required',
     }),
-  })
-    .required()
-    .messages({
-      'object.base': 'Cycle must be an object with uk and en properties',
-      'any.required': 'Cycle is required',
-    }),
+  }).messages({
+    'object.base': 'Cycle must be an object with uk and en properties',
+    'any.required': 'Cycle is required',
+  }),
   pictures: Joi.object({
     main: Joi.object({
       url: Joi.string().required().messages({
