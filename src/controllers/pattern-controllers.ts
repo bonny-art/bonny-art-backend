@@ -304,7 +304,8 @@ export const addPattern = async (
       !author ||
       !genre ||
       !solids ||
-      !blends ||
+      blends === undefined || // Allow 0 to be valid
+      blends === null || // Allow 0 to be valid
       !origin ||
       !pictures?.main?.url ||
       !pictures?.pattern?.url?.uk ||
