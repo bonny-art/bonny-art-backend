@@ -122,7 +122,7 @@ const uploadAvatar = async (req: AuthenticatedRequest, res: Response) => {
   const { _id } = req.user;
 
   if (!req.file) {
-    throw HttpError(400, 'File not found'); 
+    throw HttpError(400, 'File not found');
   }
 
   const fileData = await cloudinary.uploader.upload(req.file.path, {
