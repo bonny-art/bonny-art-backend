@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {uploadAvatar} from './upload.js';
+import { uploadAvatar } from './upload.js';
 import multer from 'multer';
 
 export const handleFileUpload = (fieldName: string) => {
