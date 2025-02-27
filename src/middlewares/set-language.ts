@@ -8,7 +8,6 @@ export const setLanguage = (
   next: NextFunction
 ): void => {
   const { language } = req.params;
-  // console.log('xxxxxxxxxxxxxxx', language )
   const selectedLanguage: Language =
     language === 'uk' || language === 'en' ? language : 'uk';
 
