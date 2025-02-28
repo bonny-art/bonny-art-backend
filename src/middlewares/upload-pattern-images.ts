@@ -43,7 +43,7 @@ export const uploadPatternPreviewsImages = async (
 
       next();
     } catch (error) {
-      console.error('Image upload failed:', error); 
+      console.error('Image upload failed:', error);
       return next(HttpError(500, 'Image upload failed'));
     }
   });
