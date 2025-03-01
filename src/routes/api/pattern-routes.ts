@@ -10,7 +10,7 @@ import {
   addRatingSchema,
 } from '../../db/models/pattern.schema.js';
 import authenticate from '../../middlewares/authenticate.js';
-import { uploadPatternImages } from '../../middlewares/upload-pattern-images.js';
+import { uploadPatternPreviewsImages } from '../../middlewares/upload-pattern-images.js';
 
 export const patternRouter = express.Router({ mergeParams: true });
 
@@ -67,7 +67,7 @@ patternRouter.get('/:patternId/likes', patternControllers.getLikesForPattern);
 
 patternRouter.post(
   '/add-pattern',
-  uploadPatternImages,
+  uploadPatternPreviewsImages,
   validateBody(addPatternSchema),
   patternControllers.addPattern
 );
