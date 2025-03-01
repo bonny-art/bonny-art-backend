@@ -192,7 +192,7 @@ export const addPatternSchema = Joi.object({
       'string.base': 'Ukrainian cycle name must be a string',
       'any.required': 'Ukrainian cycle name is required',
     }),
-    en: Joi.string().required().messages({
+    en: Joi.string().messages({
       'string.base': 'English cycle name must be a string',
       'any.required': 'English cycle name is required',
     }),

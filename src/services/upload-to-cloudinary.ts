@@ -1,12 +1,15 @@
 import cloudinary from './cloudinary-config.js';
 import fs from 'fs/promises';
 
-export const uploadToCloudinary = async (file?: Express.Multer.File) => {
+export const uploadToCloudinary = async (
+  file?: Express.Multer.File,
+  folderName: string = 'bonny-art-patterns'
+) => {
   if (!file) return null;
 
   try {
     const cloudinaryResponse = await cloudinary.uploader.upload(file.path, {
-      folder: 'bonny-art-patterns',
+      folder: folderName,
       resource_type: 'image',
       allowed_formats: ['jpg', 'png', 'webp', 'psd', 'avif'],
     });

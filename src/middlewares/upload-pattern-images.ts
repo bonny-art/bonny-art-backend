@@ -24,18 +24,24 @@ export const uploadPatternPreviewsImages = async (
         throw HttpError(400, 'No files uploaded');
       }
 
+      if (!req.body.data) {
+        throw HttpError(400, 'No data uploaded');
+      }
+
       const files = req.files as { [key: string]: Express.Multer.File[] };
+      const data = JSON.parse(req.body.data);
 
       const [mainImage, patternUkImage, patternEnImage] = await Promise.all([
-        uploadToCloudinary(files.imageMain?.[0]),
-        uploadToCloudinary(files.imagePatternUk?.[0]),
-        uploadToCloudinary(files.imagePatternEn?.[0]),
+        uploadToCloudinary(files.imageMain?.[0], 'bonny-art-patterns'),
+        uploadToCloudinary(files.imagePatternUk?.[0], 'bonny-art-patterns'),
+        uploadToCloudinary(files.imagePatternEn?.[0], 'bonny-art-patterns'),
       ]);
 
       if (!mainImage || !patternUkImage || !patternEnImage) {
         throw HttpError(400, 'All three images must be uploaded');
       }
 
+      req.body = { ...data };
       req.body.pictures = {
         main: { url: mainImage },
         pattern: { url: { uk: patternUkImage, en: patternEnImage } },

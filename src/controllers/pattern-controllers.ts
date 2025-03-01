@@ -444,7 +444,7 @@ export const addPattern = async (
     const titleId = await findOrCreateTitle(title);
     const authorId = await findOrCreateAuthor(author);
     const genreId = await findOrCreateGenre(genre);
-    const cycleId = await findOrCreateCycle(cycle);
+    const cycleId = cycle ? await findOrCreateCycle(cycle) : undefined;
 
     const newPattern = new Pattern({
       codename,
