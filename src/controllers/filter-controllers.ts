@@ -15,9 +15,7 @@ export const getTitles = async (
     }
     const titles = await getTitlesByLanguage(lang);
 
-    res.json({
-      titles: titles.map((title) => title.name?.[lang]),
-    });
+    res.json({ titles });
   } catch (error) {
     next(error);
   }
