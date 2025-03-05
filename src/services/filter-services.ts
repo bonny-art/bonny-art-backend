@@ -10,6 +10,6 @@ export const getTitlesByLanguage = async (lang?: 'uk' | 'en') => {
 
   return titles.map((title) => ({
     _id: title._id,
-    name: title.name?.[lang] || "Unnamed",
+    name: title.name?.[lang] || 'Unnamed',
   }));
 };
