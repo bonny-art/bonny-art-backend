@@ -39,3 +39,22 @@ export const getAuthors = async (
     next(error);
   }
 };
+
+export const getCycles = async (
+  req: setLanguageRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const lang = req.lang;
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
+
+    const cycles = await filterServices.getCyclesByLanguage(lang);
+
+    res.json({ cycles });
+  } catch (error) {
+    next(error);
+  }
+};
