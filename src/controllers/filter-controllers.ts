@@ -77,4 +77,3 @@ export const getGenres = async (
     next(error);
   }
 };
-

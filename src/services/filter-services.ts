@@ -42,6 +42,7 @@ export const getCyclesByLanguage = async (lang?: 'uk' | 'en') => {
     name: cycle.name?.[lang] || 'Unnamed',
   }));
 };
+
 export const getGenresByLanguage = async (lang?: 'uk' | 'en') => {
   if (!lang) {
     throw HttpError(404, 'Language was not set');
