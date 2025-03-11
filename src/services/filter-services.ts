@@ -2,6 +2,7 @@ import { PatternTitle } from '../db/models/pattern-title.schema.js';
 import { Author } from '../db/models/author.schema.js';
 import { Cycle } from '../db/models/cycle.schema.js';
 import HttpError from '../helpers/http-error.js';
+import { Genre } from '../db/models/genre.schema.js';
 
 export const getTitlesByLanguage = async (lang?: 'uk' | 'en') => {
   if (!lang) {
@@ -29,7 +30,6 @@ export const getAuthorsByLanguage = async (lang?: 'uk' | 'en') => {
   }));
 };
 
-
 export const getCyclesByLanguage = async (lang?: 'uk' | 'en') => {
   if (!lang) {
     throw HttpError(404, 'Language was not set');
@@ -40,5 +40,18 @@ export const getCyclesByLanguage = async (lang?: 'uk' | 'en') => {
   return cycles.map((cycle) => ({
     _id: cycle._id,
     name: cycle.name?.[lang] || 'Unnamed',
+  }));
+};
+
+export const getGenresByLanguage = async (lang?: 'uk' | 'en') => {
+  if (!lang) {
+    throw HttpError(404, 'Language was not set');
+  }
+
+  const genres = await Genre.find({}, `_id name.${lang}`);
+
+  return genres.map((genre) => ({
+    _id: genre._id,
+    name: genre.name?.[lang] || 'Unnamed',
   }));
 };

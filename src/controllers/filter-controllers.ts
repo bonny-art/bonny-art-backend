@@ -58,3 +58,22 @@ export const getCycles = async (
     next(error);
   }
 };
+
+export const getGenres = async (
+  req: setLanguageRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const lang = req.lang;
+    if (!lang) {
+      throw HttpError(404, 'Language was not set');
+    }
+
+    const genres = await filterServices.getGenresByLanguage(lang);
+
+    res.json({ genres });
+  } catch (error) {
+    next(error);
+  }
+};
