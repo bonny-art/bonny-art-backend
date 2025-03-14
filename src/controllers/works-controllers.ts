@@ -1,8 +1,11 @@
 import { Response, NextFunction } from 'express';
 
-import HttpError from '../helpers/http-error.js';
-import { setLanguageRequest } from '../types/common-types.js';
 import * as workServices from '../services/works-services.js';
+
+import HttpError from '../helpers/http-error.js';
+
+import { setLanguageRequest } from '../types/common-types.js';
+import { RANDOM_REVIEWS_COUNT, RANDOM_WORKS_COUNT } from '../config/constants..js';
 
 export const fetchRandomWorksPhotos = async (
   req: setLanguageRequest,
@@ -15,7 +18,7 @@ export const fetchRandomWorksPhotos = async (
       throw HttpError(404, 'Language was not set');
     }
 
-    const randomWorks = await workServices.getRandomWorkPhotos(3, lang);
+    const randomWorks = await workServices.getRandomWorkPhotos(RANDOM_WORKS_COUNT, lang);
 
     res.send({ patterns: randomWorks });
   } catch (error) {
@@ -35,7 +38,7 @@ export const fetchRandomReviews = async (
       throw HttpError(404, 'Language was not set');
     }
 
-    const randomReviews = await workServices.getRandomReviews(3, lang);
+    const randomReviews = await workServices.getRandomReviews(RANDOM_REVIEWS_COUNT, lang);
 
     res.send({ reviews: randomReviews });
   } catch (error) {

@@ -6,7 +6,7 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
 
   while (works.length < count && attempts > 0) {
     works = await WorkPhoto.aggregate([
-      { $sample: { size: 10 } }, // Увеличили выборку до 10
+      { $sample: { size: 10 } }, // Выборка до 10
       {
         $lookup: {
           from: 'patterns',
