@@ -235,7 +235,10 @@ export const fetchRandomPatterns = async (
       throw HttpError(404, 'Language was not set');
     }
 
-    const randomPatterns = await patternServices.getRandomPatterns(RANDOM_SCHEMES_COUNT, lang);
+    const randomPatterns = await patternServices.getRandomPatterns(
+      RANDOM_SCHEMES_COUNT,
+      lang
+    );
 
     res.send({ patterns: randomPatterns });
   } catch (error) {

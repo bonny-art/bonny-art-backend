@@ -25,7 +25,10 @@ import { IUser } from '../types/user-types.js';
 
 import cloudinary from '../services/cloudinary-config.js';
 import fs from 'fs';
-import { EMAIL_TYPE_EMAIL_CHANGE, EMAIL_TYPE_VERIFICATION } from '../config/constants..js';
+import {
+  EMAIL_TYPE_EMAIL_CHANGE,
+  EMAIL_TYPE_VERIFICATION,
+} from '../config/constants..js';
 
 const signup = async (req: Request & { lang?: string }, res: Response) => {
   const { email, password, userName } = req.body;
