@@ -5,7 +5,6 @@ export const extractPatternDetails = (
   height: number | null;
   patternType: string | null;
 } => {
-  // Витягуємо ширину та висоту
   const widthHeightMatch = codename.match(/\((\d+)x(\d+)\)/);
   const width = widthHeightMatch ? parseInt(widthHeightMatch[1]) : null;
   const height = widthHeightMatch ? parseInt(widthHeightMatch[2]) : null;

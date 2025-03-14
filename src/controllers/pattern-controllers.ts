@@ -1,12 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+
 import * as patternServices from '../services/pattern-services.js';
-import * as dataHandlers from '../helpers/data-handlers.js';
-import {
-  checkPatternExistsRequest,
-  setLanguageRequest,
-} from '../types/common-types.js';
-import { SortDirection, SortPhotosBy } from '../types/common-types.js';
-import HttpError from '../helpers/http-error.js';
 import { addOrUpdateRating } from '../services/pattern-services.js';
 import {
   countLikesForPattern,
@@ -14,11 +8,23 @@ import {
   removeLike,
   addLike,
 } from '../services/like-services.js';
-import { Pattern } from '../db/models/pattern.schema.js';
 import { findOrCreateTitle } from '../services/pattern-title-services.js';
 import { findOrCreateAuthor } from '../services/author-services.js';
 import { findOrCreateGenre } from '../services/genre-services.js';
 import { findOrCreateCycle } from '../services/cycle-services.js';
+
+import { Pattern } from '../db/models/pattern.schema.js';
+
+import * as dataHandlers from '../helpers/data-handlers.js';
+
+import HttpError from '../helpers/http-error.js';
+
+import {
+  checkPatternExistsRequest,
+  setLanguageRequest,
+} from '../types/common-types.js';
+import { SortDirection, SortPhotosBy } from '../types/common-types.js';
+import { RANDOM_SCHEMES_COUNT } from '../config/constants..js';
 
 export const getAllPatterns = async (
   req: setLanguageRequest,
@@ -123,7 +129,6 @@ export const getAllPatternsWithPaginationAndFilters = async (
     const allowedSortBy = ['codename', 'title', 'rating'];
     const allowedSortOrder = ['asc', 'desc'];
 
-    // ✅ **Перевірка origins**
     let originsArray: string[] = [];
     if (typeof origins === 'string') {
       originsArray = origins.split(',');
@@ -135,13 +140,11 @@ export const getAllPatternsWithPaginationAndFilters = async (
       }
     }
 
-    // ✅ **Перевірка sortBy**
     const sortByValue =
       typeof sortBy === 'string' && allowedSortBy.includes(sortBy)
         ? sortBy
         : 'codename';
 
-    // ✅ **Перевірка sortOrder**
     const sortOrderValue =
       typeof sortOrder === 'string' && allowedSortOrder.includes(sortOrder)
         ? sortOrder
@@ -232,7 +235,10 @@ export const fetchRandomPatterns = async (
       throw HttpError(404, 'Language was not set');
     }
 
-    const randomPatterns = await patternServices.getRandomPatterns(3, lang);
+    const randomPatterns = await patternServices.getRandomPatterns(
+      RANDOM_SCHEMES_COUNT,
+      lang
+    );
 
     res.send({ patterns: randomPatterns });
   } catch (error) {

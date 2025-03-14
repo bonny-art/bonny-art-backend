@@ -1,7 +1,10 @@
 import { Response, NextFunction } from 'express';
-import { setLanguageRequest } from '../types/common-types.js';
-import HttpError from '../helpers/http-error.js';
+
 import * as filterServices from '../services/filter-services.js';
+
+import HttpError from '../helpers/http-error.js';
+
+import { setLanguageRequest } from '../types/common-types.js';
 
 export const getTitles = async (
   req: setLanguageRequest,
