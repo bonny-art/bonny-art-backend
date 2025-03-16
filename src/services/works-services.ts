@@ -1,12 +1,16 @@
+import {
+  RANDOM_SAMPLE_SIZE,
+  RANDOM_SELECTION_ATTEMPTS,
+} from '../config/constants..js';
 import { WorkPhoto } from '../db/models/work-photo.schema.js';
 
 export const getRandomWorkPhotos = async (count: number, language: string) => {
   let works = [];
-  let attempts = 3;
+  let attempts = RANDOM_SELECTION_ATTEMPTS;
 
   while (works.length < count && attempts > 0) {
     works = await WorkPhoto.aggregate([
-      { $sample: { size: 10 } }, // Выборка до 10
+      { $sample: { size: RANDOM_SAMPLE_SIZE } },
       {
         $lookup: {
           from: 'patterns',
@@ -76,7 +80,7 @@ export const getRandomWorkPhotos = async (count: number, language: string) => {
 
 export const getRandomReviews = async (count: number, language: string) => {
   let reviews = [];
-  let attempts = 3;
+  let attempts = RANDOM_SELECTION_ATTEMPTS;
 
   while (reviews.length < count && attempts > 0) {
     reviews = await WorkPhoto.aggregate([
@@ -85,7 +89,7 @@ export const getRandomReviews = async (count: number, language: string) => {
           [`review.${language}`]: { $exists: true, $ne: '' },
         },
       },
-      { $sample: { size: 10 } }, // Выборка до 10
+      { $sample: { size: RANDOM_SAMPLE_SIZE } },
 
       {
         $lookup: {
