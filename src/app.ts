@@ -12,6 +12,10 @@ app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).send('Backend is alive!');
+});
+
 app.use('/api/:language', routes);
 
 app.use((req, res) => {
