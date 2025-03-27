@@ -1,7 +1,5 @@
-// Моделі
 import User from '../db/models/user.schema.js';
 
-// Типи
 import { CreateUserData, UserQuery } from '../types/user-types.js';
 
 export const getUserByProperty = async (query: UserQuery) => {

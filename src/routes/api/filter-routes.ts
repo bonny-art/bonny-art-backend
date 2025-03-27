@@ -5,5 +5,8 @@ import * as filterControllers from '../../controllers/filter-controllers.js';
 const filtersRouter = express.Router({ mergeParams: true });
 
 filtersRouter.get('/get-titles', setLanguage, filterControllers.getTitles);
+filtersRouter.get('/get-authors', setLanguage, filterControllers.getAuthors);
+filtersRouter.get('/get-cycles', setLanguage, filterControllers.getCycles);
+filtersRouter.get('/get-genres', setLanguage, filterControllers.getGenres);
 
 export default filtersRouter;
