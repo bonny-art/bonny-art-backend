@@ -130,7 +130,7 @@ export const getRandomReviews = async (count: number, language: string) => {
             $ifNull: [`$master.name.${language}`, 'Unknown master'],
           },
           imageUrl: {
-            $ifNull: ['$imageUrl', ''], 
+            $ifNull: ['$imageUrl', ''],
           },
         },
       },
